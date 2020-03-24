@@ -1,0 +1,56 @@
+version: '3.5'
+services:
+  postgres:
+    container_name: postgres
+    hostname: postgres
+    image: mdillon/postgis
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - gpao-network
+  api-gpao:
+    build:
+      context: ./
+      dockerfile: docker/api/Dockerfile
+      args:
+        http_proxy: http://proxy.ign.fr:3128
+    container_name: api-gpao
+    hostname: api-gpao
+    image: api-gpao
+    restart: always
+    env_file:
+     - docker/api.env
+    ports:
+      - 3000:3000
+    networks:
+      - gpao-network
+  monitor-gpao:
+    build:
+      context: ./
+      dockerfile: docker/monitor/Dockerfile
+      args:
+        http_proxy: http://proxy.ign.fr:3128
+    container_name: monitor-gpao
+    hostname: monitor-gpao
+    image: monitor-gpao
+    restart: always
+    env_file:
+     - docker/api.env
+    ports:
+      - 4000:4000
+    networks:
+      - gpao-network
+volumes:
+  postgres-data:
+networks:
+  gpao-network:
+    name: gpao-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.100.0.0/16
