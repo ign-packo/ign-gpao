@@ -1,0 +1,29 @@
+{
+  "name": "api-gpao",
+  "version": "1.0.0",
+  "description": "api pour IGN/GPAO",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arnaudbirk/demoGPAO.git"
+  },
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "express-validator": "^5.3.1",
+    "install": "^0.13.0",
+    "npm": "^6.14.3",
+    "pg": "^7.18.2",
+    "swagger-editor-dist": "^3.6.25",
+    "swagger-jsdoc": "^3.5.0",
+    "swagger-ui-dist": "^3.21.0",
+    "swagger-ui-express": "^4.1.4"
+  }
+}

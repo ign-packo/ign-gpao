@@ -1,0 +1,65 @@
+/**
+ * @swagger
+ * tags:
+ *   name: jobs
+ *   description: Manipulation des jobs
+ */
+
+/**
+ * @swagger
+ * paths:
+ *   '/jobs':
+ *     get:
+ *       tags:
+ *         - jobs
+ *       summary: "Récupération de tous les jobs"
+ *       description: "Récupération de tous les jobs quelque soit son status"
+ *       responses:
+ *         '200':
+ *           description: OK
+ *   '/job/ready':
+ *     get:
+ *       tags:
+ *         - jobs
+ *       summary: "Récupération de l'identifiant d'un job"
+ *       description: "Récupération de l'identifiant d'un job avec le status ready et mise à jour de son à jour de son status en running"
+ *       responses:
+ *         '200':
+ *           description: OK
+ *   '/job/{id}/{status}':
+ *     post:
+ *       tags:
+ *         - jobs
+ *       summary: "Mise à jour d'un job"
+ *       description: "Permet de mettre à jour le log et le statut d'un job en fonction de son identifiant"
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *           description: l'identifiant du job à modfier
+ *           required: true
+ *           schema:
+ *             type: integer
+ *         - in: path
+ *           name: status
+ *           description: le statut du job à modifier
+ *           required: true
+ *           schema:
+ *             type: string
+ *             enum:
+ *               - failed
+ *               - done
+ *       requestBody:
+ *         description: log en sortie du script
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 log:
+ *                   type: string
+ *                 
+ *       responses:
+ *         '200':
+ *           description: OK
+ */
