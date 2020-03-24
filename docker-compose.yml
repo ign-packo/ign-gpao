@@ -17,8 +17,6 @@ services:
     build:
       context: ./
       dockerfile: docker/api/Dockerfile
-      args:
-        http_proxy: http://proxy.ign.fr:3128
     container_name: api-gpao
     hostname: api-gpao
     image: api-gpao
@@ -33,16 +31,12 @@ services:
     build:
       context: ./
       dockerfile: docker/monitor/Dockerfile
-      args:
-        http_proxy: http://proxy.ign.fr:3128
     container_name: monitor-gpao
     hostname: monitor-gpao
     image: monitor-gpao
     restart: always
-    env_file:
-     - docker/api.env
     ports:
-      - 4000:4000
+      - 80:80
     networks:
       - gpao-network
 volumes:

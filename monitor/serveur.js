@@ -15,7 +15,7 @@ var getJob = async function (req, res, next){
 
   const axios = require('axios');
 
-  let json = await axios.get('http://koolyce.ddns.net:3000/api/jobs')
+  let json = await axios.get('http://api-gpao:3000/api/jobs')
 
   req.body = json.data
   next()
@@ -44,5 +44,5 @@ app.get('/ressource', function(req, res) {
     res.render('pages/ressource')
 })
 
-app.listen(4000);
-console.log('4000 is the magic port')
+app.listen(80);
+console.log('80 is the magic port')

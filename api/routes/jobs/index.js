@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const { query, body, param, oneOf } = require('express-validator/check');
 
-const pgClient = require('./../../middlewares/db/pgClient')
 const jobs = require('./../../middlewares/jobs')
 
 router.get('/job/ready', jobs.getJobReady)
