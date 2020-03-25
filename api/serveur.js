@@ -31,6 +31,10 @@ const options = {
 
     servers: [
       {
+        url: "http://localhost:8080/api",
+        description: "Serveur de dev"
+      },
+      {
         url: "http://api-gpao:8080/api",
         description: "Serveur de test"
       }
