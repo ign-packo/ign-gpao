@@ -1,7 +1,7 @@
 const swaggerJsdoc = require("swagger-jsdoc")
 const swaggerUi = require("swagger-ui-express")
 const express = require('express')
-const port = 3000
+const port = 8080
 const cors = require('cors')
 const bodyParser = require('body-parser')
 

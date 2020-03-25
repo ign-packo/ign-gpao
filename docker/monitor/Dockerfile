@@ -14,7 +14,7 @@ WORKDIR /usr/local/src/monitor
 
 RUN npm install
 
-EXPOSE 4000
+EXPOSE 80
 
 ENTRYPOINT ["node", "serveur.js"]
 

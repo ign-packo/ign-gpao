@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     while True:
         print("Recherche d'un nouveau job")
-        req=requests.get('http://localhost:3000/api/job/ready')
+        req=requests.get('http://api-gpao:8080/api/job/ready')
         #print (req.json())
         if(len(req.json())!=0):
             id = req.json()[0]['id']
@@ -28,7 +28,7 @@ if __name__ == "__main__":
                 status='failed'
                 print("le job a echoue")
 
-            req=requests.post('http://localhost:3000/api/job/'+str(id)+'/'+str(status), data=out)
+            req=requests.post('http://api-gpao:8080/api/job/'+str(id)+'/'+str(status), data=out)
         else:
             print("Aucun job disponible dans la base")
 

@@ -11,11 +11,12 @@ app.get('/', function(req, res) {
     res.render('pages/index');
 });
 
+//ToDo à définir en tant que middleware
 var getJob = async function (req, res, next){
 
   const axios = require('axios');
 
-  let json = await axios.get('http://api-gpao:3000/api/jobs')
+  let json = await axios.get('http://api-gpao:8080/api/jobs')
 
   req.body = json.data
   next()
@@ -26,9 +27,7 @@ app.get('/job', getJob, function(req, res) {
   var array = []
 
   for(var i in req.body){
-    console.log(i)
     array.push(req.body[i])
-    console.log(req.body[i])
   }
 
   res.render('pages/job', {json:array})
@@ -44,5 +43,5 @@ app.get('/ressource', function(req, res) {
     res.render('pages/ressource')
 })
 
-app.listen(80);
-console.log('80 is the magic port')
+app.listen(8000);
+console.log('8000 is the magic port')
