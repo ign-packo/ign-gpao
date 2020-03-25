@@ -19,11 +19,6 @@ app.use(function (req, res, next) {
 	next();
 })
 
-app.post('/post-test', (req, res) => {
-  console.log('Got body:', req.body);
-  res.sendStatus(200);
-});
-
 // Swagger set up
 const options = {
   swaggerDefinition: {
@@ -36,7 +31,7 @@ const options = {
 
     servers: [
       {
-        url: "http://koolyce.ddns.net:3000/api",
+        url: "http://api-gpao:8080/api",
         description: "Serveur de test"
       }
     ]
