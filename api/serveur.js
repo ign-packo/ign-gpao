@@ -10,13 +10,12 @@ const jobs = require("./routes/jobs")
 const app = express()
 
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
-	console.log(req.method, ' ', req.path, ' ', JSON.stringify(req.body));
+	console.log(req.method, ' ', req.path, ' ', req.body)
 	console.log("received at " + Date.now())
-	next();
+	next()
 })
 
 // Swagger set up

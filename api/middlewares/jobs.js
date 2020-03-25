@@ -34,11 +34,10 @@ function getJobReady(req, res){
 function updateJobStatus(req, res){
 	var params = matchedData(req);
 
-    const id = params.id
-	const status = params.status
-	//const { log } = params.log
-	console.log(req)
-  
+    const id = req.params.id
+	const status = req.params.status
+	const log = req.body.log
+	
     pool.query(
       'UPDATE jobs SET status = $1, log = $2 WHERE id = $3',
       [status, log, id],
