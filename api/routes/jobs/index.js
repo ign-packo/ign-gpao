@@ -9,4 +9,8 @@ router.post('/job/:id/:status(done|failed)',
     body('log').exists(),
     jobs.updateJobStatus)
 
+router.put('/job', 
+    body('command').exists(),
+    jobs.insertJob)
+
 module.exports = router
