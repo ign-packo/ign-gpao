@@ -30,6 +30,10 @@ const options = {
 
     servers: [
       {
+        url: "http://koolyce.ddns.net:8080/api",
+        description: "Serveur d'Arnaud"
+      },
+      {
         url: "http://localhost:8080/api",
         description: "Serveur de dev"
       },
