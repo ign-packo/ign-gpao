@@ -62,4 +62,24 @@
  *       responses:
  *         '200':
  *           description: OK
+ *   '/job':
+ *     put:
+ *       tags:
+ *         - jobs
+ *       summary: "Ajout d'un job"
+ *       description: "Permet de un job à partir d'une ligne de commande"
+ *       requestBody:
+ *         description: ligne de commande a exécuter
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 command:
+ *                   type: string
+ *                 
+ *       responses:
+ *         '200':
+ *           description: OK
  */

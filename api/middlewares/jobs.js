@@ -49,8 +49,27 @@ function updateJobStatus(req, res){
       }
     )
 }
+
+function insertJob(req, res){	
+	const command = req.body.command
+	const status = 'ready'
+	const log = ''
+	
+    pool.query(
+      'INSERT INTO jobs (command, status, log) VALUES ($1, $2, $3)',
+      [command, status, log],
+      (error, results) => {
+        if (error) {
+          throw error
+        }
+        res.status(200).send(`Job inserted`)
+      }
+    )
+}
+
 module.exports = {
 	getAllJobs,
 	getJobReady,
-	updateJobStatus
+	updateJobStatus,
+	insertJob
 }
