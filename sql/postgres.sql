@@ -1,1 +1,1 @@
-CREATE TABLE jobs (id SERIAL PRIMARY KEY, command VARCHAR, status VARCHAR(30), log VARCHAR)
+CREATE TABLE jobs (id SERIAL PRIMARY KEY, command VARCHAR, status VARCHAR(30), log VARCHAR, return_code INT, start_date TIMESTAMPTZ, end_date TIMESTAMPTZ)
