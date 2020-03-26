@@ -47,7 +47,6 @@ services:
     build:
       context: ./
       dockerfile: docker/client/Dockerfile
-    container_name: client-gpao
     image: client-gpao
     restart: always
     environment:
