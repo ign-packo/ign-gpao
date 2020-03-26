@@ -23,6 +23,8 @@ services:
     restart: always
     env_file:
      - docker/api.env
+    depends_on:
+      - postgres
     ports:
       - 8080:8080
     networks:
@@ -35,8 +37,24 @@ services:
     hostname: monitor-gpao
     image: monitor-gpao
     restart: always
+    depends_on:
+      - api-gpao
     ports:
       - 8000:8000
+    networks:
+      - gpao-network
+  client-gpao:
+    build:
+      context: ./
+      dockerfile: docker/client/Dockerfile
+    container_name: client-gpao
+    image: client-gpao
+    restart: always
+    environment:
+      - URL_API=api-gpao
+    entrypoint: ["python", "client.py"]
+    depends_on:
+      - api-gpao
     networks:
       - gpao-network
 volumes:
