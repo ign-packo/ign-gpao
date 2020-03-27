@@ -32,7 +32,7 @@
 		</thead>
 		<% json.forEach(function( job){ %>
 		<tr>
-		<td> <%= job.id %></td><td> <%= job.command %></td><td> <%= job.status %></td><td> <%= job.log %></td>
+		<td> <%= job.id %></td><td> <%= job.command %></td><td> <%= job.status %></td><td> <%= job.log %></td><td> <%= job.return_code %></td><td> <%= job.start_date %></td><td> <%= job.end_date %></td>
 		</tr>
 		<% }) %>
  

@@ -26,17 +26,24 @@ if __name__ == "__main__":
 
             print("Execution de la commande "+ str(command))
             array_command = command.split()
-            proc = subprocess.Popen(array_command, stdout=subprocess.PIPE)
-            (out, err) = proc.communicate()
-            status='done'
-            if (proc.returncode != 0):
+            return_code = -1
+            try:
+                proc = subprocess.Popen(array_command, stdout=subprocess.PIPE)
+                (out, err) = proc.communicate()
+                status='done'
+                return_code = proc.returncode
+                json_data = out.decode()
+
+            except Exception as ex:
+                status='failed'
+                json_data=str(ex)
+                print('failed', ex)
+            
+            if (return_code != 0):
                 status='failed'
                 print("le job a echoue")
 
-
-            json_data = out.decode()
-
-            req=requests.post('http://'+url_api+':8080/api/job/'+str(id)+'/'+str(status), json={"log": json_data})
+            req=requests.post('http://'+url_api+':8080/api/job/'+str(id)+'/'+str(status)+'/'+str(return_code), json={"log": json_data})
         else:
             print("Aucun job disponible dans la base")
 

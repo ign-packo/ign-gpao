@@ -22,7 +22,7 @@ function getAllJobs(req, res){
 }
 
 function getJobReady(req, res){
-	pool.query("UPDATE jobs SET status = 'running' WHERE id = (SELECT id FROM jobs WHERE status = 'ready' LIMIT 1) RETURNING id, command", (error, results) => {
+	pool.query("UPDATE jobs SET status = 'running', start_date=NOW() WHERE id = (SELECT id FROM jobs WHERE status = 'ready' LIMIT 1) RETURNING id, command", (error, results) => {
 
 	if (error){
 		throw error
@@ -35,12 +35,13 @@ function updateJobStatus(req, res){
 	var params = matchedData(req);
 
     const id = req.params.id
-	const status = req.params.status
+  const status = req.params.status
+  const return_code = req.params.return_code
 	const log = req.body.log
 	
     pool.query(
-      'UPDATE jobs SET status = $1, log = $2 WHERE id = $3',
-      [status, log, id],
+      'UPDATE jobs SET status = $1, log = $2, return_code = $4, end_date=NOW() WHERE id = $3',
+      [status, log, id, return_code],
       (error, results) => {
         if (error) {
           throw error
