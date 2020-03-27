@@ -1,11 +1,11 @@
 const swaggerJsdoc = require("swagger-jsdoc")
 const swaggerUi = require("swagger-ui-express")
 const express = require('express')
-const port = 8080
 const cors = require('cors')
 const bodyParser = require('body-parser')
-
 const jobs = require("./routes/jobs")
+
+const PORT = 8080
 
 const app = express()
 
@@ -60,6 +60,6 @@ app.use('/api', jobs);
 
 module.exports = app
 
-app.listen(port, function () {
-  console.log('App running on port '+port)
+app.listen(PORT, function () {
+  console.log("URL de l'api : http://localhost:"+PORT+"/api \nURL de la documentation swagger : http://localhost:"+PORT+"/api/doc")
 })

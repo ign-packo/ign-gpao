@@ -4,7 +4,9 @@ const { query, body, param, oneOf } = require('express-validator/check');
 const jobs = require('./../../middlewares/jobs')
 
 router.get('/job/ready', jobs.getJobReady)
+
 router.get('/jobs', jobs.getAllJobs)
+
 router.post('/job/:id/:status(done|failed)/:return_code',
     body('log').exists(),
     jobs.updateJobStatus)

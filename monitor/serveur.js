@@ -1,47 +1,23 @@
-var express = require('express');
-var app = express();
+var express = require('express')
+var app = express()
+
+const PORT = 8000
+
+const URL_API = process.env.URL_API || 'localhost'
+const URL_API_PORT = process.env.URL_API_PORT || 8080
+
+module.exports = {
+  URL_API: URL_API,
+  URL_API_PORT: URL_API_PORT
+}
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
+const routes = require("./routes/")
+
 // use res.render to load up an ejs view file
+app.use('/', routes);
 
-// home page
-app.get('/', function(req, res) {
-    res.render('pages/index');
-});
-
-//ToDo à définir en tant que middleware
-var getJob = async function (req, res, next){
-
-  const axios = require('axios');
-
-  let json = await axios.get('http://localhost:8080/api/jobs')
-
-  req.body = json.data
-  next()
-}
-
-// job page
-app.get('/job', getJob, function(req, res) {
-  var array = []
-
-  for(var i in req.body){
-    array.push(req.body[i])
-  }
-
-  res.render('pages/job', {json:array})
-})
-
-// chantier page 
-app.get('/chantier', function(req, res) {
-    res.render('pages/chantier')
-})
-
-// ressource page 
-app.get('/ressource', function(req, res) {
-    res.render('pages/ressource')
-})
-
-app.listen(8000);
-console.log('8000 is the magic port')
+app.listen(PORT);
+console.log("URL du moniteur : http://"+URL_API+":"+PORT)

@@ -37,6 +37,9 @@ services:
     hostname: monitor-gpao
     image: monitor-gpao
     restart: always
+    environment:
+      - URL_API=api-gpao
+      - URL_API_PORT=8080
     depends_on:
       - api-gpao
     ports:
