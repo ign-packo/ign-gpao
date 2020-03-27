@@ -48,6 +48,12 @@
  *             enum:
  *               - failed
  *               - done
+ *         - in: path
+ *           name: return_code
+ *           description: le code de retour de la commande
+ *           required: true
+ *           schema:
+ *             type: int
  *       requestBody:
  *         description: log en sortie du script
  *         required: true
