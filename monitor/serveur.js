@@ -16,7 +16,7 @@ var getJob = async function (req, res, next){
 
   const axios = require('axios');
 
-  let json = await axios.get('http://api-gpao:8080/api/jobs')
+  let json = await axios.get('http://localhost:8080/api/jobs')
 
   req.body = json.data
   next()
