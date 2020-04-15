@@ -1,0 +1,55 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include ("../partials/head") %>
+</head>
+<body class="container">
+
+<header>
+    <%- include ("../partials/header") %>
+</header>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#ressource').DataTable();
+	} );
+</script>
+  
+
+<main>
+    <div class="jumbotron">
+        <h2>Visualisation des Ressources</h2>
+	<table class="table table-striped table-bordered" style="width:100%" id="ressource">
+		<thead>
+		<tr>
+			<th>id</th>
+			<th>nom</th>
+			<th>status</th>
+			<th>version</th>
+			<th>command</th>
+			<th>espace</th>
+		</tr>
+		</thead>
+		<% json.forEach(function(ressource){ %>
+		<tr>
+			<td> <%= ressource.id %></td>
+			<td> <%= ressource.nom %></td>
+			<td> <%= ressource.status %></td>
+			<td> <%= ressource.version %></td>
+			<td> <%= ressource.command %></td>
+			<td> <%= ressource.espace %></td>
+		</tr>
+		<% }) %>
+	</table>
+		<!-- Corps de la page -->
+    </div>
+</main>
+
+<footer>
+    <%- include ("../partials/footer") %>
+</footer>
+
+</body>
+</html>
