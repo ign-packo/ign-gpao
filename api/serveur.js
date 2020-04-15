@@ -3,6 +3,8 @@ const swaggerUi = require("swagger-ui-express")
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const chantiers = require("./routes/chantiers")
+const ressources = require("./routes/ressources")
 const jobs = require("./routes/jobs")
 
 const PORT = 8080
@@ -56,6 +58,8 @@ app.get(
   })
 );
 
+app.use('/api', chantiers);
+app.use('/api', ressources);
 app.use('/api', jobs);
 
 module.exports = app
