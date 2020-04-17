@@ -10,15 +10,19 @@ Ce projet a pour but de pouvoir lancer et de répartir des traitements sur plusi
 
 ### Dans le futur
 
-Nous étudions une nouvelle approche de la problématique avec un nouveau modèle composée de 4 tables : 
+Nous étudions une nouvelle approche de la problématique avec un nouveau modèle composée de 5 tables : 
 
-- Jobs
+- jobs
 
-- Chantier
+- project
 
-- Ressource
+- cluster
 
-- Dépendance
+- jobDependencies
+
+- projectDependencies
+
+![](doc/GPAO_v3.png)
 
 ## Architecture en utilisant docker-compose
 
