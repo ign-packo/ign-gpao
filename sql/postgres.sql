@@ -16,6 +16,20 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: job_status; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.job_status AS ENUM (
+    'waiting',
+    'ready',
+    'done',
+    'failed'
+);
+
+
+ALTER TYPE public.job_status OWNER TO postgres;
+
+--
 -- Name: udate_jobDependency(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -65,7 +79,8 @@ SET default_with_oids = false;
 
 CREATE TABLE public.cluster (
     id integer NOT NULL,
-    name character varying NOT NULL,
+    host character varying NOT NULL,
+    id_thread integer NOT NULL,
     active boolean NOT NULL,
     available boolean NOT NULL
 );
@@ -141,11 +156,11 @@ CREATE TABLE public.jobs (
     start_date date,
     end_date date,
     command character varying NOT NULL,
-    status character varying NOT NULL,
+    status public.job_status NOT NULL,
+    return_code integer,
     log character varying,
     id_project integer NOT NULL,
-    id_cluster integer NOT NULL,
-    return_code integer
+    id_cluster integer NOT NULL
 );
 
 
@@ -279,81 +294,6 @@ ALTER TABLE ONLY public.projects ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
--- Data for Name: cluster; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.cluster (id, name, active, available) FROM stdin;
-\.
-
-
---
--- Data for Name: jobDependencies; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."jobDependencies" (id, from_id, to_id, active) FROM stdin;
-\.
-
-
---
--- Data for Name: jobs; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.jobs (id, name, start_date, end_date, command, status, log, id_project, id_cluster, return_code) FROM stdin;
-\.
-
-
---
--- Data for Name: projectDependencies; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."projectDependencies" (id, from_id, to_id, active) FROM stdin;
-\.
-
-
---
--- Data for Name: projects; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.projects (id, name) FROM stdin;
-\.
-
-
---
--- Name: cluster_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.cluster_id_seq', 1, false);
-
-
---
--- Name: jobDependencies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public."jobDependencies_id_seq"', 1, false);
-
-
---
--- Name: jobs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.jobs_id_seq', 3, true);
-
-
---
--- Name: projectDependencies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public."projectDependencies_id_seq"', 1, false);
-
-
---
--- Name: project_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.project_id_seq', 1, true);
-
-
---
 -- Name: cluster cluster_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -444,4 +384,3 @@ ALTER TABLE ONLY public."projectDependencies"
 --
 -- PostgreSQL database dump complete
 --
-
