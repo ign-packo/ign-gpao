@@ -22,6 +22,7 @@ SET row_security = off;
 CREATE TYPE public.job_status AS ENUM (
     'waiting',
     'ready',
+    'running',
     'done',
     'failed'
 );
