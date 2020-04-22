@@ -1,9 +1,0 @@
-{
-    "name": "ihm",
-    "main": "ihm.js",
-    "version": "0.1.0",
-    "dependencies": {
-    },
-    "author": "Nicolas Bellaiche <nicolas.bellaiche@ign.fr>",
-    "description": "un constructeur d'ihm html de gpao a partir d'un format json qui renvoie un json de parametres utilisateur"
-}

@@ -1,0 +1,45 @@
+<!-- views/ihm/group.ejs -->
+
+<% var current_name = '' %>
+<% if (content.hasOwnProperty('Name')) { %>
+    <% current_name = content['Name'] %>
+<% } %>
+
+<% var custom_group_style = 'p' %>
+<% if (content.hasOwnProperty('GroupType')) { %>
+    <% if (content['GroupType'] == 'HorizontalGroup') { %>
+        <% custom_group_style='a' %>
+    <% } %>
+<% } %>
+
+<% if (custom_style == 'p') { %>
+    <p>
+<% } else {%>
+    <a>
+<% } %>
+
+    <fieldset><legend>  <%= current_name %>   </legend>
+        <% if ( content.hasOwnProperty('content')) { %>
+        
+            <% if (custom_group_style == 'p') { %>
+                <p>
+            <% } else {%>
+                <a>
+            <% } %>
+            
+                <%- include("./readJsonContent", {content:content['content'], custom_style:custom_group_style} ) %>
+            
+            <% if (custom_group_style == 'p') { %>
+                </p>
+            <% } else {%>
+                </a>
+            <% } %>
+        
+        <% } %>
+    </fieldset>
+
+<% if (custom_style == 'p') { %>
+    </p>
+<% } else {%>
+    </a>
+<% } %>

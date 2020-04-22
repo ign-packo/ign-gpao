@@ -1,0 +1,16 @@
+<!-- views/ihm/label.ejs -->
+    
+<% if (custom_style == 'p') { %>
+    <p>
+<% } else {%>
+    <a>
+<% } %>
+
+    <label for= "<%=content['Key'] %>"> <%=content['Name'] %> </label>
+    
+<% if (custom_style == 'p') { %>
+    </p>
+<% } else {%>
+    </a>
+<% } %>
+

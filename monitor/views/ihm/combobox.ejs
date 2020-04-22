@@ -1,0 +1,22 @@
+<!-- views/partials/combobox.ejs -->
+
+<% if (custom_style == 'p') { %>
+    <p>
+<% } else {%>
+    <a>
+<% } %>
+
+    <label for="<%=content['Key'] %>"> <%=content['Name'] %> </label>
+    <input type="text" list="<%=content['Key']%>"/>
+    <datalist id="<%=content['Key']%>">
+    <% options=content['Value'].split(';') %>
+    <% for (var i = 0; i < options.length; i++) {%>
+        <option value=" <%= options[i] %>"> <%= options[i] %> </option>
+    <% } %>
+    </datalist>
+    
+<% if (custom_style == 'p') { %>
+    </p>
+<% } else {%>
+    </a>
+<% } %>

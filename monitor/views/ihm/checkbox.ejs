@@ -1,0 +1,21 @@
+<!-- views/ihm/checkbox.ejs -->
+
+<% if (custom_style == 'p') { %>
+    <p>
+<% } else {%>
+    <a>
+<% } %>
+
+    <label for= "<%=content['Key'] %>"> <%=content['Name'] %> </label>
+    <% if (content['Value'] == true) { %>
+        <input type="checkbox" id=" <%= content['Key'] %> " name=" <%= content['key'] %>" "checked">
+    <% } else { %>
+        <input type="checkbox" id=" <%= content['Key'] %> " name=" <%= content['key'] %>">
+    <% } %>
+
+<% if (custom_style == 'p') { %>
+    </p>
+<% } else {%>
+    </a>
+<% } %>
+

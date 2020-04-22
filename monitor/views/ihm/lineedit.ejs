@@ -1,0 +1,22 @@
+<!-- views/ihm/lineedit.ejs -->
+
+<% var value = '' %>
+<% if (content.hasOwnProperty('Value')) { %>
+    <% value = content['Value'] %>
+<% } %>
+
+<% if (custom_style == 'p') { %>
+    <p>
+<% } else {%>
+    <a>
+<% } %>
+
+    <label for= "<%=content['Key'] %>"> <%=content['Name'] %> </label>
+    <input type="text" value="<%=content['Value']%>" name="<%=content['Key']%>"><%=value%></input>
+    
+<% if (custom_style == 'p') { %>
+    </p>
+<% } else {%>
+    </a>
+<% } %>
+
