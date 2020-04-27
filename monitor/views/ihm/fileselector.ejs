@@ -1,16 +1,21 @@
 <!-- views/ihm/fileselector.ejs -->
 
-<% if (custom_style == 'p') { %>
+<%_ if (custom_style == 'p') { %>
     <p>
 <% } else {%>
-    <a>
-<% } %>
+    <span>
+<% } _%>
 
-    <label for="<%=content['Key']%>"> <%=content['Name']%> </label>
-    <input type="file" id="<%=content['Key']%>" name="<%=content['Key']%>"/>
+    <%_ var tooltip = content['Key'] %>
+    <% if (content.hasOwnProperty('ToolTip')) { %>
+        <% tooltip = content['ToolTip'] %>
+    <% } _%>
     
-<% if (custom_style == 'p') { %>
+    <label for="<%=content['Key']%>"> <%=content['Name']%> </label>
+    <input title="<%=tooltip%>" type="file" id="<%=content['Key']%>" name="<%=content['Key']%>">
+    
+<%_ if (custom_style == 'p') { %>
     </p>
 <% } else {%>
-    </a>
-<% } %>
+    </span>
+<% } _%>

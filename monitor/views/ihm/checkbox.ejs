@@ -1,21 +1,25 @@
 <!-- views/ihm/checkbox.ejs -->
 
-<% if (custom_style == 'p') { %>
+<%_ if (custom_style == 'p') { %>
     <p>
 <% } else {%>
-    <a>
-<% } %>
+    <span>
+<% } _%>
+
+    <%_ var tooltip = content['Key'] %>
+    <% if (content.hasOwnProperty('ToolTip')) { %>
+        <% tooltip = content['ToolTip'] %>
+    <% } _%>
 
     <label for= "<%=content['Key'] %>"> <%=content['Name'] %> </label>
-    <% if (content['Value'] == true) { %>
-        <input type="checkbox" id=" <%= content['Key'] %> " name=" <%= content['key'] %>" "checked">
+    <%_ if (content['Value'] == true) { %>
+        <input title="<%=tooltip%>" type="checkbox" id="<%=content['Key']%>" name="<%=content['Key']%>" checked>
     <% } else { %>
-        <input type="checkbox" id=" <%= content['Key'] %> " name=" <%= content['key'] %>">
-    <% } %>
+        <input title="<%=tooltip%>" type="checkbox" id="<%=content['Key']%> name="<%=content['Key']%>" ">
+    <% } _%>
 
-<% if (custom_style == 'p') { %>
+<%_ if (custom_style == 'p') { %>
     </p>
 <% } else {%>
-    </a>
-<% } %>
-
+    </span>
+<% } _%>

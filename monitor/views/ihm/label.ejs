@@ -1,16 +1,15 @@
 <!-- views/ihm/label.ejs -->
     
-<% if (custom_style == 'p') { %>
+<%_ if (custom_style == 'p') { %>
     <p>
 <% } else {%>
-    <a>
-<% } %>
+    <span>
+<% } _%>
 
     <label for= "<%=content['Key'] %>"> <%=content['Name'] %> </label>
     
-<% if (custom_style == 'p') { %>
+<%_ if (custom_style == 'p') { %>
     </p>
 <% } else {%>
-    </a>
-<% } %>
-
+    </span>
+<% } _%>

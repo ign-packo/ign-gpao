@@ -1,22 +1,27 @@
 <!-- views/ihm/lineedit.ejs -->
 
-<% var value = '' %>
+<%_ var value = '' %>
 <% if (content.hasOwnProperty('Value')) { %>
     <% value = content['Value'] %>
-<% } %>
+<% } _%>
 
-<% if (custom_style == 'p') { %>
+<%_ var tooltip = content['Key'] %>
+<% if (content.hasOwnProperty('ToolTip')) { %>
+    <% tooltip = content['ToolTip'] %>
+<% } _%>
+
+<%_ if (custom_style == 'p') { %>
     <p>
 <% } else {%>
-    <a>
-<% } %>
+    <span>
+<% } _%>
 
     <label for= "<%=content['Key'] %>"> <%=content['Name'] %> </label>
-    <input type="text" value="<%=content['Value']%>" name="<%=content['Key']%>"><%=value%></input>
+    <input title="<%=tooltip%>" type="text" value="<%=content['Value']%>" name="<%=content['Key']%>">
     
-<% if (custom_style == 'p') { %>
+<%_ if (custom_style == 'p') { %>
     </p>
 <% } else {%>
-    </a>
-<% } %>
+    </span>
+<% } _%>
 

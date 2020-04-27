@@ -10,15 +10,14 @@
     <% if (content.hasOwnProperty('ToolTip')) { %>
         <% tooltip = content['ToolTip'] %>
     <% } _%>
+    <label for="<%=content['Key']%>"><%=content['Name']%></label>
 
-    <label for="<%=content['Key'] %>"> <%=content['Name'] %> </label>
-    <input title="<%=tooltip%>" type="text" list="<%=content['Key']%>">
-    <datalist id="<%=content['Key']%>">
+    <select id="<%=content['Key']%>"  name="<%=content['Key']%>" title="<%=tooltip%>">
     <%_ options=content['Value'].split(';') %>
     <% for (var i = 0; i < options.length; i++) {%>
         <option value=" <%= options[i] %>"> <%= options[i] %> </option>
     <% } _%>
-    </datalist>
+    </select>
     
 <%_ if (custom_style == 'p') { %>
     </p>

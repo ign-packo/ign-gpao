@@ -1,0 +1,82 @@
+{
+    "ihm":    {
+        "content":[
+            {
+            "Name":"Géometrie",
+            "Type":"Page",
+            "content":[
+                {
+                    "Name":"",
+                    "Key":"Gr1",
+                    "Type":"ButtonGroup",
+                    "content":[                            {
+                        "Name":"Emprise des donnees",
+                        "Key":"kEmpriseZoneRadio",
+                        "Value":true,
+                        "Type":"RadioButton",
+                        "ValueType":"Boolean",
+                        "DefaultValue":true
+                    },                            {
+                        "Name":"Emprise rectangulaire",
+                        "Key":"kEmpriseBBox",
+                        "Value":false,
+                        "Type":"RadioButton",
+                        "ValueType":"Boolean",
+                        "DefaultValue":false
+                    },                            {
+                        "Name":"Emprise polygonale",
+                        "Key":"kEmpriseZone",
+                        "Value":false,
+                        "Type":"RadioButton",
+                        "ValueType":"Boolean",
+                        "DefaultValue":false
+                    }
+                    ]
+                },
+                {
+                    "Name":"xmin",
+                    "Key":"kEmpriseXmin",
+                    "Value":"0.",
+                    "Type":"LineEdit",
+                    "ValueType":"Double",
+                    "DefaultValue":"0.",
+                    "Parent":"kEmpriseBBoxGroup"
+                },
+                {
+                    "Name":"Fichier shapefile",
+                    "Key":"kEmpriseSHP",
+                    "Value":"",
+                    "Type":"FileSelector",
+                    "ValueType":"FilePath",
+                    "DefaultValue":"",
+                    "ToolTip":"kEmpriseSHP | shapefile decrivant l'emprise polygonale desiree"
+                },
+                {
+                    "Name":"Conserver les masques de classification",
+                    "Key":"keepClassif",
+                    "Value":true,
+                    "Type":"CheckBox",
+                    "ValueType":"Boolean",
+                    "DefaultValue":false
+                },
+                {
+                    "Name":"Dossier Anaconda",
+                    "Key":"kInputAnacondaDir",
+                    "Value":"",
+                    "Type":"FolderSelector",
+                    "ValueType":"Path",
+                    "DefaultValue":"",
+                    "Parent":"kClassifyDeepLearningOptions"
+                },
+                {
+                    "Name":"SVM kernel",
+                    "Key":"svmKernel",
+                    "Value":"RBF;LINEAR;POLY;SIGMOID",
+                    "Type":"ComboBox",
+                    "ValueType":"String",
+                    "Parent":"kClassifySVMOptions"
+                }
+            ]
+            }]
+    }
+}
