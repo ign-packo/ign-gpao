@@ -31,28 +31,33 @@ CREATE TYPE public.status AS ENUM (
 ALTER TYPE public.status OWNER TO postgres;
 
 --
--- Name: udate_jobDependency(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: udate_jobdependency(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public."udate_jobDependency"() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$BEGIN
+CREATE OR REPLACE 
+FUNCTION public.udate_jobdependency()
+  RETURNS trigger AS
+$$
+BEGIN
   IF (NEW.status = 'done' AND NEW.status <> OLD.status) THEN
        UPDATE jobDependencies SET active='f' WHERE upstream = NEW.id;
   END IF;
   RETURN NEW;
-END;$$;
+END;
+$$ LANGUAGE plpgsql;
 
 
-ALTER FUNCTION public."udate_jobDependency"() OWNER TO postgres;
+ALTER FUNCTION public.udate_jobdependency() OWNER TO postgres;
 
 --
 -- Name: update_job_status(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.update_job_status() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$BEGIN
+CREATE OR REPLACE 
+FUNCTION public.update_job_status()
+  RETURNS trigger AS
+$$
+BEGIN
     UPDATE jobs 
     SET status='ready' 
     WHERE 
@@ -65,7 +70,8 @@ CREATE FUNCTION public.update_job_status() RETURNS trigger
         -- ca peut faire une grosse difference puisqu on modifie la table avec
         -- des commandes du type : UPDATE dependencies SET active='f' WHERE from_id = NEW.id;
     RETURN NULL;
-END;$$;
+END;
+$$ LANGUAGE plpgsql;
 
 
 ALTER FUNCTION public.update_job_status() OWNER TO postgres;
@@ -629,6 +635,29 @@ ALTER TABLE ONLY public.jobdependencies
 ALTER TABLE ONLY public.projectdependencies
     ADD CONSTRAINT upstream_fk FOREIGN KEY (upstream) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+
+
+CREATE TRIGGER job_changes
+-- on ne declenche le trigger que pour des modifs sur status
+BEFORE UPDATE OF status ON public.jobs
+FOR EACH ROW
+EXECUTE PROCEDURE public.udate_jobdependency();
+
+CREATE TRIGGER dependency_changes
+-- on ne declenche le trigger que pour des modifs sur active
+AFTER UPDATE OF active ON public.jobdependencies
+-- on ne declenche pas pour chaque ligne modifee
+-- mais une fois pour chaque commande ayant modife la colonne active
+FOR EACH STATEMENT
+EXECUTE PROCEDURE public.update_job_status();
+
+CREATE TRIGGER new_dependency
+-- on ne declenche le trigger que pour des modifs sur active
+AFTER INSERT ON public.jobdependencies
+-- on ne declenche pas pour chaque ligne modifee
+-- mais une fois pour chaque commande ayant modife la colonne active
+FOR EACH STATEMENT
+EXECUTE PROCEDURE public.update_job_status();
 
 --
 -- PostgreSQL database dump complete
