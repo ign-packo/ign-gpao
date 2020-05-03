@@ -77,6 +77,13 @@
                     "Parent":"kClassifySVMOptions"
                 }
             ]
-            }]
+            }],
+           "dependencies":[        {
+                "Master":"keepClassif",
+                "Slave":"kInputAnacondaDir",
+                "Type":"Dependency",
+                "Inverse":false
+           }]
+        
     }
 }

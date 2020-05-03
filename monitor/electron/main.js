@@ -21,9 +21,9 @@ app.on('ready', () => {
        ejse.data('electron', 'on');
        ejse.data('json', ihm_data);
 
-       BrowserWindow.addDevToolsExtension(
-         path.join(os.homedir(), '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.6.0_0')
-       );
+ //      BrowserWindow.addDevToolsExtension(
+ //        path.join(os.homedir(), '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.6.0_0')
+ //      );
        
        //mainWindow.loadURL('file://' + __dirname + '/../views/pages/index.ejs');
        mainWindow.loadURL('file://' + __dirname + '/../views/pages/creation.ejs');

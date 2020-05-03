@@ -16,20 +16,28 @@
 <% } else {%>
     <span>
 <% } _%>
-    <fieldset><legend>  <%=current_name%> </legend>
-        <%_ if ( content.hasOwnProperty('content')) { %>
-            <% if (custom_group_style == 'p') { %>
-                <p>
-            <% } else {%>
-                <span>
-            <% } %>
-                <%- include("./readJsonContent", {content:content['content'], custom_style:custom_group_style} ) %>
-            <% if (custom_group_style == 'p') { %>
-                </p>
-            <% } else {%>
-                </span>
-            <% } %>
+
+    <% if (content.hasOwnProperty('Key')) { %>
+        <fieldset id="<%=content['Key']%>">
+    <% } else { %>
+        <fieldset>
+    <% } %>
+
+    <legend>  <%=current_name%> </legend>
+    
+    <%_ if ( content.hasOwnProperty('content')) { %>
+        <% if (custom_group_style == 'p') { %>
+            <p>
+        <% } else {%>
+            <span>
         <% } %>
+            <%- include("./readJsonContent", {content:content['content'], custom_style:custom_group_style} ) %>
+        <% if (custom_group_style == 'p') { %>
+            </p>
+        <% } else {%>
+            </span>
+        <% } %>
+    <% } %>
     </fieldset>
 <% if (custom_style == 'p') { %>
     </p>

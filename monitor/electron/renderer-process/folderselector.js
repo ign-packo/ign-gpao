@@ -1,26 +1,22 @@
-  {
+{
      let myName = document.currentScript.getAttribute('name');
-     const ipc       = require('electron').ipcRenderer;
 
-     let  asyncBtn  = document.querySelector('#folder-selector-'+myName);
+     let  asyncBtn  = document.querySelector('#'+myName);
      let replyField = document.querySelector('#folder-selector-content-'+myName);
      let onButtonClick = function() {
-         const { dialog } = require('electron').remote;
+         const { dialog, currentWindow } = require('electron').remote;
+
          let dialogOptions = {
            title: "Choisir un dossier:",
-           properties: ['openDirectory','promptToCreate'],
+           properties: ['openDirectory','promptToCreate']
          };
-         dialog.showOpenDialog(
-             dialogOptions,
-             fileNames => {
-               if (fileNames === undefined) {
-                 console.log("No file selected");
-               } else {
-                 console.log('file:', fileNames[0]);
-                 replyField.value = fileNames[0];
-               }
+         dialog.showOpenDialog( currentWindow, dialogOptions).then(result => {
+         if(result.canceled == false) {
+              replyField.value = result.filePaths[0];
+          }
+         }).catch(err => {
+           console.log(err)
          })
      };
-
      asyncBtn.addEventListener("click", onButtonClick);
- }
+}

@@ -4,7 +4,6 @@ const projects = require('../middlewares/project');
 const clusters = require('../middlewares/cluster');
 
 
-
 // home page
 router.get('/', (req, res) => {
   res.render('pages/index');

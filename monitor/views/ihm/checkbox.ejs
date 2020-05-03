@@ -13,9 +13,9 @@
 
     <label for= "<%=content['Key'] %>"> <%=content['Name'] %> </label>
     <%_ if (content['Value'] == true) { %>
-        <input title="<%=tooltip%>" type="checkbox" id="<%=content['Key']%>" name="<%=content['Key']%>" checked>
+        <input title="<%=tooltip%>" type="checkbox" id="<%=content['Key']%>" name="<%=content['Key']%>"  onclick="activate_dependencies(this)" checked>
     <% } else { %>
-        <input title="<%=tooltip%>" type="checkbox" id="<%=content['Key']%> name="<%=content['Key']%>" ">
+        <input title="<%=tooltip%>" type="checkbox" id="<%=content['Key']%>" name="<%=content['Key']%>"  onclick="activate_dependencies(this)">
     <% } _%>
 
 <%_ if (custom_style == 'p') { %>

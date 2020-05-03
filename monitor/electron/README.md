@@ -16,8 +16,10 @@ npm start
 
 ## To Do
 - charger un fichier de parametres pour initialiser l'interface
-- gerer les dependances dynamiques
+- validation des champs (type numérique / minmax)
+- gestion des valeurs par defaut et des champs désactivés
 - interfacer les autres pages avec postgresql
+
 
 ## Resources for Learning Electron
 

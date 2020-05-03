@@ -5,10 +5,15 @@
 <head>
     <%- include("../partials/head") %>
 </head>
-<body class="container">
+
+<% if (json.hasOwnProperty('dependencies')) { %>
+    <body class="container" onload="initialize_dependencies()">
+<% } else {%>
+    <body class="container">
+<% } %>
 
 <header>
-    <%- include("../partials/electron/header") %>
+    <%- include("../ihm/electron/header") %>
 </header>
 
 <main>
@@ -23,8 +28,11 @@
                 <% } %>
                 <% console.log('electron:',electron)%>
                 <% for(var myKey in json ) { %>
-                     <%- include("../ihm/readJsonContent",{content:json[myKey],custom_style:'p',electron,electron}) %>
-                 <% } %>
+                 <%- include("../ihm/readJsonContent",{content:json[myKey],custom_style:'p',electron,electron}) %>
+                <% } %>
+                <% if (json.hasOwnProperty('dependencies')) { %>
+                 <%- include("../ihm/buildDependencies", {dependencies:json['dependencies']}) %>
+                <% } %>
              </div>
          </div>
          <% if (electron == 'on') { %>

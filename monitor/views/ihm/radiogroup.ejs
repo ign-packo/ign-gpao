@@ -23,25 +23,33 @@
    <% } %>
 <% } _%>
 
-<%_ for (var myKey in button_data) { %>
-    <% subcontent = button_data[myKey] %>
-    <% if (custom_group_style == 'p') { %>
-        <p>
-    <% } else {%>
-        <span>
-    <% } %>
-        <% if (subcontent['Value'] == true) { %>
-            <input title="<%=tooltip%>" type="radio" id="<%=subcontent['Key']%>" name="<%=content['Key']%>" value="<%=subcontent['Key']%>" checked>
-        <% } else { %>
-            <input title="<%=tooltip%>" type="radio" id="<%=subcontent['Key']%>" name="<%=content['Key']%>" value="<%=subcontent['Key']%>">
+<% if (content.hasOwnProperty('Key')) { %>
+    <fieldset id="<%=content['Key']%>">
+<% } else { %>
+    <fieldset>
+<% } %>
+
+    <%_ for (var myKey in button_data) { %>
+        <% subcontent = button_data[myKey] %>
+        <% if (custom_group_style == 'p') { %>
+            <p>
+        <% } else {%>
+            <span>
         <% } %>
-        <label for="<%=subcontent['Key']%>"><%=subcontent['Name']%></label>
-    <% if (custom_group_style == 'p') { %>
-        </p>
-    <% } else {%>
-        </span>
-    <% } %>
-<% } _%>
+            <% if (subcontent['Value'] == true) { %>
+                <input title="<%=tooltip%>" type="radio" id="<%=subcontent['Key']%>" name="<%=content['Key']%>" onclick="activate_dependencies(this)" value="<%=subcontent['Key']%>" checked>
+            <% } else { %>
+                <input title="<%=tooltip%>" type="radio" id="<%=subcontent['Key']%>" name="<%=content['Key']%>" value="<%=subcontent['Key']%>" onclick="activate_dependencies(this)">
+            <% } %>
+            <label for="<%=subcontent['Key']%>"><%=subcontent['Name']%></label>
+        <% if (custom_group_style == 'p') { %>
+            </p>
+        <% } else {%>
+            </span>
+        <% } %>
+    <% } _%>
+
+</fieldset>
 
 <%_ if (custom_style == 'p') { %>
     </p>
