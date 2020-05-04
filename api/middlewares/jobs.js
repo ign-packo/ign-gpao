@@ -165,6 +165,45 @@ function insertProject(req, res){
     )
 }
 
+function getAllProjects(req, res){
+	pool.query("SELECT * FROM projects", (error, results) => {
+
+	if (error) {
+		throw error
+	}
+
+	res.status(200).json(results.rows)
+	})
+}
+
+function getAllClusters(req, res){
+	pool.query("SELECT * FROM cluster", (error, results) => {
+
+	if (error) {
+		throw error
+	}
+
+	res.status(200).json(results.rows)
+	})
+}
+
+function insertCluster(req, res){	
+  const host = req.params.host
+	console.log(host)
+    pool.query(
+      'INSERT INTO cluster (host, id_thread, active, available) VALUES ( $1 , (select count(id) from cluster where host = $2), true, true ) RETURNING id',
+      [host, host],
+      (error, results) => {
+        if (error) {
+          throw error
+        }
+        output = []
+        results.rows.forEach(id => output.push(id))
+        res.status(200).send(output)
+      }
+    )
+}
+
 module.exports = {
   getAllJobs,
   getJobReady,
