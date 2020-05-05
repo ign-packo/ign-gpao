@@ -36,7 +36,8 @@
              </div>
          </div>
          <% if (electron == 'on') { %>
-            <%- include("../ihm/electron/filesaver.ejs", {id:'create-chantier',params:'gpao-params'}) %>
+            <%- include("../ihm/electron/fileloader.ejs", {id:'load-project',params:'gpao-params'}) %>
+            <%- include("../ihm/electron/filesaver.ejs", {id:'create-project',params:'gpao-params'}) %>
          <%} else { %>
             <button >Créer le chantier</button>
          <% } %>
