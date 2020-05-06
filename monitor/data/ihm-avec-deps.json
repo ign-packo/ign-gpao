@@ -444,34 +444,34 @@
                             "content":[                            {
                                 "Name":"xmin",
                                 "Key":"kEmpriseXmin",
-                                "Value":"0.",
+                                "Value":"0.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
-                                "DefaultValue":"0.",
+                                "DefaultValue":"0.0",
                                 "Parent":"kEmpriseBBoxGroup"                            
 },                            {
                                 "Name":"xmax",
                                 "Key":"kEmpriseXmax",
-                                "Value":"0.",
+                                "Value":"0.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
-                                "DefaultValue":"0.",
+                                "DefaultValue":"0.0",
                                 "Parent":"kEmpriseBBoxGroup"                            
 },                            {
                                 "Name":"ymin",
                                 "Key":"kEmpriseYmin",
-                                "Value":"0.",
+                                "Value":"0.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
-                                "DefaultValue":"0.",
+                                "DefaultValue":"0.0",
                                 "Parent":"kEmpriseBBoxGroup"                            
 },                            {
                                 "Name":"ymax",
                                 "Key":"kEmpriseYmax",
-                                "Value":"0.",
+                                "Value":"0.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
-                                "DefaultValue":"0.",
+                                "DefaultValue":"0.0",
                                 "Parent":"kEmpriseBBoxGroup"                            
 }],
                             "GroupType":"HorizontalGroup",
@@ -487,10 +487,10 @@
 },                        {
                             "Name":"Buffer (mètres)",
                             "Key":"kBuffer",
-                            "Value":"0.",
+                            "Value":"0.0",
                             "Type":"LineEdit",
                             "ValueType":"String",
-                            "DefaultValue":"0.",
+                            "DefaultValue":"0.0",
                             "ToolTip":"kBuffer | indique un buffer de dilatation (ou d'érosion en cas de valeur négative) autour de la zone définie par les champs précédents"                        
 },                        {
                             "Name":"Fichier shapefile de masque (ZI \/ Hydro)",
@@ -816,33 +816,33 @@
                             "content":[                            {
                                 "Name":"Seuil bas de detection du sursol",
                                 "Key":"kAltiBottomThreshold",
-                                "Value":"2.",
+                                "Value":"2.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
-                                "DefaultValue":"2."                            
+                                "DefaultValue":"2.0"
 },                            {
                                 "Name":"Seuil haut de detection du sursol",
                                 "Key":"kAltiTopThreshold",
-                                "Value":"3.",
+                                "Value":"3.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
-                                "DefaultValue":"3."                            
+                                "DefaultValue":"3.0"
 },                            {
                                 "Name":"Intervalle alti (m)",
                                 "Key":"kAltiStep",
-                                "Value":"1.",
+                                "Value":"1.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
-                                "DefaultValue":"1."                            
+                                "DefaultValue":"1.0"
 }],
                             "GroupType":"HorizontalGroup"                        
 },                        {
                             "Name":"Buffer autour des batiments (m)",
                             "Key":"buildingBuffer",
-                            "Value":"2.",
+                            "Value":"2.0",
                             "Type":"LineEdit",
                             "ValueType":"Double",
-                            "DefaultValue":"2."                        
+                            "DefaultValue":"2.0"
 },                        {
                             "Name":"Operations de morphologie mathematique sur le masque (pixels)",
                             "Type":"Group",
@@ -933,26 +933,26 @@
 },                            {
                                 "Name":"Suppression des arbres de faible diametre",
                                 "Key":"treeMinDiameter",
-                                "Value":"2.",
+                                "Value":"2.0",
                                 "Type":"LineEdit",
                                 "ValueType":"String",
-                                "DefaultValue":"2.",
+                                "DefaultValue":"2.0",
                                 "Parent":"cleaningGroup"                            
 },                            {
                                 "Name":"Suppression des arbres de grand diametre",
                                 "Key":"treeMaxDiameter",
-                                "Value":"50.",
+                                "Value":"50.0",
                                 "Type":"LineEdit",
                                 "ValueType":"String",
-                                "DefaultValue":"50.",
+                                "DefaultValue":"50.0",
                                 "Parent":"cleaningGroup"                            
 },                            {
                                 "Name":"Supression des arbres trop hauts",
                                 "Key":"treeMaxHeight",
-                                "Value":"100.",
+                                "Value":"100.0",
                                 "Type":"LineEdit",
                                 "ValueType":"String",
-                                "DefaultValue":"100.",
+                                "DefaultValue":"100.0",
                                 "Parent":"cleaningGroup"                            
 }],
                             "GroupType":"VerticalGroup",

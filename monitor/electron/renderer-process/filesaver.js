@@ -11,11 +11,29 @@
         }
     }
     
+    function regex(pattern, value)
+    {
+        regexp=new RegExp(pattern)
+        return regexp.test(value);
+    }
+    
+    function validateValue (object)
+    {
+        if (object.required && object.value == '') {
+            return false;
+        }
+        if (object.hasAttribute('pattern')) {
+            return regex(object['pattern'], object.value);
+        }
+        return true;
+    }
+    
     function readValue (object)
     {
         verbose = false;
         if (verbose) console.log('object:', object);
         if (verbose) console.log('tagName:', object.tagName);
+        
         if (object.tagName.toLowerCase() == 'input')
         {
            if (object.hasAttribute('type'))
@@ -27,7 +45,14 @@
                } else  if (type == 'text')
                {
                    return object.value;
-               } else  if (type == 'radio')
+               } else  if (type == 'number')
+               {
+                   return object.value;
+               } else  if (type == 'date')
+               {
+                   return object.value;
+               }
+               else  if (type == 'radio')
                {
                    return object.value;
                } else
@@ -62,9 +87,8 @@
             buttonLabel : "sauvegarder",
             filters :[  {name: 'Json file', extensions: ['json']}  ]
         }
-        if (myForm == undefined)
-        {
-            dialog.showErrorBox('Oops! Something went wrong!', 'Help us improve your experience by sending an error report')
+        if (myForm == undefined)   {
+            dialog.showErrorBox('Error', 'impossible to find a form of class ' + document.currentScript.getAttribute('params'))
         }
         var inputs = myForm.querySelectorAll('input');
         append(inputs, myForm.querySelectorAll('select'));
@@ -72,9 +96,15 @@
         console.log('number of inputs:', inputs.length);
         for (var i = 0; i < inputs.length; i++)
         {
-            if (inputs[i].hasAttribute("name"))
-            {
-                jsonData[inputs[i]["name"]] = readValue(inputs[i]);
+            if (!inputs[i].disabled) {
+                if (inputs[i].hasAttribute("name"))
+                {
+                    if (!validateValue(inputs[i])) {
+                        dialog.showErrorBox('Error', 'valeur invalide pour le champ ' + inputs[i]["name"])
+                        throw ('invalid value for field ' + inputs[i]["name"]);
+                    }
+                    jsonData[inputs[i]["name"]] = readValue(inputs[i]);
+                }
             }
         }
 
