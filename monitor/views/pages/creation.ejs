@@ -6,7 +6,7 @@
     <%- include("../partials/head") %>
 </head>
 
-<% if (json.hasOwnProperty('dependencies')) { %>
+<% if (ihm_data.hasOwnProperty('dependencies')) { %>
     <body class="container" onload="initialize_dependencies()">
 <% } else {%>
     <body class="container">
@@ -26,18 +26,20 @@
                 <% if (locals.electron) { %>
                 <%    electron='on'; %>
                 <% } %>
-                <% console.log('electron:',electron)%>
-                <% for(var myKey in json ) { %>
-                 <%- include("../ihm/readJsonContent",{content:json[myKey],custom_style:'p',electron,electron}) %>
+                <% for(var myKey in ihm_data ) { %>
+                    <%- include("../ihm/readJsonContent",{content:ihm_data[myKey],custom_style:'p',electron,electron}) %>
                 <% } %>
-                <% if (json.hasOwnProperty('dependencies')) { %>
-                 <%- include("../ihm/buildDependencies", {dependencies:json['dependencies']}) %>
+                <% if (ihm_data.hasOwnProperty('dependencies')) { %>
+                    <%- include("../ihm/buildDependencies", {dependencies:ihm_data['dependencies']}) %>
+                <% } %>
+                <% if (ihm_data.hasOwnProperty('oncreate')) { %>
+                    <%- include("../ihm/buildCommands", {oncreate:ihm_data['oncreate']}) %>
                 <% } %>
              </div>
          </div>
          <% if (electron == 'on') { %>
             <%- include("../ihm/electron/fileloader.ejs", {id:'load-project',params:'gpao-params'}) %>
-            <%- include("../ihm/electron/filesaver.ejs", {id:'create-project',params:'gpao-params'}) %>
+            <%- include("../ihm/electron/oncreate.ejs", {id:'create-project',params:'gpao-params'}) %>
          <%} else { %>
             <button >Créer le chantier</button>
          <% } %>

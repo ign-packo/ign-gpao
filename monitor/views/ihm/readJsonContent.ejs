@@ -3,13 +3,12 @@
 <%_ var numpage=0; %>
 
 <%_ for(var myKey in content) { %>
-
   <%_ if (content[myKey].hasOwnProperty('Type')) { %>
     <% if (content[myKey]['Type'] == 'Page') { %>
         <% console.log( 'on parse la page:', numpage, content[myKey]['Name']) %>
         <% numpage=numpage+1; %>
         <%- include("./page", {content:content[myKey], numpage:numpage, custom_style:custom_style} ) %>
-    <% } %>
+    <% } _%>
 
     <%_ if (content[myKey]['Type'] == 'Group') { %>
           <%- include("./group", {content:content[myKey], custom_style:custom_style} ) %>

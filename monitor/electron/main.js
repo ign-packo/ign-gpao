@@ -19,13 +19,7 @@ app.on('ready', () => {
        var jsonfile = '../data/ihm.json';
        ihm_data = require(jsonfile)['ihm'];
        ejse.data('electron', 'on');
-       ejse.data('json', ihm_data);
-
- //      BrowserWindow.addDevToolsExtension(
- //        path.join(os.homedir(), '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.6.0_0')
- //      );
-       
-       //mainWindow.loadURL('file://' + __dirname + '/../views/pages/index.ejs');
+       ejse.data('ihm_data', ihm_data);
        mainWindow.loadURL('file://' + __dirname + '/../views/pages/creation.ejs');
 })
 

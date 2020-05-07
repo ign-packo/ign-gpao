@@ -1,49 +1,5 @@
 <p hidden onload="initialize_dependencies()">
-<script src="../../electron/renderer-process/depends.js"></script>
-
-<!--script>
-function activate_dependencies (master)
-{
-    console.log("in depends.js", master);
-    bool verbose = false;
-    // recherche dans la table des dependances
-    var depends = document.querySelectorAll('depends');
-    for (var i = 0; i < depends.length; i++)
-    {
-        if (verbose) {
-            console.log("master['id']", master['id']);
-            console.log("depends[i]['master'] ", depends[i].getAttribute('master') );
-            console.log("depends[i]['slave'] ", depends[i].getAttribute('slave') );
-            console.log("master.checked ", master.checked );
-        }
-
-        if (depends[i].getAttribute('master') == master['id'])
-        {
-            let  asyncElement  = document.querySelector('#'+depends[i].getAttribute('slave') );
-            if (asyncElement == undefined)
-            {
-                console.log("cannot find slave", depends[i].getAttribute('slave'));
-            }
-            else
-            {
-                var enabling=true;
-                if (master.checked == true) {
-                    if (depends[i].getAttribute('inverse') == 'true') {
-                        enabling = false;
-                    }
-                }
-                else {
-                    if (depends[i].getAttribute('inverse') == 'false') {
-                        enabling = false;
-                    }
-                }
-                 if (verbose) console.log("asyncElement must be at state", enabling);
-                asyncElement.disabled = (!enabling);
-            }
-        }
-    }
-}
- </script-->
+<script src="depends.js"></script>
 
 <dependencies>
 <%_ for(var i in dependencies) { %>

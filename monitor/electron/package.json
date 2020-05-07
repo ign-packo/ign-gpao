@@ -21,6 +21,7 @@
     "electron-react-devtools": "^0.5.3"
   },
   "dependencies": {
-    "ejs-electron": "^2.0.3"
+    "ejs-electron": "^2.0.3",
+    "minimist": "^1.2.5"
   }
 }

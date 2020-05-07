@@ -10,8 +10,8 @@
                     "Name":"                                                                               ",
                     "Type":"Group",
                     "content":[],
-                    "GroupType":"VerticalGroup"                
-},                {
+                    "GroupType":"VerticalGroup"
+                },                {
                     "Name":"",
                     "Type":"Group",
                     "content":[                    {
@@ -20,43 +20,43 @@
                         "Value":"Chantier",
                         "Type":"LineEdit",
                         "ValueType":"String",
-                        "DefaultValue":"Chantier"                    
-},                    {
+                        "DefaultValue":"Chantier"
+                    },                    {
                         "Name":"Projection",
                         "Key":"kProjection",
                         "Value":"LAMB93",
                         "Type":"LineEdit",
                         "ValueType":"String",
-                        "DefaultValue":"LAMB93"                    
-},                    {
+                        "DefaultValue":"LAMB93"
+                    },                    {
                         "Name":"Dossier Temporaire",
                         "Key":"TEMP",
                         "Value":"",
                         "Type":"FolderSelector",
                         "ValueType":"Path",
-                        "DefaultValue":""                    
-},                    {
+                        "DefaultValue":""
+                    },                    {
                         "Name":"Dossier en Sortie",
                         "Key":"ROOT",
                         "Value":"",
                         "Type":"FolderSelector",
                         "ValueType":"Path",
-                        "DefaultValue":""                    
-},                    {
+                        "DefaultValue":""
+                    },                    {
                         "Name":"Contrôle des images en entree",
                         "Key":"CheckImage",
                         "Value":false,
                         "Type":"CheckBox",
                         "ValueType":"Boolean",
                         "DefaultValue":false,
-                        "ToolTip":"CheckImage | verifie la validite des images en entree (ralentit la creation de chantier mais plus securise)"                    
-},                    {
+                        "ToolTip":"CheckImage | verifie la validite des images en entree (ralentit la creation de chantier mais plus securise)"
+                    },                    {
                         "Name":"",
                         "Type":"Group",
                         "content":[                        {
                             "Name":"Methode de classification",
-                            "Type":"Label"                        
-},                        {
+                            "Type":"Label"
+                        },                        {
                             "Name":"Gr1",
                             "Key":"Gr1",
                             "Type":"ButtonGroup",
@@ -66,29 +66,29 @@
                                 "Value":true,
                                 "Type":"RadioButton",
                                 "ValueType":"Boolean",
-                                "DefaultValue":true                            
-},                            {
+                                "DefaultValue":true
+                            },                            {
                                 "Name":"Deep Learning",
                                 "Key":"kClassifyDeepLearning",
                                 "Value":false,
                                 "Type":"RadioButton",
                                 "ValueType":"Boolean",
-                                "DefaultValue":false                            
-}],
-                            "GroupType":"HorizontalGroup"                        
-}],
-                        "GroupType":"HorizontalGroup"                    
-}],
-                    "GroupType":"VerticalGroup"                
-},                {
+                                "DefaultValue":false
+                            }],
+                            "GroupType":"HorizontalGroup"
+                        }],
+                        "GroupType":"HorizontalGroup"
+                    }],
+                    "GroupType":"VerticalGroup"
+                },                {
                     "Name":"                                                                                                    ",
                     "Type":"Group",
                     "content":[],
-                    "GroupType":"VerticalGroup"                
-}],
-                "GroupType":"HorizontalGroup"            
-}]        
-},        {
+                    "GroupType":"VerticalGroup"
+                }],
+                "GroupType":"HorizontalGroup"
+            }]
+        },        {
             "Name":"Donnees en entree",
             "Type":"Page",
             "content":[            {
@@ -98,8 +98,8 @@
                     "Name":"                                                                               ",
                     "Type":"Group",
                     "content":[],
-                    "GroupType":"VerticalGroup"                
-},                {
+                    "GroupType":"VerticalGroup"
+                },                {
                     "Name":"",
                     "Type":"Group",
                     "content":[                    {
@@ -118,37 +118,37 @@
                                     "Value":false,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
-                                    "DefaultValue":false                                
-},                                {
+                                    "DefaultValue":false
+                                },                                {
                                     "Name":"Par dossier",
                                     "Key":"kModeFileMNE",
                                     "Value":true,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
-                                    "DefaultValue":true                                
-}],
-                                "GroupType":"HorizontalGroup"                            
-},                            {
+                                    "DefaultValue":true
+                                }],
+                                "GroupType":"HorizontalGroup"
+                            },                            {
                                 "Name":"",
                                 "Type":"Group",
                                 "content":[],
-                                "GroupType":"HorizontalGroup"                            
-},                            {
+                                "GroupType":"HorizontalGroup"
+                            },                            {
                                 "Name":"",
                                 "Key":"kiDsmFlux",
                                 "Value":"ELEVATION",
                                 "Type":"ComboBox",
-                                "ValueType":"String"                            
-},                            {
+                                "ValueType":"String"
+                            },                            {
                                 "Name":"",
                                 "Key":"kiDsm",
                                 "Value":"",
                                 "Type":"FolderSelector",
                                 "ValueType":"Path",
-                                "DefaultValue":""                            
-}],
-                            "GroupType":"VerticalGroup"                        
-},                        {
+                                "DefaultValue":""
+                            }],
+                            "GroupType":"VerticalGroup"
+                        },                        {
                             "Name":"MNT",
                             "Type":"Group",
                             "content":[                            {
@@ -161,37 +161,37 @@
                                     "Value":false,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
-                                    "DefaultValue":false                                
-},                                {
+                                    "DefaultValue":false
+                                },                                {
                                     "Name":"Par dossier",
                                     "Key":"kModeFileMNT",
                                     "Value":true,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
-                                    "DefaultValue":true                                
-}],
-                                "GroupType":"HorizontalGroup"                            
-},                            {
+                                    "DefaultValue":true
+                                }],
+                                "GroupType":"HorizontalGroup"
+                            },                            {
                                 "Name":"",
                                 "Type":"Group",
                                 "content":[],
-                                "GroupType":"HorizontalGroup"                            
-},                            {
+                                "GroupType":"HorizontalGroup"
+                            },                            {
                                 "Name":"",
                                 "Key":"kiDtmFlux",
                                 "Value":"RGEAlti-L93",
                                 "Type":"ComboBox",
-                                "ValueType":"String"                            
-},                            {
+                                "ValueType":"String"
+                            },                            {
                                 "Name":"",
                                 "Key":"kiDtm",
                                 "Value":"",
                                 "Type":"FolderSelector",
                                 "ValueType":"Path",
-                                "DefaultValue":""                            
-}],
-                            "GroupType":"VerticalGroup"                        
-},                        {
+                                "DefaultValue":""
+                            }],
+                            "GroupType":"VerticalGroup"
+                        },                        {
                             "Name":"Orthos RGB",
                             "Type":"Group",
                             "content":[                            {
@@ -204,35 +204,35 @@
                                     "Value":false,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
-                                    "DefaultValue":false                                
-},                                {
+                                    "DefaultValue":false
+                                },                                {
                                     "Name":"Par dossier",
                                     "Key":"kModeFileRGB",
                                     "Value":true,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
-                                    "DefaultValue":true                                
-}],
-                                "GroupType":"HorizontalGroup"                            
-},                            {
+                                    "DefaultValue":true
+                                }],
+                                "GroupType":"HorizontalGroup"
+                            },                            {
                                 "Name":"",
                                 "Type":"Group",
                                 "content":[],
-                                "GroupType":"HorizontalGroup"                            
-},                            {
+                                "GroupType":"HorizontalGroup"
+                            },                            {
                                 "Name":"",
                                 "Key":"kiRgbFlux",
                                 "Value":"BDOrtho-2015;BDOrthoExpress-2018",
                                 "Type":"ComboBox",
-                                "ValueType":"String"                            
-},                            {
+                                "ValueType":"String"
+                            },                            {
                                 "Name":"",
                                 "Key":"kiOrthoRGB",
                                 "Value":"",
                                 "Type":"FolderSelector",
                                 "ValueType":"Path",
-                                "DefaultValue":""                            
-},                            {
+                                "DefaultValue":""
+                            },                            {
                                 "Name":"Format des orthos RGB",
                                 "Key":"Gr5",
                                 "Type":"ButtonGroup",
@@ -243,29 +243,29 @@
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
                                     "DefaultValue":false,
-                                    "Parent":"kInputFormatRGB"                                
-},                                {
+                                    "Parent":"kInputFormatRGB"
+                                },                                {
                                     "Name":"JP2",
                                     "Key":"kImageFormatJP2",
                                     "Value":true,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
                                     "DefaultValue":true,
-                                    "Parent":"kInputFormatRGB"                                
-},                                {
+                                    "Parent":"kInputFormatRGB"
+                                },                                {
                                     "Name":"DMR",
                                     "Key":"kImageFormatDMR",
                                     "Value":false,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
                                     "DefaultValue":false,
-                                    "Parent":"kInputFormatRGB"                                
-}],
+                                    "Parent":"kInputFormatRGB"
+                                }],
                                 "GroupType":"HorizontalGroup",
-                                "Key":"kInputFormatRGB"                            
-}],
-                            "GroupType":"VerticalGroup"                        
-},                        {
+                                "Key":"kInputFormatRGB"
+                            }],
+                            "GroupType":"VerticalGroup"
+                        },                        {
                             "Name":"Orthos PIR",
                             "Type":"Group",
                             "content":[                            {
@@ -278,35 +278,35 @@
                                     "Value":false,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
-                                    "DefaultValue":false                                
-},                                {
+                                    "DefaultValue":false
+                                },                                {
                                     "Name":"Par dossier",
                                     "Key":"kModeFilePIR",
                                     "Value":true,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
-                                    "DefaultValue":true                                
-}],
-                                "GroupType":"HorizontalGroup"                            
-},                            {
+                                    "DefaultValue":true
+                                }],
+                                "GroupType":"HorizontalGroup"
+                            },                            {
                                 "Name":"",
                                 "Type":"Group",
                                 "content":[],
-                                "GroupType":"HorizontalGroup"                            
-},                            {
+                                "GroupType":"HorizontalGroup"
+                            },                            {
                                 "Name":"",
                                 "Key":"kiPirFlux",
                                 "Value":"BDOrthoIRC-2016;BDOrthoIRC-2018;BDOrthoIRC-2015",
                                 "Type":"ComboBox",
-                                "ValueType":"String"                            
-},                            {
+                                "ValueType":"String"
+                            },                            {
                                 "Name":"",
                                 "Key":"kiOrthoPIR",
                                 "Value":"",
                                 "Type":"FolderSelector",
                                 "ValueType":"Path",
-                                "DefaultValue":""                            
-},                            {
+                                "DefaultValue":""
+                            },                            {
                                 "Name":"Format des orthos PIR",
                                 "Key":"Gr8",
                                 "Type":"ButtonGroup",
@@ -317,29 +317,29 @@
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
                                     "DefaultValue":false,
-                                    "Parent":"kInputFormatPIR"                                
-},                                {
+                                    "Parent":"kInputFormatPIR"
+                                },                                {
                                     "Name":"JP2",
                                     "Key":"kFormatOrthoPIRJP2",
                                     "Value":true,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
                                     "DefaultValue":true,
-                                    "Parent":"kInputFormatPIR"                                
-},                                {
+                                    "Parent":"kInputFormatPIR"
+                                },                                {
                                     "Name":"DMR",
                                     "Key":"kFormatOrthoPIRDMR",
                                     "Value":false,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
                                     "DefaultValue":false,
-                                    "Parent":"kInputFormatPIR"                                
-}],
+                                    "Parent":"kInputFormatPIR"
+                                }],
                                 "GroupType":"HorizontalGroup",
-                                "Key":"kInputFormatPIR"                            
-}],
-                            "GroupType":"VerticalGroup"                        
-},                        {
+                                "Key":"kInputFormatPIR"
+                            }],
+                            "GroupType":"VerticalGroup"
+                        },                        {
                             "Name":"Batiments",
                             "Type":"Group",
                             "content":[                            {
@@ -352,49 +352,49 @@
                                     "Value":false,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
-                                    "DefaultValue":false                                
-},                                {
+                                    "DefaultValue":false
+                                },                                {
                                     "Name":"Par dossier",
                                     "Key":"kModeFileWFSBuilding",
                                     "Value":true,
                                     "Type":"RadioButton",
                                     "ValueType":"Boolean",
-                                    "DefaultValue":true                                
-}],
-                                "GroupType":"HorizontalGroup"                            
-},                            {
+                                    "DefaultValue":true
+                                }],
+                                "GroupType":"HorizontalGroup"
+                            },                            {
                                 "Name":"",
                                 "Type":"Group",
                                 "content":[],
-                                "GroupType":"HorizontalGroup"                            
-},                            {
+                                "GroupType":"HorizontalGroup"
+                            },                            {
                                 "Name":"",
                                 "Key":"kiBuildingFlux",
                                 "Value":"BDTopoBati",
                                 "Type":"ComboBox",
-                                "ValueType":"String"                            
-},                            {
+                                "ValueType":"String"
+                            },                            {
                                 "Name":"",
                                 "Key":"kInputBatiFile",
                                 "Value":"",
                                 "Type":"FolderSelector",
                                 "ValueType":"Path",
-                                "DefaultValue":""                            
-}],
-                            "GroupType":"VerticalGroup"                        
-}],
-                        "GroupType":"VerticalGroup"                    
-}],
-                    "GroupType":"VerticalGroup"                
-},                {
+                                "DefaultValue":""
+                            }],
+                            "GroupType":"VerticalGroup"
+                        }],
+                        "GroupType":"VerticalGroup"
+                    }],
+                    "GroupType":"VerticalGroup"
+                },                {
                     "Name":"                                                                                                    ",
                     "Type":"Group",
                     "content":[],
-                    "GroupType":"VerticalGroup"                
-}],
-                "GroupType":"HorizontalGroup"            
-}]        
-},        {
+                    "GroupType":"VerticalGroup"
+                }],
+                "GroupType":"HorizontalGroup"
+            }]
+        },        {
             "Name":"Géometrie",
             "Type":"Page",
             "content":[            {
@@ -404,8 +404,8 @@
                     "Name":"                                                                               ",
                     "Type":"Group",
                     "content":[],
-                    "GroupType":"VerticalGroup"                
-},                {
+                    "GroupType":"VerticalGroup"
+                },                {
                     "Name":"",
                     "Type":"Group",
                     "content":[                    {
@@ -421,24 +421,24 @@
                                 "Value":true,
                                 "Type":"RadioButton",
                                 "ValueType":"Boolean",
-                                "DefaultValue":true                            
-},                            {
+                                "DefaultValue":true
+                            },                            {
                                 "Name":"Emprise rectangulaire",
                                 "Key":"kEmpriseBBox",
                                 "Value":false,
                                 "Type":"RadioButton",
                                 "ValueType":"Boolean",
-                                "DefaultValue":false                            
-},                            {
+                                "DefaultValue":false
+                            },                            {
                                 "Name":"Emprise polygonale",
                                 "Key":"kEmpriseZone",
                                 "Value":false,
                                 "Type":"RadioButton",
                                 "ValueType":"Boolean",
-                                "DefaultValue":false                            
-}],
-                            "GroupType":"HorizontalGroup"                        
-},                        {
+                                "DefaultValue":false
+                            }],
+                            "GroupType":"HorizontalGroup"
+                        },                        {
                             "Name":"",
                             "Type":"Group",
                             "content":[                            {
@@ -448,61 +448,61 @@
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"0.0",
-                                "Parent":"kEmpriseBBoxGroup"                            
-},                            {
+                                "Parent":"kEmpriseBBoxGroup"
+                            },                            {
                                 "Name":"xmax",
                                 "Key":"kEmpriseXmax",
                                 "Value":"0.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"0.0",
-                                "Parent":"kEmpriseBBoxGroup"                            
-},                            {
+                                "Parent":"kEmpriseBBoxGroup"
+                            },                            {
                                 "Name":"ymin",
                                 "Key":"kEmpriseYmin",
                                 "Value":"0.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"0.0",
-                                "Parent":"kEmpriseBBoxGroup"                            
-},                            {
+                                "Parent":"kEmpriseBBoxGroup"
+                            },                            {
                                 "Name":"ymax",
                                 "Key":"kEmpriseYmax",
                                 "Value":"0.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"0.0",
-                                "Parent":"kEmpriseBBoxGroup"                            
-}],
+                                "Parent":"kEmpriseBBoxGroup"
+                            }],
                             "GroupType":"HorizontalGroup",
-                            "Key":"kEmpriseBBoxGroup"                        
-},                        {
+                            "Key":"kEmpriseBBoxGroup"
+                        },                        {
                             "Name":"Fichier shapefile",
                             "Key":"kEmpriseSHP",
                             "Value":"",
                             "Type":"FileSelector",
                             "ValueType":"FilePath",
                             "DefaultValue":"",
-                            "ToolTip":"kEmpriseSHP | shapefile decrivant l'emprise polygonale desiree"                        
-},                        {
+                            "ToolTip":"kEmpriseSHP | shapefile decrivant l'emprise polygonale desiree"
+                        },                        {
                             "Name":"Buffer (mètres)",
                             "Key":"kBuffer",
                             "Value":"0.0",
                             "Type":"LineEdit",
                             "ValueType":"String",
                             "DefaultValue":"0.0",
-                            "ToolTip":"kBuffer | indique un buffer de dilatation (ou d'érosion en cas de valeur négative) autour de la zone définie par les champs précédents"                        
-},                        {
+                            "ToolTip":"kBuffer | indique un buffer de dilatation (ou d'érosion en cas de valeur négative) autour de la zone définie par les champs précédents"
+                        },                        {
                             "Name":"Fichier shapefile de masque (ZI \/ Hydro)",
                             "Key":"kMaskSHP",
                             "Value":"",
                             "Type":"FileSelector",
                             "ValueType":"FilePath",
                             "DefaultValue":"",
-                            "ToolTip":"kMaskSHP | retranche à la zone de calcul définie par les champs précédents les zones définies dans ce fichier"                        
-}],
-                        "GroupType":"VerticalGroup"                    
-},                    {
+                            "ToolTip":"kMaskSHP | retranche à la zone de calcul définie par les champs précédents les zones définies dans ce fichier"
+                        }],
+                        "GroupType":"VerticalGroup"
+                    },                    {
                         "Name":"Decoupage des lots",
                         "Type":"Group",
                         "content":[                        {
@@ -515,61 +515,61 @@
                                 "Value":true,
                                 "Type":"RadioButton",
                                 "ValueType":"Boolean",
-                                "DefaultValue":true                            
-},                            {
+                                "DefaultValue":true
+                            },                            {
                                 "Name":"Utiliser une partition polygonale",
                                 "Key":"kWithDecoupagePolygonal",
                                 "Value":false,
                                 "Type":"RadioButton",
                                 "ValueType":"Boolean",
-                                "DefaultValue":false                            
-}],
-                            "GroupType":"HorizontalGroup"                        
-},                        {
+                                "DefaultValue":false
+                            }],
+                            "GroupType":"HorizontalGroup"
+                        },                        {
                             "Name":"Fichier shapefile",
                             "Key":"kInputDecoupageSHP",
                             "Value":"",
                             "Type":"FileSelector",
                             "ValueType":"FilePath",
-                            "DefaultValue":""                        
-},                        {
+                            "DefaultValue":""
+                        },                        {
                             "Name":"",
                             "Type":"Group",
                             "content":[                            {
                                 "Name":"Taille des tuiles (pixels): ",
-                                "Type":"Label"                            
-},                            {
+                                "Type":"Label"
+                            },                            {
                                 "Name":"",
                                 "Key":"tileSizeX",
                                 "Value":"5000",
                                 "Type":"LineEdit",
                                 "ValueType":"Integer",
-                                "DefaultValue":"5000"                            
-},                            {
+                                "DefaultValue":"5000"
+                            },                            {
                                 "Name":"colonnes x ",
                                 "Key":"tileSizeY",
                                 "Value":"5000",
                                 "Type":"LineEdit",
                                 "ValueType":"Integer",
-                                "DefaultValue":"5000"                            
-},                            {
+                                "DefaultValue":"5000"
+                            },                            {
                                 "Name":" lignes ",
-                                "Type":"Label"                            
-}],
-                            "GroupType":"HorizontalGroup"                        
-}],
-                        "GroupType":"VerticalGroup"                    
-}],
-                    "GroupType":"VerticalGroup"                
-},                {
+                                "Type":"Label"
+                            }],
+                            "GroupType":"HorizontalGroup"
+                        }],
+                        "GroupType":"VerticalGroup"
+                    }],
+                    "GroupType":"VerticalGroup"
+                },                {
                     "Name":"                                                                                                    ",
                     "Type":"Group",
                     "content":[],
-                    "GroupType":"VerticalGroup"                
-}],
-                "GroupType":"HorizontalGroup"            
-}]        
-},        {
+                    "GroupType":"VerticalGroup"
+                }],
+                "GroupType":"HorizontalGroup"
+            }]
+        },        {
             "Name":"Parametres de classification",
             "Type":"Page",
             "content":[            {
@@ -579,8 +579,8 @@
                     "Name":"                                      ",
                     "Type":"Group",
                     "content":[],
-                    "GroupType":"VerticalGroup"                
-},                {
+                    "GroupType":"VerticalGroup"
+                },                {
                     "Name":"",
                     "Type":"Group",
                     "content":[                    {
@@ -592,24 +592,24 @@
                             "Value":"",
                             "Type":"FileSelector",
                             "ValueType":"FilePath",
-                            "DefaultValue":""                        
-},                        {
+                            "DefaultValue":""
+                        },                        {
                             "Name":"Conserver les masques de classification",
                             "Key":"keepClassif",
                             "Value":false,
                             "Type":"CheckBox",
                             "ValueType":"Boolean",
-                            "DefaultValue":false                        
-},                        {
+                            "DefaultValue":false
+                        },                        {
                             "Name":"Conserver les difference d'altitude",
                             "Key":"keepDiffAlti",
                             "Value":false,
                             "Type":"CheckBox",
                             "ValueType":"Boolean",
-                            "DefaultValue":false                        
-}],
-                        "GroupType":"VerticalGroup"                    
-},                    {
+                            "DefaultValue":false
+                        }],
+                        "GroupType":"VerticalGroup"
+                    },                    {
                         "Name":"Options SVM",
                         "Type":"Group",
                         "content":[                        {
@@ -619,54 +619,54 @@
                             "Type":"FileSelector",
                             "ValueType":"FilePath",
                             "DefaultValue":"",
-                            "Parent":"kClassifySVMOptions"                        
-},                        {
+                            "Parent":"kClassifySVMOptions"
+                        },                        {
                             "Name":"Zones Non Vegetation",
                             "Key":"kInputZappNVegFile",
                             "Value":"",
                             "Type":"FileSelector",
                             "ValueType":"FilePath",
                             "DefaultValue":"",
-                            "Parent":"kClassifySVMOptions"                        
-},                        {
+                            "Parent":"kClassifySVMOptions"
+                        },                        {
                             "Name":"SVM kernel",
                             "Key":"svmKernel",
                             "Value":"RBF;LINEAR;POLY;SIGMOID",
                             "Type":"ComboBox",
                             "ValueType":"String",
-                            "Parent":"kClassifySVMOptions"                        
-},                        {
+                            "Parent":"kClassifySVMOptions"
+                        },                        {
                             "Name":"SVM type",
                             "Key":"svmType",
                             "Value":"C_SVC;NU_SVC;ONE_CLASS;EPS_SVR;NU_SVR",
                             "Type":"ComboBox",
                             "ValueType":"String",
-                            "Parent":"kClassifySVMOptions"                        
-},                        {
+                            "Parent":"kClassifySVMOptions"
+                        },                        {
                             "Name":"Avec NDVI",
                             "Key":"withNDVI",
                             "Value":false,
                             "Type":"CheckBox",
                             "ValueType":"Boolean",
                             "DefaultValue":false,
-                            "Parent":"kClassifySVMOptions"                        
-},                        {
+                            "Parent":"kClassifySVMOptions"
+                        },                        {
                             "Name":"Calculer une LUT",
                             "Key":"makeLUT",
                             "Value":false,
                             "Type":"CheckBox",
                             "ValueType":"Boolean",
                             "DefaultValue":false,
-                            "Parent":"kClassifySVMOptions"                        
-},                        {
+                            "Parent":"kClassifySVMOptions"
+                        },                        {
                             "Name":"Avec indice de rugosite",
                             "Key":"withRoughness",
                             "Value":false,
                             "Type":"CheckBox",
                             "ValueType":"Boolean",
                             "DefaultValue":false,
-                            "Parent":"kClassifySVMOptions"                        
-},                        {
+                            "Parent":"kClassifySVMOptions"
+                        },                        {
                             "Name":"parametres",
                             "Type":"Group",
                             "content":[                            {
@@ -676,28 +676,28 @@
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"2.0",
-                                "Parent":"kRoughnessGroup"                            
-},                            {
+                                "Parent":"kRoughnessGroup"
+                            },                            {
                                 "Name":"filtre gaussien",
                                 "Key":"kRoughnessSigMasq",
                                 "Value":"10.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"10.0",
-                                "Parent":"kRoughnessGroup"                            
-}],
+                                "Parent":"kRoughnessGroup"
+                            }],
                             "GroupType":"HorizontalGroup",
                             "Parent":"kClassifySVMOptions",
-                            "Key":"kRoughnessGroup"                        
-},                        {
+                            "Key":"kRoughnessGroup"
+                        },                        {
                             "Name":"Avec indice de texture",
                             "Key":"withTexture",
                             "Value":false,
                             "Type":"CheckBox",
                             "ValueType":"Boolean",
                             "DefaultValue":false,
-                            "Parent":"kClassifySVMOptions"                        
-},                        {
+                            "Parent":"kClassifySVMOptions"
+                        },                        {
                             "Name":"parametres",
                             "Type":"Group",
                             "content":[                            {
@@ -707,23 +707,23 @@
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"2.0",
-                                "Parent":"kTextureGroup"                            
-},                            {
+                                "Parent":"kTextureGroup"
+                            },                            {
                                 "Name":"filtre gaussien",
                                 "Key":"kTextureSigMasq",
                                 "Value":"10.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"10.0",
-                                "Parent":"kTextureGroup"                            
-}],
+                                "Parent":"kTextureGroup"
+                            }],
                             "GroupType":"HorizontalGroup",
                             "Parent":"kClassifySVMOptions",
-                            "Key":"kTextureGroup"                        
-}],
+                            "Key":"kTextureGroup"
+                        }],
                         "GroupType":"VerticalGroup",
-                        "Key":"kClassifySVMOptions"                    
-},                    {
+                        "Key":"kClassifySVMOptions"
+                    },                    {
                         "Name":"Options Deep Learning",
                         "Type":"Group",
                         "content":[                        {
@@ -733,24 +733,24 @@
                             "Type":"FileSelector",
                             "ValueType":"FilePath",
                             "DefaultValue":"",
-                            "Parent":"kClassifyDeepLearningOptions"                        
-},                        {
+                            "Parent":"kClassifyDeepLearningOptions"
+                        },                        {
                             "Name":"Dossier Anaconda",
                             "Key":"kInputAnacondaDir",
                             "Value":"",
                             "Type":"FolderSelector",
                             "ValueType":"Path",
                             "DefaultValue":"",
-                            "Parent":"kClassifyDeepLearningOptions"                        
-},                        {
+                            "Parent":"kClassifyDeepLearningOptions"
+                        },                        {
                             "Name":"Donnees de reference (optionnel)",
                             "Key":"kInputReferenceFile",
                             "Value":"",
                             "Type":"FileSelector",
                             "ValueType":"FilePath",
                             "DefaultValue":"",
-                            "Parent":"kClassifyDeepLearningOptions"                        
-},                        {
+                            "Parent":"kClassifyDeepLearningOptions"
+                        },                        {
                             "Name":"Taille des tuiles",
                             "Key":"kDeepLearningTileSize",
                             "Value":"256",
@@ -759,8 +759,8 @@
                             "DefaultValue":"256",
                             "Parent":"kClassifyDeepLearningOptions",
                             "ValueMin":100,
-                            "ValueMax":1024                        
-},                        {
+                            "ValueMax":1024
+                        },                        {
                             "Name":"Taille du buffer",
                             "Key":"kDeepLearningBuffer",
                             "Value":"50",
@@ -769,8 +769,8 @@
                             "DefaultValue":"50",
                             "Parent":"kClassifyDeepLearningOptions",
                             "ValueMin":10,
-                            "ValueMax":100                        
-},                        {
+                            "ValueMax":100
+                        },                        {
                             "Name":"Seuil de validation (%)",
                             "Key":"kDeepLearningThreshold",
                             "Value":"80",
@@ -779,21 +779,21 @@
                             "DefaultValue":"80",
                             "Parent":"kClassifyDeepLearningOptions",
                             "ValueMin":0,
-                            "ValueMax":100                        
-}],
+                            "ValueMax":100
+                        }],
                         "GroupType":"VerticalGroup",
-                        "Key":"kClassifyDeepLearningOptions"                    
-}],
-                    "GroupType":"HorizontalGroup"                
-},                {
+                        "Key":"kClassifyDeepLearningOptions"
+                    }],
+                    "GroupType":"HorizontalGroup"
+                },                {
                     "Name":"                                      ",
                     "Type":"Group",
                     "content":[],
-                    "GroupType":"VerticalGroup"                
-}],
-                "GroupType":"HorizontalGroup"            
-}]        
-},        {
+                    "GroupType":"VerticalGroup"
+                }],
+                "GroupType":"HorizontalGroup"
+            }]
+        },        {
             "Name":"Traitements et donnees en sortie",
             "Type":"Page",
             "content":[            {
@@ -803,8 +803,8 @@
                     "Name":"                                                                               ",
                     "Type":"Group",
                     "content":[],
-                    "GroupType":"VerticalGroup"                
-},                {
+                    "GroupType":"VerticalGroup"
+                },                {
                     "Name":"",
                     "Type":"Group",
                     "content":[                    {
@@ -820,30 +820,30 @@
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"2.0"
-},                            {
+                            },                            {
                                 "Name":"Seuil haut de detection du sursol",
                                 "Key":"kAltiTopThreshold",
                                 "Value":"3.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"3.0"
-},                            {
+                            },                            {
                                 "Name":"Intervalle alti (m)",
                                 "Key":"kAltiStep",
                                 "Value":"1.0",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"1.0"
-}],
-                            "GroupType":"HorizontalGroup"                        
-},                        {
+                            }],
+                            "GroupType":"HorizontalGroup"
+                        },                        {
                             "Name":"Buffer autour des batiments (m)",
                             "Key":"buildingBuffer",
                             "Value":"2.0",
                             "Type":"LineEdit",
                             "ValueType":"Double",
                             "DefaultValue":"2.0"
-},                        {
+                        },                        {
                             "Name":"Operations de morphologie mathematique sur le masque (pixels)",
                             "Type":"Group",
                             "content":[                            {
@@ -852,38 +852,38 @@
                                 "Value":"5",
                                 "Type":"LineEdit",
                                 "ValueType":"Integer",
-                                "DefaultValue":"5"                            
-},                            {
+                                "DefaultValue":"5"
+                            },                            {
                                 "Name":"Fermeture",
                                 "Key":"morphoMathClosing",
                                 "Value":"5",
                                 "Type":"LineEdit",
                                 "ValueType":"Integer",
-                                "DefaultValue":"5"                            
-},                            {
+                                "DefaultValue":"5"
+                            },                            {
                                 "Name":"Supression des petites surfaces",
                                 "Key":"morphoMathRemoveSurface",
                                 "Value":"200",
                                 "Type":"LineEdit",
                                 "ValueType":"Integer",
-                                "DefaultValue":"200"                            
-},                            {
+                                "DefaultValue":"200"
+                            },                            {
                                 "Name":"Supression des petits trous",
                                 "Key":"morphoMathRemoveHole",
                                 "Value":"200",
                                 "Type":"LineEdit",
                                 "ValueType":"Integer",
-                                "DefaultValue":"200"                            
-}],
-                            "GroupType":"HorizontalGroup"                        
-},                        {
+                                "DefaultValue":"200"
+                            }],
+                            "GroupType":"HorizontalGroup"
+                        },                        {
                             "Name":"Vectoriser le masque de vegetation",
                             "Key":"kVectorizeMask",
                             "Value":true,
                             "Type":"CheckBox",
                             "ValueType":"Boolean",
-                            "DefaultValue":true                        
-},                        {
+                            "DefaultValue":true
+                        },                        {
                             "Name":"Options de vectorisation",
                             "Type":"Group",
                             "content":[                            {
@@ -893,33 +893,33 @@
                                 "Type":"ComboBox",
                                 "ValueType":"String",
                                 "Parent":"vectorizeGroup",
-                                "DefaultValue":0                            
-},                            {
+                                "DefaultValue":0
+                            },                            {
                                 "Name":"Simplifier la geometrie (Douglas-Peucker)",
                                 "Key":"kSimplifyGeometry",
                                 "Value":"0.2",
                                 "Type":"LineEdit",
                                 "ValueType":"Double",
                                 "DefaultValue":"0.2",
-                                "Parent":"vectorizeGroup"                            
-}],
+                                "Parent":"vectorizeGroup"
+                            }],
                             "GroupType":"VerticalGroup",
-                            "Key":"vectorizeGroup"                        
-},                        {
+                            "Key":"vectorizeGroup"
+                        },                        {
                             "Name":"Conserver les masques raster",
                             "Key":"kKeepMask",
                             "Value":false,
                             "Type":"CheckBox",
                             "ValueType":"Boolean",
-                            "DefaultValue":false                        
-},                        {
+                            "DefaultValue":false
+                        },                        {
                             "Name":"Calculer les ponctuels",
                             "Key":"computeTree",
                             "Value":true,
                             "Type":"CheckBox",
                             "ValueType":"Boolean",
-                            "DefaultValue":true                        
-},                        {
+                            "DefaultValue":true
+                        },                        {
                             "Name":"Nettoyage des arbres mal conformes",
                             "Type":"Group",
                             "content":[                            {
@@ -929,268 +929,285 @@
                                 "Type":"LineEdit",
                                 "ValueType":"String",
                                 "DefaultValue":"1.5",
-                                "Parent":"cleaningGroup"                            
-},                            {
+                                "Parent":"cleaningGroup"
+                            },                            {
                                 "Name":"Suppression des arbres de faible diametre",
                                 "Key":"treeMinDiameter",
                                 "Value":"2.0",
                                 "Type":"LineEdit",
                                 "ValueType":"String",
                                 "DefaultValue":"2.0",
-                                "Parent":"cleaningGroup"                            
-},                            {
+                                "Parent":"cleaningGroup"
+                            },                            {
                                 "Name":"Suppression des arbres de grand diametre",
                                 "Key":"treeMaxDiameter",
                                 "Value":"50.0",
                                 "Type":"LineEdit",
                                 "ValueType":"String",
                                 "DefaultValue":"50.0",
-                                "Parent":"cleaningGroup"                            
-},                            {
+                                "Parent":"cleaningGroup"
+                            },                            {
                                 "Name":"Supression des arbres trop hauts",
                                 "Key":"treeMaxHeight",
                                 "Value":"100.0",
                                 "Type":"LineEdit",
                                 "ValueType":"String",
                                 "DefaultValue":"100.0",
-                                "Parent":"cleaningGroup"                            
-}],
+                                "Parent":"cleaningGroup"
+                            }],
                             "GroupType":"VerticalGroup",
-                            "Key":"cleaningGroup"                        
-}],
-                        "GroupType":"VerticalGroup"                    
-}],
-                    "GroupType":"VerticalGroup"                
-},                {
+                            "Key":"cleaningGroup"
+                        }],
+                        "GroupType":"VerticalGroup"
+                    }],
+                    "GroupType":"VerticalGroup"
+                },                {
                     "Name":"                                                                                                    ",
                     "Type":"Group",
                     "content":[],
-                    "GroupType":"VerticalGroup"                
-}],
-                "GroupType":"HorizontalGroup"            
-}]        
-}],
+                    "GroupType":"VerticalGroup"
+                }],
+                "GroupType":"HorizontalGroup"
+            }]
+        }],
         "dependencies":[        {
             "Master":"withRoughness",
             "Slave":"kRoughnessGroup",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"withTexture",
             "Slave":"kTextureGroup",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kVectorizeMask",
             "Slave":"vectorizeGroup",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"computeTree",
             "Slave":"cleaningGroup",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kEmpriseZoneRadio",
             "Slave":"kEmpriseBBoxGroup",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kEmpriseBBox",
             "Slave":"kEmpriseBBoxGroup",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kEmpriseZone",
             "Slave":"kEmpriseBBoxGroup",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kEmpriseZoneRadio",
             "Slave":"kEmpriseSHP",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kEmpriseBBox",
             "Slave":"kEmpriseSHP",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kEmpriseZone",
             "Slave":"kEmpriseSHP",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kWithDecoupageGrille",
             "Slave":"kInputDecoupageSHP",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kWithDecoupagePolygonal",
             "Slave":"kInputDecoupageSHP",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFluxMNE",
             "Slave":"kiDsm",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFluxMNT",
             "Slave":"kiDtm",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFluxRGB",
             "Slave":"kiOrthoRGB",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFluxPIR",
             "Slave":"kiOrthoPIR",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFluxRGB",
             "Slave":"kInputFormatRGB",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFluxPIR",
             "Slave":"kInputFormatPIR",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFluxWFSBuilding",
             "Slave":"kInputBatiFile",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFluxMNE",
             "Slave":"kiDsmFlux",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFluxMNT",
             "Slave":"kiDtmFlux",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFluxRGB",
             "Slave":"kiRgbFlux",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFluxPIR",
             "Slave":"kiPirFlux",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFluxRGB",
             "Slave":"kiRgbFlux",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFluxPIR",
             "Slave":"kiPirFlux",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFluxWFSBuilding",
             "Slave":"kiBuildingFlux",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFileMNE",
             "Slave":"kiDsmFlux",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFileMNT",
             "Slave":"kiDtmFlux",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFileRGB",
             "Slave":"kiRgbFlux",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFilePIR",
             "Slave":"kiPirFlux",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFileRGB",
             "Slave":"kiRgbFlux",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFilePIR",
             "Slave":"kiPirFlux",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFileWFSBuilding",
             "Slave":"kiBuildingFlux",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kModeFileMNE",
             "Slave":"kiDsm",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFileMNT",
             "Slave":"kiDtm",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFileRGB",
             "Slave":"kiOrthoRGB",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFilePIR",
             "Slave":"kiOrthoPIR",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFileRGB",
             "Slave":"kInputFormatRGB",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFilePIR",
             "Slave":"kInputFormatPIR",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kModeFileWFSBuilding",
             "Slave":"kInputBatiFile",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kClassifyDeepLearning",
             "Slave":"kClassifyDeepLearningOptions",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kClassifyDeepLearning",
             "Slave":"kClassifySVMOptions",
             "Type":"Dependency",
-            "Inverse":true        
-},        {
+            "Inverse":true
+        },        {
             "Master":"kClassifySVM",
             "Slave":"kClassifySVMOptions",
             "Type":"Dependency",
-            "Inverse":false        
-},        {
+            "Inverse":false
+        },        {
             "Master":"kClassifySVM",
             "Slave":"kClassifyDeepLearningOptions",
             "Type":"Dependency",
-            "Inverse":true        
-}],
-        "IgnoredKeys":["version","date","CHANGELOG","NUMLINES","NUMMAXTHREADS","LOGLEVEL","metadata","NAME","VERSION","IGN_DATA","GDAL_DATA","PROJ_LIB"]    
-}
+            "Inverse":true
+        }],
+        "oncreate":{
+            "directory":"/Users/nbellaiche/DATA/TEMP/",
+            "environment":[
+                {
+                    "name":"IGN_DATA",
+                    "value":"/Applications/SolVeg.app/Contents/Data"
+                },
+                {
+                    "name":"PROJ_LIB",
+                    "value":"/Applications/SolVeg.app/Contents/Data/geodesy/nad"
+                }
+            ],
+            "commands":[
+                {"execute":"open $PARAM$"},
+                {"execute":"/Applications/SolVeg.app/Contents/MacOS/SolVeg --make -i $PARAM$ -o $DIRECTORY$/gpao.json"},
+                {"execute":"open -a xcode $DIRECTORY$/gpao.json"}
+            ]
+        }
+    }
 }
