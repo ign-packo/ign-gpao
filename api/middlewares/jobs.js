@@ -21,7 +21,7 @@ async function getJobReady(req, res, next){
     .catch(error => req.error = {
       msg: error.toString(),
       code: 500,
-      function : "getAlljobs"
+      function : "getJobReady"
     })
     next()
 }
