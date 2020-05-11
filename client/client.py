@@ -1,38 +1,47 @@
 #!/usr/bin/python
+import multiprocessing
+import sys
+import random
 import requests
 import subprocess
 import json
 import time
 import os
 import socket
+import signal
 
-HN=socket.gethostname()
+HostName=socket.gethostname()
+NbProcess = multiprocessing.cpu_count()
+UrlApi = os.getenv('URL_API', 'localhost')
+
+def init_worker():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
-if __name__ == "__main__":
+def process(id):
+    strId = "["+str(id)+"] : "
+    print(strId, " : begin")
+    id_cluster = -1
 
-    print("Demarrage du client GPAO")
-    print("Hostname : ", HN)
+    def signal_handler(sig, frame):
+        print(strId, "Interruption")
+        print(strId, "Il faut liberer le id_cluster : ", str(id_cluster))
+        sys.exit(0)
+    signal.signal(signal.SIGINT, signal_handler)
+    
+    Ok = True
 
-    url_api = os.getenv('URL_API', 'localhost')
-
-    print(url_api)
-
-    req=requests.put('http://'+url_api+':8080/api/cluster?host='+HN)
+    req=requests.put('http://'+UrlApi+':8080/api/cluster/'+HostName)
     id_cluster = req.json()[0]['id']
-    print(id_cluster)
-
-    while True:
-        print("Recherche d'un nouveau job")
-        req=requests.get('http://'+url_api+':8080/api/job/ready?id_cluster='+str(id_cluster))
-        #print (req.json())
+    print(strId, "id_cluster = ", str(id_cluster))
+    while Ok:
+        print(strId, Ok)
+        req=requests.get('http://'+UrlApi+':8080/api/job/ready/'+str(id_cluster))
         if(len(req.json())!=0):
-            id = req.json()[0]['id']
+            id_job = req.json()[0]['id']
             command = req.json()[0]['command']
-
-            print("L'identifiant du job "+str(id)+" est disponible")
-
-            print("Execution de la commande "+ str(command))
+            print(strId, "L'identifiant du job "+str(id_job)+" est disponible")
+            print(strId, "Execution de la commande "+ str(command))
             array_command = command.split()
             returnCode = 999
             try:
@@ -45,14 +54,28 @@ if __name__ == "__main__":
             except Exception as ex:
                 status='failed'
                 json_data=str(ex)
-                print('failed', ex)
             
             if (returnCode != 0):
                 status='failed'
-                print("le job a echoue")
 
-            req=requests.post('http://'+url_api+':8080/api/job?id='+str(id)+'&status='+str(status)+'&returnCode='+str(returnCode), json={"log": json_data})
-        else:
-            print("Aucun job disponible dans la base")
+            req=requests.post('http://'+UrlApi+':8080/api/job?id='+str(id_job)+'&status='+str(status)+'&returnCode='+str(returnCode), json={"log": json_data})
+        # else:
+        #     print(strId, "Aucun job disponible dans la base")
+        time.sleep(random.randrange(10))
+    print(strId, "end thread ")
 
-        time.sleep(5)
+if __name__ == "__main__":
+
+    print("Demarrage du client GPAO")
+    print("Hostname : ", HostName)
+    pool = multiprocessing.Pool(NbProcess, init_worker)
+    
+    try:
+        pool.map(process, range(NbProcess))
+        pool.join()
+
+    except KeyboardInterrupt:
+        pool.terminate()
+        pool.join()
+ 
+    print("Fin du client GPAO")
