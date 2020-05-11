@@ -132,76 +132,48 @@ function insertProject(req, res){
               }
               script += '(' + projects[projectDependency.from_id].id + ',' + projects[projectDependency.to_id].id + ', true)'
             })
-            console.log(script)
-            pool.query(
-              script,
-              (error, results) => {
-                if (error) {
-                  throw error
-                }
-                console.log('insertion des projetdependencies: fait')
-                script = 'INSERT INTO jobdependencies (from_id, to_id, active) VALUES '
-              first = true
-              jobDependencies.forEach(jobDependency => {
-                if (first){
-                  first = false
-                }else{
-                  script += ','
-                }
-                script += '(' + jobs[jobDependency.from_id].id + ',' + jobs[jobDependency.to_id].id + ', true)'
-              })
-              console.log(script)
-              pool.query(
-                script,
-                (error, results) => {
-                  if (error) {
-                    throw error
-                  }
-                  res.status(200).send(`Project inserted`)
-                })
-              })
-          })
-      }
-    )
+  next()
 }
 
-function getAllProjects(req, res){
-	pool.query("SELECT * FROM projects", (error, results) => {
+async function getJobReady(req, res, next){
+  var params = matchedData(req)
 
-	if (error) {
-		throw error
-	}
-
-	res.status(200).json(results.rows)
-	})
+  const id = params.id_cluster
+	await req.pgPool.query(
+    "UPDATE jobs SET status = 'running', start_date=NOW(), id_cluster = $1 WHERE id = (SELECT id FROM jobs WHERE status = 'ready' LIMIT 1) RETURNING id, command", [id])
+    .then(results => req.result = results.rows)
+    .catch(error => req.error = {
+      msg: error.toString(),
+      code: 500,
+      function : "getAlljobs"
+    })
+    next()
 }
 
-function getAllClusters(req, res){
-	pool.query("SELECT * FROM cluster", (error, results) => {
+async function updateJobStatus(req, res, next){
+  var params = matchedData(req)
+  
+  debug = require('debug')('job')
 
-	if (error) {
-		throw error
-	}
-
-	res.status(200).json(results.rows)
-	})
-}
-
-function insertCluster(req, res){	
-  const host = req.params.host
-	console.log(host)
-    pool.query(
-      'INSERT INTO cluster (host, id_thread, active, available) VALUES ( $1 , (select count(id) from cluster where host = $2), true, true ) RETURNING id',
-      [host, host],
-      (error, results) => {
-        if (error) {
-          throw error
-        }
-        output = []
-        results.rows.forEach(id => output.push(id))
-        res.status(200).send(output)
-      }
-    )
+  const id = params.id
+  const status = params.status
+  const return_code = params.return_code
+  const log = params.log
+  
+  debug("id = "+id)
+  debug("status = "+status)
+  debug("return_code = "+return_code)
+  debug("log = "+log)
+	
+  await req.pgPool.query(
+    'UPDATE jobs SET status = $1, log = $2, return_code = $4, end_date=NOW() WHERE id = $3', [status, log, id, return_code])
+    .then(results => req.result = results.rows)
+    .catch(error => req.error = {
+      msg: error.toString(),
+      code: 500,
+      function : "updateJobStatus"
+    })
+    next()
 }
 
 module.exports = {

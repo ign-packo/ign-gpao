@@ -3,8 +3,6 @@ const jobs = require('../middlewares/job');
 const projects = require('../middlewares/project');
 const clusters = require('../middlewares/cluster');
 
-var ihm_data = {}
-var electron = 'off';
 
 // home page
 router.get('/', (req, res) => {
@@ -45,13 +43,11 @@ router.get('/cluster', clusters.getClusters, (req, res) => {
 // new project page
 router.get('/creation', function(req, res) {
    // new project page
-   console.log("index.js: creation page (get)")
    res.render('./pages/creation',{ihm_data:ihm_data['ihm'], electron:electron})
 })
            
 // new project page
 router.post('/creation', function(req, res) {
-    console.log("index.js: creation page")
     var body = ""
     req.on('data', function (chunk) {
       body += chunk
