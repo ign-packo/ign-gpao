@@ -37,9 +37,8 @@ services:
     hostname: monitor-gpao
     image: monitor-gpao
     restart: always
-    environment:
-      - URL_API=api-gpao
-      - URL_API_PORT=8080
+    env_file:
+      - docker/monitor.env
     depends_on:
       - api-gpao
     ports:
@@ -51,6 +50,8 @@ services:
       context: ./
       dockerfile: docker/client/Dockerfile
     image: client-gpao
+    container_name: client-gpao
+    hostname: client-gpao
     restart: always
     environment:
       - URL_API=api-gpao

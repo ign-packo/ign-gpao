@@ -4,19 +4,27 @@ import subprocess
 import json
 import time
 import os
+import socket
+
+HN=socket.gethostname()
 
 
 if __name__ == "__main__":
 
     print("Demarrage du client GPAO")
+    print("Hostname : ", HN)
 
     url_api = os.getenv('URL_API', 'localhost')
 
     print(url_api)
 
+    req=requests.put('http://'+url_api+':8080/api/cluster?host='+HN)
+    id_cluster = req.json()[0]['id']
+    print(id_cluster)
+
     while True:
         print("Recherche d'un nouveau job")
-        req=requests.get('http://'+url_api+':8080/api/job/ready')
+        req=requests.get('http://'+url_api+':8080/api/job/ready?id_cluster='+str(id_cluster))
         #print (req.json())
         if(len(req.json())!=0):
             id = req.json()[0]['id']
@@ -26,7 +34,7 @@ if __name__ == "__main__":
 
             print("Execution de la commande "+ str(command))
             array_command = command.split()
-            return_code = -1
+            return_code = 999
             try:
                 proc = subprocess.Popen(array_command, stdout=subprocess.PIPE)
                 (out, err) = proc.communicate()
@@ -43,7 +51,7 @@ if __name__ == "__main__":
                 status='failed'
                 print("le job a echoue")
 
-            req=requests.post('http://'+url_api+':8080/api/job/'+str(id)+'/'+str(status)+'/'+str(return_code), json={"log": json_data})
+            req=requests.post('http://'+url_api+':8080/api/job?id='+str(id)+'&status='+str(status)+'&return_code='+str(return_code), json={"log": json_data})
         else:
             print("Aucun job disponible dans la base")
 

@@ -1,14 +1,14 @@
 async function getJobs (req, res, next){
 
-    const axios = require('axios');
-    const serveur = require('../serveur');
-    
-    json = await axios.get('http://'+serveur.URL_API+':'+serveur.URL_API_PORT+'/api/jobs')
+  const axios = require('axios');
+  const serveur = require('../serveur');
   
-    req.body = json.data
-    next()
-  }
+  json = await axios.get('http://'+serveur.URL_API+':'+serveur.URL_API_PORT+'/api/jobs')
+
+  req.body = json.data
+  next()
+}
 
 module.exports = {
-    getJobs
+  getJobs
 }

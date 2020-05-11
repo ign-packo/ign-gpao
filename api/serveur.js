@@ -1,16 +1,20 @@
-const swaggerJsdoc = require("swagger-jsdoc")
-const swaggerUi = require("swagger-ui-express")
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+
 const jobs = require("./routes/jobs")
+const projects = require("./routes/projects")
+const clusters = require("./routes/cluster")
+
+const swaggerUi = require('swagger-ui-express')
+const YAML = require('yamljs')
 
 const PORT = 8080
 
 const app = express()
 
-app.use(cors());
-app.use(bodyParser.json());
+app.use(cors())
+app.use(bodyParser.json())
 
 app.use(function (req, res, next) {
 	console.log(req.method, ' ', req.path, ' ', req.body)
@@ -18,45 +22,17 @@ app.use(function (req, res, next) {
 	next()
 })
 
-// Swagger set up
-const options = {
-  swaggerDefinition: {
-    openapi: "3.0.0",
-    info: {
-      title: "API GPAO",
-      version: "1.0.0",
-      description: "Documentation de l'API mise en place dans le cadre de la refonte de la GPAO.",
-    },
+var options = {
+	customCss: '.swagger-ui .topbar { display: none }'
+}
 
-    servers: [
-      {
-        url: "http://koolyce.ddns.net:8080/api",
-        description: "Serveur d'Arnaud"
-      },
-      {
-        url: "http://localhost:8080/api",
-        description: "Serveur de dev"
-      },
-      {
-        url: "http://api-gpao:8080/api",
-        description: "Serveur de test"
-      }
-    ]
-  },
-  apis: ["model/job.js", "routes/job"]
-};
+const swaggerDocument = YAML.load('./doc/swagger.yml')
 
+app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options))
 
-const specs = swaggerJsdoc(options);
-app.use("/api/doc", swaggerUi.serve);
-app.get(
-  "/api/doc",
-  swaggerUi.setup(specs, {
-    explorer: false
-  })
-);
-
-app.use('/api', jobs);
+app.use('/api', jobs)
+app.use('/api', projects)
+app.use('/api', clusters)
 
 module.exports = app
 

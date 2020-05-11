@@ -4,11 +4,11 @@
   "description": "api pour IGN/GPAO",
   "repository": {
     "type": "git",
-    "url": "https://github.com/arnaudbirk/demoGPAO.git"
+    "url": "https://github.com/arnaudbirk/ign-gpao.git"
   },
-  "main": "app.js",
+  "main": "serveur.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "supervisor -e node,js,yml serveur.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,13 +17,15 @@
     "cors": "^2.8.5",
     "debug": "^4.1.1",
     "express": "^4.17.1",
+    "express-json-validator-middleware": "^2.1.1",
     "express-validator": "^5.3.1",
     "install": "^0.13.0",
+    "jsonschema": "^1.2.6",
     "npm": "^6.14.3",
     "pg": "^7.18.2",
-    "swagger-editor-dist": "^3.6.25",
-    "swagger-jsdoc": "^3.5.0",
-    "swagger-ui-dist": "^3.21.0",
-    "swagger-ui-express": "^4.1.4"
+    "swagger-editor-dist": "^3.8.1",
+    "swagger-ui-dist": "^3.25.1",
+    "swagger-ui-express": "^4.1.4",
+    "yamljs": "^0.3.0"
   }
 }

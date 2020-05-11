@@ -1,76 +1,59 @@
-const Pool = require('pg').Pool
-const pool = new Pool({
-        user: process.env.PGUSER,
-        host: process.env.PGHOST,
-        database: process.env.PGDATABASE,
-        password: process.env.PGPASSWORD,
-        port: process.env.PGPORT
-})
+const { matchedData } = require('express-validator/filter')
 
-const { matchedData } = require('express-validator/filter');
-
-
-function getAllJobs(req, res){
-	pool.query("SELECT * FROM jobs", (error, results) => {
-
-	if (error) {
-		throw error
-	}
-
-	res.status(200).json(results.rows)
-	})
+async function getAllJobs(req, res, next){
+  await req.pgPool.query("SELECT * FROM jobs")
+            .then(results => req.result = results.rows)
+            .catch(error => req.error = {
+              msg: error.toString(),
+              code: 500,
+              function : "getAlljobs"
+            })
+  next()
 }
 
-function getJobReady(req, res){
-	pool.query("UPDATE jobs SET status = 'running', start_date=NOW() WHERE id = (SELECT id FROM jobs WHERE status = 'ready' LIMIT 1) RETURNING id, command", (error, results) => {
+async function getJobReady(req, res, next){
+  var params = matchedData(req)
 
-	if (error){
-		throw error
-	}
-	res.status(200).json(results.rows)
-	})
+  const id = params.id_cluster
+	await req.pgPool.query(
+    "UPDATE jobs SET status = 'running', start_date=NOW(), id_cluster = $1 WHERE id = (SELECT id FROM jobs WHERE status = 'ready' LIMIT 1) RETURNING id, command", [id])
+    .then(results => req.result = results.rows)
+    .catch(error => req.error = {
+      msg: error.toString(),
+      code: 500,
+      function : "getAlljobs"
+    })
+    next()
 }
 
-function updateJobStatus(req, res){
-	var params = matchedData(req);
+async function updateJobStatus(req, res, next){
+  var params = matchedData(req)
+  
+  debug = require('debug')('job')
 
-    const id = req.params.id
-  const status = req.params.status
-  const return_code = req.params.return_code
-	const log = req.body.log
+  const id = params.id
+  const status = params.status
+  const return_code = params.return_code
+  const log = params.log
+  
+  debug("id = "+id)
+  debug("status = "+status)
+  debug("return_code = "+return_code)
+  debug("log = "+log)
 	
-    pool.query(
-      'UPDATE jobs SET status = $1, log = $2, return_code = $4, end_date=NOW() WHERE id = $3',
-      [status, log, id, return_code],
-      (error, results) => {
-        if (error) {
-          throw error
-        }
-        res.status(200).send(`Job updated`)
-      }
-    )
-}
-
-function insertJob(req, res){	
-	const command = req.body.command
-	const status = 'ready'
-	const log = ''
-	
-    pool.query(
-      'INSERT INTO jobs (command, status, log) VALUES ($1, $2, $3)',
-      [command, status, log],
-      (error, results) => {
-        if (error) {
-          throw error
-        }
-        res.status(200).send(`Job inserted`)
-      }
-    )
+  await req.pgPool.query(
+    'UPDATE jobs SET status = $1, log = $2, return_code = $4, end_date=NOW() WHERE id = $3', [status, log, id, return_code])
+    .then(results => req.result = results.rows)
+    .catch(error => req.error = {
+      msg: error.toString(),
+      code: 500,
+      function : "updateJobStatus"
+    })
+    next()
 }
 
 module.exports = {
 	getAllJobs,
 	getJobReady,
-	updateJobStatus,
-	insertJob
+	updateJobStatus
 }

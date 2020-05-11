@@ -4,4 +4,9 @@ export PGUSER=postgres
 export PGPASSWORD=postgres
 export PGDATABASE=gpao
 
-node serveur.js
+if [ "$(docker ps -aq -f name=api-gpao)" ]; then
+    echo "Suppression du container api-gpao"
+    docker rm -f api-gpao
+fi
+
+npm start

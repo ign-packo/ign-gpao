@@ -1,0 +1,191 @@
+openapi: "3.0.1"
+info: 
+  title: "API GPAO"
+  version: "1.0.0"
+  description: "Documentation de l'API mise en place dans le cadre de la refonte de la GPAO."
+servers: 
+  - url: "http://koolyce.ddns.net:8080/api"
+    description: "Serveur d'Arnaud"
+  - url: "http://pocandco.hopto.org:8080/api"
+    description: "Serveur de Greg"
+  - url: "http://localhost:8080/api"
+    description: "Serveur de dev"
+  - url: "http://api-gpao:8080/api"
+    description: "Serveur de test"
+tags:
+  - name: jobs
+    description: Manipulation des jobs
+  - name: projects
+    description: Manipulation des projets
+  - name: clusters
+    description: Manipulation de clusters
+paths:
+  '/jobs':
+    get:
+      tags:
+        - jobs
+      summary: "Récupération de tous les jobs"
+      description: "Récupération de tous les jobs quelque soit son status"
+      responses:
+        '200':
+          description: OK
+  '/job/ready':
+    get:
+      tags:
+        - jobs
+      summary: "Récupération de l'identifiant d'un job"
+      description: "Récupération de l'identifiant d'un job avec le status ready et mise à jour de son à jour de son status en running"
+      parameters:
+        - in: query
+          name: id_cluster
+          description: l'identifiant du cluster
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  '/job':
+    post:
+      tags:
+        - jobs
+      summary: "Mise à jour d'un job"
+      description: "Permet de mettre à jour le log et le statut d'un job en fonction de son identifiant"
+      parameters:
+        - in: query
+          name: id
+          description: l'identifiant du job à modifier
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: status
+          description: le statut du job à modifier
+          required: true
+          schema:
+            type: string
+            enum:
+              - failed
+              - done
+        - in: query
+          name: return_code
+          description: le code de retour de la commande
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: log en sortie du script
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                log:
+                  type: string
+      responses:
+        '200':
+          description: OK
+
+  '/project':
+    put:
+     tags:
+       - projects
+     summary: "Ajout d'un projet"
+     description: "Permet d ajout un projet avec ses differents jobs"
+     requestBody:
+       description: la structure du projet
+       required: true
+       content:
+         application/json:
+           schema:
+              type: object
+              properties:
+                projects:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/projects'
+              example: 
+                projects:
+                  - name: Chantier 1
+                    jobs:
+                      - name: jobs 1
+                        command: touch file1
+                      - name: jobs 2
+                        command: touch file2
+                      - name: jobs 3
+                        command: touch file3
+                        deps:
+                          - id: 0
+                          - id: 1
+                  - name: Chantier 2
+                    jobs:
+                      - name: jobs 1
+                        command: touch file1
+                    deps:
+                      - id: 0
+     responses:
+       '200':
+         description: OK
+  '/projects':
+   get:
+     tags:
+       - projects
+     summary: "Récupération de tous les projets"
+     description: "Récupération de tous les projets quelque soit leur status"
+     responses:
+       '200':
+         description: OK
+  '/clusters':
+    get:
+      tags:
+        - clusters
+      summary: "Récupération de tous les clusters"
+      description: "Récupération de tous les clusters enregistré dans la table cluster"
+      responses:
+        '200':
+          description: OK
+  '/cluster':
+    put:
+      tags:
+        - clusters
+      summary: "Insetion d'un cluster dans la base"
+      description: "Insertion d'un client en précisant le nom de la machine"
+      parameters: 
+        - in: query
+          name: host
+          description: le nom de la machine
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    projects:
+      properties:
+        name:
+          type: string
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/jobs'
+        deps:
+          type: array
+          items:
+            $ref: '#/components/schemas/dependency'
+    jobs:
+      properties:
+        name:
+          type: string
+        command:
+          type: string
+        deps:
+          type: array
+          items:
+            $ref: '#/components/schemas/dependency'
+    dependency:
+      properties:
+        id:
+          type: integer
