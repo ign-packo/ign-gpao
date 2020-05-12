@@ -1,3 +1,4 @@
+
 const express = require('express');
 const debug = require('debug');
 
@@ -19,11 +20,11 @@ app.set('view engine', 'ejs');
 const routes = require('./routes');
 
 // use res.render to load up an ejs view file
-app.use('/', routes);
+app.use('/', routes)
 
 var path = require('path');
 var appDir = path.dirname(require.main.filename);
 console.log('server root:', appDir)
 console.log("URL du moniteur : http://"+URL_API+":"+PORT)
 
-app.listen(PORT);
+app.listen(PORT)
