@@ -42,8 +42,7 @@ router.get('/cluster', clusters.getClusters, (req, res) => {
 
 // new project page
 router.get('/creation', function(req, res) {
-   // new project page
-   res.render('./pages/creation',{ihm_data:ihm_data['ihm'], electron:electron})
+   res.render('./pages/creation',{electron:electron, ihm_data:ihm_data['ihm']})
 })
            
 // new project page
@@ -55,7 +54,7 @@ router.post('/creation', function(req, res) {
     req.on('end', function () {
        ihm_data = JSON.parse(body)
        electron = 'on'
-       res.render('./pages/creation',{ihm_data:ihm_data['ihm'], electron:electron})
+       res.render('./pages/creation',{electron:electron, ihm_data:ihm_data['ihm']})
     })
     req.on('error', function(e) {
          console.log('problem with request: ' + e.message);
