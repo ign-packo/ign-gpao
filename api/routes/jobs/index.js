@@ -1,18 +1,49 @@
 const router = require('express').Router()
 const { query, body, param, oneOf } = require('express-validator/check');
 
+const validateParams = require('./../../middlewares/validateParams')
+const createErrorMsg = require('./../../middlewares/createErrorMsg')
 const jobs = require('./../../middlewares/jobs')
+const pgClient = require('./../../middlewares/db/pgClient')
+const returnMsg = require('../../middlewares/returnMsg')
 
-router.get('/job/ready', jobs.getJobReady)
+router.get('/job/ready', [
+    query('id_cluster')
+        .exists().withMessage(createErrorMsg.getMissingParameterMsg('id_cluster'))
+        .isInt({min: 1}).withMessage(createErrorMsg.getInvalidParameterMsg('id_cluster'))
+    ],
+    validateParams,
+    pgClient.open,
+    jobs.getJobReady,
+    pgClient.close,
+    returnMsg
+)
 
-router.get('/jobs', jobs.getAllJobs)
+router.get('/jobs', 
+    pgClient.open,
+    jobs.getAllJobs,
+    pgClient.close,
+    returnMsg
+)
 
-router.post('/job/:id/:status(done|failed)/:return_code',
-    body('log').exists(),
-    jobs.updateJobStatus)
-
-router.put('/job', 
-    body('command').exists(),
-    jobs.insertJob)
+router.post('/job', [
+    body('log').exists().withMessage(createErrorMsg.getMissingParameterMsg('log')),
+    query('status')
+        .exists().withMessage(createErrorMsg.getMissingParameterMsg('status'))
+        .isIn(['done', 'failed']).withMessage(createErrorMsg.getInvalidParameterMsg('status')),
+    query('id')
+        .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))
+        .isInt({min: 1}).withMessage(createErrorMsg.getInvalidParameterMsg('id')),
+    
+    query('return_code')
+        .exists().withMessage(createErrorMsg.getMissingParameterMsg('return_code'))
+        .isInt({min: 0}).withMessage(createErrorMsg.getInvalidParameterMsg('return_code'))
+    ],
+    validateParams,
+    pgClient.open,
+    jobs.updateJobStatus,
+    pgClient.close,
+    returnMsg
+)
 
 module.exports = router

@@ -5,6 +5,6 @@ then
     NB_PROC=1
 fi
 
-echo "Lancement de $NB_PROC thread(s)"
+#echo "Lancement de $NB_PROC thread(s)"
 
-docker-compose -f docker-compose.yml up --scale client-gpao=$NB_PROC
+docker-compose -f docker-compose.yml up

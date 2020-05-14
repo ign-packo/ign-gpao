@@ -12,9 +12,10 @@ WORKDIR /usr/local/src/monitor
 #RUN npm config set http-proxy $http_proxy
 #RUN npm config set https-proxy $http_proxy
 
+RUN npm install supervisor -g
 RUN npm install
 
-EXPOSE 80
+EXPOSE 8000
 
-ENTRYPOINT ["node", "serveur.js"]
+ENTRYPOINT ["npm", "start"]
 
