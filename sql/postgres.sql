@@ -34,85 +34,25 @@ ALTER TYPE public.status OWNER TO postgres;
 -- Name: udate_jobDependency(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE OR REPLACE 
-FUNCTION public.udate_jobdependency()
-  RETURNS trigger AS
-$$
-BEGIN
+CREATE FUNCTION public."udate_jobDependency"() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$BEGIN
   IF (NEW.status = 'done' AND NEW.status <> OLD.status) THEN
        UPDATE jobDependencies SET active='f' WHERE upstream = NEW.id;
   END IF;
   RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE FUNCTION public.update_jobdependencies_when_job_done() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  IF (NEW.status = 'done' AND NEW.status <> OLD.status) THEN
-       UPDATE public.jobdependencies SET active='f' WHERE upstream = NEW.id;
-  END IF;
-  RETURN NEW;
-END;
-$$;
+END;$$;
 
 
-ALTER FUNCTION public.update_jobdependencies_when_job_done() OWNER TO postgres;
-
---
--- Name: update_project_when_job_done(); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.update_project_when_job_done() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    UPDATE projects 
-    SET status='done' 
-    WHERE 
-    status='running' 
-    AND NOT EXISTS (
-        SELECT * FROM public.jobs AS j WHERE  projects.id = j.id_project and j.status <> 'done');
-    RETURN NULL;
-END;
-$$;
-
-
-ALTER FUNCTION public.update_project_when_job_done() OWNER TO postgres;
-
---
--- Name: update_project_when_projectdency_inserted(); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.update_project_when_projectdency_inserted() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    UPDATE projects 
-    SET status='waiting' 
-    WHERE 
-    status='running' 
-    AND EXISTS (
-        SELECT * FROM public.projectdependencies AS d WHERE  projects.id = d.to_id and d.active = 't');
-    RETURN NULL;
-END;
-$$;
-
-
-ALTER FUNCTION public.update_project_when_projectdency_inserted() OWNER TO postgres;
-
-ALTER FUNCTION public.udate_jobdependency() OWNER TO postgres;
+ALTER FUNCTION public."udate_jobDependency"() OWNER TO postgres;
 
 --
 -- Name: update_job_status(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE OR REPLACE 
-FUNCTION public.update_job_status()
-  RETURNS trigger AS
-$$
-BEGIN
+CREATE FUNCTION public.update_job_status() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$BEGIN
     UPDATE jobs 
     SET status='ready' 
     WHERE 
@@ -125,11 +65,10 @@ BEGIN
         -- ca peut faire une grosse difference puisqu on modifie la table avec
         -- des commandes du type : UPDATE dependencies SET active='f' WHERE from_id = NEW.id;
     RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
+END;$$;
 
-ALTER TYPE public.job_status OWNER TO postgres;
 
+ALTER FUNCTION public.update_job_status() OWNER TO postgres;
 
 --
 -- Name: update_job_when_jobdependency_inserted(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -406,8 +345,8 @@ ALTER SEQUENCE public.jobdependencies_id_seq OWNED BY public.jobdependencies.id;
 CREATE TABLE public.jobs (
     id integer NOT NULL,
     name character varying NOT NULL,
-    start_date date,
-    end_date date,
+    start_date TIMESTAMPTZ,
+    end_date TIMESTAMPTZ,
     command character varying NOT NULL,
     status public.status DEFAULT 'ready'::public.status NOT NULL,
     return_code integer,
@@ -583,8 +522,8 @@ ALTER TABLE ONLY public.projects
 -- Name: projectdependencies projectdependencies_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.projects
-    ADD CONSTRAINT project_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.projectdependencies
+    ADD CONSTRAINT projectdependencies_pkey PRIMARY KEY (id);
 
 
 --
@@ -627,66 +566,6 @@ CREATE TRIGGER update_project_when_job_done AFTER UPDATE OF status ON public.job
 --
 
 CREATE TRIGGER update_project_when_projectdependency_inserted AFTER INSERT ON public.projectdependencies FOR EACH STATEMENT EXECUTE PROCEDURE public.update_project_when_projectdependency_inserted();
-
-
---
--- Name: projectdependencies update_project_when_projectdependency_unactivate; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER update_project_when_projectdependency_unactivate AFTER UPDATE OF active ON public.projectdependencies FOR EACH STATEMENT EXECUTE PROCEDURE public.update_project_when_projectdepency_unactivate();
-
-
---
--- Name: projects update_projectdependencies_when_project_done; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER update_projectdependencies_when_project_done AFTER UPDATE OF status ON public.projects FOR EACH ROW EXECUTE PROCEDURE public.update_projectdependencies_when_project_done();
-
-
---
--- Name: jobdependencies downstream_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.jobdependencies
-    ADD CONSTRAINT downstream_fk FOREIGN KEY (downstream) REFERENCES public.jobs(id) ON DELETE CASCADE NOT VALID;
-
-
---
--- Name: projectdependencies downstream_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.projectdependencies
-    ADD CONSTRAINT downstream_fk FOREIGN KEY (downstream) REFERENCES public.projects(id) ON DELETE CASCADE;
-
-
---
--- Name: projects update_job_when_project_change; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER update_job_when_project_change AFTER UPDATE OF status ON public.projects FOR EACH ROW EXECUTE PROCEDURE public.update_job_when_project_change();
-
-
---
--- Name: jobs update_jobdependencies_when_job_done; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER update_jobdependencies_when_job_done AFTER UPDATE OF status ON public.jobs FOR EACH ROW EXECUTE PROCEDURE public.update_jobdependencies_when_job_done();
-
-
---
--- Name: jobdependencies upstream_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.jobdependencies
-    ADD CONSTRAINT upstream_fk FOREIGN KEY (upstream) REFERENCES public.jobs(id) ON DELETE CASCADE NOT VALID;
-
-
---
--- Name: projectdependencies upstream_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.projectdependencies
-    ADD CONSTRAINT upstream_fk FOREIGN KEY (upstream) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 
 --
