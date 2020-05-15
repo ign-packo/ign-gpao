@@ -1,23 +1,25 @@
-var express = require('express')
-var app = express()
+const express = require('express');
+const debug = require('debug');
 
-const PORT = 8000
+const app = express();
 
-const URL_API = process.env.URL_API || 'localhost'
-const URL_API_PORT = process.env.URL_API_PORT || 8080
+const PORT = 8000;
+
+const URL_API = process.env.URL_API || 'localhost';
+const URL_API_PORT = process.env.URL_API_PORT || 8080;
 
 module.exports = {
-  URL_API: URL_API,
-  URL_API_PORT: URL_API_PORT
-}
+  URL_API,
+  URL_API_PORT,
+};
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-const routes = require("./routes/")
+const routes = require('./routes');
 
 // use res.render to load up an ejs view file
 app.use('/', routes);
 
 app.listen(PORT);
-console.log("URL du moniteur : http://"+URL_API+":"+PORT)
+debug.log(`URL du moniteur : http://${URL_API}:${PORT}`);
