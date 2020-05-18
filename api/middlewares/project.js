@@ -2,34 +2,40 @@ const debug = require('debug')('project');
 
 async function insertProject(name, req) {
   debug(`Insertion du projet ${name}`);
-  await req.client.query(
+  const results = await req.client.query(
     'INSERT INTO projects (name) VALUES ($1) RETURNING id', [name],
   )
-    .then((results) => { req.idProjects.push(results.rows[0].id); })
     .catch((error) => {
       req.error = {
         msg: error.toString(),
         code: 500,
         function: 'insertProject',
       };
+      debug('Erreur dans insertProject');
     });
+  const idProject = results.rows[0].id;
+  req.idProjects.push(idProject);
   debug('Fin insertion projet');
+  return idProject;
 }
 
 async function insertJob(name, command, idProject, req) {
   debug(`Insertion du job ${name}`);
-  await req.client.query(
+  const results = await req.client.query(
     'INSERT INTO jobs (name, command, id_project) VALUES ($1, $2, $3) RETURNING id', [name, command, idProject],
   )
-    .then((results) => { req.idJobs.push(results.rows[0].id); })
     .catch((error) => {
       req.error = {
         msg: error.toString(),
         code: 500,
         function: 'insertJob',
       };
+      debug('Erreur dans insertJob');
     });
+  const idJob = results.rows[0].id;
+  req.idJobs.push(idJob);
   debug('Fin insertion job');
+  return idJob;
 }
 
 async function insertJobDependency(upstream, downstream, req) {
@@ -37,7 +43,6 @@ async function insertJobDependency(upstream, downstream, req) {
   await req.client.query(
     'INSERT INTO jobdependencies (upstream, downstream) VALUES ($1, $2)', [upstream, downstream],
   )
-    .then()
     .catch((error) => {
       req.error = {
         msg: error.toString(),
@@ -53,7 +58,6 @@ async function insertProjectDependency(upstream, downstream, req) {
   await req.client.query(
     'INSERT INTO projectdependencies (upstream, downstream) VALUES ($1, $2)', [upstream, downstream],
   )
-    .then()
     .catch((error) => {
       req.error = {
         msg: error.toString(),
@@ -68,42 +72,34 @@ async function insertProjectFromJson(req, res, next) {
   const { projects } = req.body;
 
   req.idProjects = [];
-  for (let i = 0; i < projects.length; i += 1) {
-    const project = projects[i];
+  req.idJobs = [];
 
+  /* eslint-disable no-restricted-syntax */
+  for (const project of projects) {
     /* eslint-disable no-await-in-loop */
-    await insertProject(project.name, req);
-
-    req.idJobs = [];
-
-    for (let j = 0; j < project.jobs.length; j += 1) {
-      const job = project.jobs[j];
-      const idProject = req.idProjects[i];
-
-      debug(`id_project = ${idProject}`);
-
-      await insertJob(job.name, job.command, idProject, req);
-
+    const idProject = await insertProject(project.name, req);
+    debug(`id_project = ${idProject}`);
+    /* eslint-disable no-restricted-syntax */
+    for (const job of project.jobs) {
+      /* eslint-disable no-await-in-loop */
+      const idJob = await insertJob(job.name, job.command, idProject, req);
+      debug(`id_job = ${idJob}`);
       // Si il y a des dépendances entre les jobs
       if (job.deps) {
-        for (let k = 0; k < job.deps.length; k += 1) {
-          const dep = job.deps[k];
-
+        /* eslint-disable no-restricted-syntax */
+        for (const dep of job.deps) {
           const upstream = req.idJobs[dep.id];
-          const downstream = req.idJobs[j];
-
+          const downstream = idJob;
           /* eslint-disable no-await-in-loop */
           await insertJobDependency(upstream, downstream, req);
         }
       }
     }
     if (project.deps) {
-      for (let l = 0; l < project.deps.length; l += 1) {
-        const dep = project.deps[l];
-
+      /* eslint-disable no-restricted-syntax */
+      for (const dep of project.deps) {
         const upstream = req.idProjects[dep.id];
-        const downstream = req.idProjects[i];
-
+        const downstream = idProject;
         /* eslint-disable no-await-in-loop */
         await insertProjectDependency(upstream, downstream, req);
       }
