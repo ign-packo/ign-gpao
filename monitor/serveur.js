@@ -1,5 +1,6 @@
 
-const express = require('express');
+var express = require('express')
+const ign_gpao =  require('ejs-electron-ign-gpao')
 const debug = require('debug');
 
 const app = express();
@@ -18,6 +19,8 @@ module.exports = {
 app.set('view engine', 'ejs');
 
 const routes = require('./routes');
+//java scripts visible from html code
+app.use(express.static(ign_gpao.script_folder()))
 
 // use res.render to load up an ejs view file
 app.use('/', routes)
