@@ -8,6 +8,7 @@
   },
   "main": "serveur.js",
   "scripts": {
+    "lint": "eslint .",
     "start": "supervisor -e node,js,yml serveur.js"
   },
   "author": "",
@@ -27,5 +28,10 @@
     "swagger-ui-dist": "^3.25.1",
     "swagger-ui-express": "^4.1.4",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2"
   }
 }
