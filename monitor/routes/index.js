@@ -4,6 +4,9 @@ const projects = require('../middlewares/project');
 const clusters = require('../middlewares/cluster');
 const ign_gpao =  require('ejs-electron-ign-gpao')
 
+var ign_data = {}
+var electron = 'off'
+var header = '../partials/header'
 // home page
 router.get('/', (req, res) => {
   res.render('pages/index');
@@ -17,7 +20,7 @@ router.get('/job', jobs.getJobs, (req, res) => {
     array.push(element);
   });
 
-  res.render('pages/job', { json: array });
+  res.render('pages/job', { json: array, header: header});
 });
 
 // project page
@@ -27,7 +30,7 @@ router.get('/project', projects.getProjects, (req, res) => {
   req.body.forEach((element) => {
     array.push(element);
   });
-  res.render('pages/project', { json: array });
+  res.render('pages/project', { json: array, header: header });
 });
 
 // cluster page
@@ -37,7 +40,7 @@ router.get('/cluster', clusters.getClusters, (req, res) => {
   req.body.forEach((element) => {
     array.push(element);
   });
-  res.render('pages/cluster', { json: array });
+  res.render('pages/cluster', { json: array, header: header });
 });
 
 // new project page
@@ -53,7 +56,8 @@ router.post('/creation', function(req, res) {
     })
     req.on('end', function () {
        ihm_data = JSON.parse(body)
-       electron = 'on'
+       electron = 'on';
+       header = ign_gpao.view_folder() + "/partials/header";
        res.render(ign_gpao.view_folder() + '/pages/creation',{electron:electron, ihm_data:ihm_data['ihm']})
     })
     req.on('error', function(e) {

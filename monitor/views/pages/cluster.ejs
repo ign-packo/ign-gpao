@@ -8,13 +8,7 @@
 <body class="container">
 
 <header>
-    <% if (locals.electron== 'on') { %>
-        <% console.log('loading header electron') %>
-        <%- include("../ihm/electron/header", {ihm_data:ihm_data,electron:'on'}) %>
-    <% } else { %>
-        <% console.log('loading header standard') %>
-        <%- include("../partials/header") %>
-    <% } %>
+    <%- include(locals.header) %>
 </header>
 
 <script type="text/javascript">
