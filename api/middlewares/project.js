@@ -71,6 +71,7 @@ async function insertProjectFromJson(req, res, next) {
   for (let i = 0; i < projects.length; i += 1) {
     const project = projects[i];
 
+    /* eslint-disable no-await-in-loop */
     await insertProject(project.name, req);
 
     req.idJobs = [];
@@ -91,6 +92,7 @@ async function insertProjectFromJson(req, res, next) {
           const upstream = req.idJobs[dep.id];
           const downstream = req.idJobs[j];
 
+          /* eslint-disable no-await-in-loop */
           await insertJobDependency(upstream, downstream, req);
         }
       }
@@ -102,6 +104,7 @@ async function insertProjectFromJson(req, res, next) {
         const upstream = req.idProjects[dep.id];
         const downstream = req.idProjects[i];
 
+        /* eslint-disable no-await-in-loop */
         await insertProjectDependency(upstream, downstream, req);
       }
     }

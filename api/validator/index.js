@@ -1,5 +1,9 @@
+const checkProjectSchema = require('./checkProjectSchema');
+const checkProjectDependencies = require('./checkProjectDependencies');
+const checkJobDependencies = require('./checkJobDependencies');
+
 module.exports = {
-  checkProjectSchema: require('./checkProjectSchema'),
-  checkProjectDependencies: require('./checkProjectDependencies'),
-  checkJobDependencies: require('./checkJobDependencies'),
+  checkProjectSchema,
+  checkProjectDependencies,
+  checkJobDependencies,
 };
