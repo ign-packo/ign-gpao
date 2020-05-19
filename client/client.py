@@ -20,7 +20,7 @@ def init_worker():
 
 def process(id):
     strId = "["+str(id)+"] : "
-    print(strId, " : begin")
+    print(strId, "begin")
     id_cluster = -1
 
     def signal_handler(sig, frame):
@@ -31,12 +31,12 @@ def process(id):
     
     Ok = True
 
-    req=requests.put('http://'+UrlApi+':8080/api/cluster/'+HostName)
+    req=requests.put('http://'+UrlApi+':8080/api/cluster?host='+HostName)
     id_cluster = req.json()[0]['id']
     print(strId, "id_cluster = ", str(id_cluster))
     while Ok:
         print(strId, Ok)
-        req=requests.get('http://'+UrlApi+':8080/api/job/ready/'+str(id_cluster))
+        req=requests.get('http://'+UrlApi+':8080/api/job/ready?id_cluster='+str(id_cluster))
         if(len(req.json())!=0):
             id_job = req.json()[0]['id']
             command = req.json()[0]['command']
