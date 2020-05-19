@@ -9,73 +9,74 @@ import time
 import os
 import socket
 import signal
+import tempfile
 
 HostName=socket.gethostname()
 NbProcess = multiprocessing.cpu_count()
 UrlApi = os.getenv('URL_API', 'localhost')
-
-def init_worker():
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
-
 
 def process(id):
     strId = "["+str(id)+"] : "
     print(strId, "begin")
     id_cluster = -1
 
-    def signal_handler(sig, frame):
-        print(strId, "Interruption")
-        print(strId, "Il faut liberer le id_cluster : ", str(id_cluster))
-        sys.exit(0)
-    signal.signal(signal.SIGINT, signal_handler)
-    
-    Ok = True
+    try:
+        # On cree un dossier temporaire dans le dossier courant qui devient le dossier d'execution
+        working_dir = tempfile.TemporaryDirectory(dir='.')
+        print('working dir : ', working_dir.name)
 
-    req=requests.put('http://'+UrlApi+':8080/api/cluster?host='+HostName)
-    id_cluster = req.json()[0]['id']
-    print(strId, "id_cluster = ", str(id_cluster))
-    while Ok:
-        print(strId, Ok)
-        req=requests.get('http://'+UrlApi+':8080/api/job/ready?id_cluster='+str(id_cluster))
-        if(len(req.json())!=0):
-            id_job = req.json()[0]['id']
-            command = req.json()[0]['command']
-            print(strId, "L'identifiant du job "+str(id_job)+" est disponible")
-            print(strId, "Execution de la commande "+ str(command))
-            array_command = command.split()
-            returnCode = 999
-            try:
-                proc = subprocess.Popen(array_command, stdout=subprocess.PIPE)
-                (out, err) = proc.communicate()
-                status='done'
-                returnCode = proc.returncode
-                json_data = out.decode()
+        req=requests.put('http://'+UrlApi+':8080/api/cluster?host='+HostName)
+        id_cluster = req.json()[0]['id']
+        print(strId, "id_cluster = ", str(id_cluster))
+        while True:
+            req=requests.get('http://'+UrlApi+':8080/api/job/ready?id_cluster='+str(id_cluster))
+            if(len(req.json())!=0):
+                id_job = req.json()[0]['id']
+                command = req.json()[0]['command']
+                print(strId, "L'identifiant du job "+str(id_job)+" est disponible")
+                print(strId, "Execution de la commande "+ str(command))
+                array_command = command.split()
+                returnCode = 999
+                try:
+                    proc = subprocess.Popen(array_command, stdout=subprocess.PIPE, cwd=working_dir.name)
+                    (out, err) = proc.communicate()
+                    status='done'
+                    returnCode = proc.returncode
+                    json_data = out.decode()
 
-            except Exception as ex:
-                status='failed'
-                json_data=str(ex)
-            
-            if (returnCode != 0):
-                status='failed'
+                except Exception as ex:
+                    print('failed : ', ex)
+                    status='failed'
+                    json_data=str(ex)
+                
+                if (returnCode != 0):
+                    status='failed'
 
-            req=requests.post('http://'+UrlApi+':8080/api/job?id='+str(id_job)+'&status='+str(status)+'&returnCode='+str(returnCode), json={"log": json_data})
-        # else:
-        #     print(strId, "Aucun job disponible dans la base")
-        time.sleep(random.randrange(10))
+                print('Mise a jour : ', returnCode, status, json_data)
+                req=requests.post('http://'+UrlApi+':8080/api/job?id='+str(id_job)+'&status='+str(status)+'&returnCode='+str(returnCode), json={"log": json_data})
+            time.sleep(random.randrange(10))
+    except KeyboardInterrupt:
+        print("on demande au process de s'arreter")
+        req=requests.post('http://'+UrlApi+':8080/api/cluster/unavailable?id='+str(id_cluster))
     print(strId, "end thread ")
 
 if __name__ == "__main__":
 
     print("Demarrage du client GPAO")
     print("Hostname : ", HostName)
-    pool = multiprocessing.Pool(NbProcess, init_worker)
-    
+
+    pool = multiprocessing.Pool(NbProcess)
+    original_sigint_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
+
     try:
         pool.map(process, range(NbProcess))
-        pool.join()
 
     except KeyboardInterrupt:
+        print("on demande au pool de s'arreter")
         pool.terminate()
-        pool.join()
+    else:
+        print("Normal termination")
+        pool.close()
+    pool.join()
  
     print("Fin du client GPAO")
