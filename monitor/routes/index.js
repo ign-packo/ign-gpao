@@ -5,8 +5,9 @@ const clusters = require('../middlewares/cluster');
 const ign_gpao =  require('ejs-electron-ign-gpao')
 
 var ign_data = {}
-var electron = 'off'
 var header = '../partials/header'
+var js_folder = '.'
+
 // home page
 router.get('/', (req, res) => {
   res.render('pages/index');
@@ -45,7 +46,7 @@ router.get('/cluster', clusters.getClusters, (req, res) => {
 
 // new project page
 router.get('/creation', function(req, res) {
-   res.render(ign_gpao.view_folder() + '/pages/creation',{electron:electron, ihm_data:ihm_data['ihm']})
+   res.render(ign_gpao.view_folder() + '/pages/creation',{ihm_data:ihm_data['ihm'], js_folder: js_folder})
 })
            
 // new project page
@@ -56,9 +57,8 @@ router.post('/creation', function(req, res) {
     })
     req.on('end', function () {
        ihm_data = JSON.parse(body)
-       electron = 'on';
        header = ign_gpao.view_folder() + "/partials/header";
-       res.render(ign_gpao.view_folder() + '/pages/creation',{electron:electron, ihm_data:ihm_data['ihm']})
+       res.render(ign_gpao.view_folder() + '/pages/creation',{ihm_data:ihm_data['ihm'], js_folder: js_folder})
     })
     req.on('error', function(e) {
          console.log('problem with request: ' + e.message);

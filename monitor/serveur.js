@@ -19,6 +19,7 @@ module.exports = {
 app.set('view engine', 'ejs');
 
 const routes = require('./routes');
+
 //java scripts visible from html code
 app.use(express.static(ign_gpao.script_folder()))
 
