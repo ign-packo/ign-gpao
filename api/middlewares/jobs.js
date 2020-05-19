@@ -36,12 +36,12 @@ async function updateJobStatus(req, res, next) {
   const params = matchedData(req);
   const { id } = params;
   const { status } = params;
-  const { returnCode } = params;
+  const returnCode = params.return_code;
   const { log } = params;
 
   debug(`id = ${id}`);
   debug(`status = ${status}`);
-  debug(`return_code = ${returnCode}`);
+  debug(`returnCode = ${returnCode}`);
   debug(`log = ${log}`);
 
   await req.client.query(
