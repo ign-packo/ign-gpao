@@ -2,11 +2,9 @@ const router = require('express').Router();
 const jobs = require('../middlewares/job');
 const projects = require('../middlewares/project');
 const clusters = require('../middlewares/cluster');
-const ign_gpao =  require('ejs-electron-ign-gpao')
+const creation = require('../middlewares/creation');
 
-var ign_data = {}
 var header = '../partials/header'
-var js_folder = '.'
 
 // home page
 router.get('/', (req, res) => {
@@ -45,24 +43,14 @@ router.get('/cluster', clusters.getClusters, (req, res) => {
 });
 
 // new project page
-router.get('/creation', function(req, res) {
-   res.render(ign_gpao.view_folder() + '/pages/creation',{ihm_data:ihm_data['ihm'], js_folder: js_folder})
+router.get('/creation', creation.getNewProject, (req, res) => {
+           res.render(req.body['page'],{ihm_data:req.body['ihm'], js_folder: req.body['js_folder']})
 })
            
 // new project page
-router.post('/creation', function(req, res) {
-    var body = ""
-    req.on('data', function (chunk) {
-      body += chunk
-    })
-    req.on('end', function () {
-       ihm_data = JSON.parse(body)
-       header = ign_gpao.view_folder() + "/partials/header";
-       res.render(ign_gpao.view_folder() + '/pages/creation',{ihm_data:ihm_data['ihm'], js_folder: js_folder})
-    })
-    req.on('error', function(e) {
-         console.log('problem with request: ' + e.message);
-    })
+router.post('/creation', creation.postNewProject, (req, res) =>  {
+    header = creation.header();
+    res.render(req.body['page'],{ihm_data:req.body['ihm'], js_folder: req.body['js_folder']})
 })
 
 module.exports = router;
