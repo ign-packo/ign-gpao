@@ -1,3 +1,4 @@
+const debug = require('debug')('creation');
 const gpaoInterface = require('ejs-electron-ign-gpao');
 const checkIhmSchema = require('../validator/checkIhmSchema');
 
@@ -25,7 +26,7 @@ function postNewProject(req, res, next) {
     next();
   });
   req.on('error', (e) => {
-    console.log(`problem with request: ${e.message}`);
+    debug(`problem with request: ${e.message}`);
   });
 }
 
@@ -33,7 +34,7 @@ function validate(req, res, next) {
   const result = checkIhmSchema.validate(req.body);
 
   if (!result.valid) {
-    console.log(result.errors);
+    debug(result.errors);
     req.body.page = JSON.stringify(result.errors, null, '\t');
     next();
   } else {
@@ -41,7 +42,14 @@ function validate(req, res, next) {
   }
 }
 
-function header() {
+function header(req) {
+  // code propre quand express-useragent sera debogge
+  // const useragent = require('express-useragent');
+  /* ua = useragent.parse(req.headers['user-agent']);
+    if (!ua['isElectron']) { */
+  if (!req.headers['user-agent'].includes('Electron')) {
+    return '../partials/header';
+  }
   return `${gpaoInterface.view_folder()}/partials/header`;
 }
 

@@ -1,6 +1,7 @@
 
 const express = require('express');
 const gpaoInterface = require('ejs-electron-ign-gpao');
+const debug = require('debug')('monitor');
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(express.static(gpaoInterface.script_folder()));
 app.use('/', routes);
 
 const appDir = path.dirname(require.main.filename);
-console.log('server root:', appDir);
-console.log(`URL du moniteur : http://${URL_API}:${PORT}`);
+debug('server root:', appDir);
+debug(`URL du moniteur : http://${URL_API}:${PORT}`);
 
 app.listen(PORT);

@@ -4,11 +4,9 @@ const projects = require('../middlewares/project');
 const clusters = require('../middlewares/cluster');
 const creation = require('../middlewares/creation');
 
-let header = '../partials/header';
-
 // home page
 router.get('/', (req, res) => {
-           res.render('pages/index', {header: header });
+  res.render('pages/index', { header: creation.header(req) });
 });
 
 // job page
@@ -19,7 +17,7 @@ router.get('/job', jobs.getJobs, (req, res) => {
     array.push(element);
   });
 
-           res.render('pages/job', { json: array, header: header });
+  res.render('pages/job', { json: array, header: creation.header(req) });
 });
 
 // project page
@@ -29,7 +27,7 @@ router.get('/project', projects.getProjects, (req, res) => {
   req.body.forEach((element) => {
     array.push(element);
   });
-  res.render('pages/project', { json: array, header: header });
+  res.render('pages/project', { json: array, header: creation.header(req) });
 });
 
 // cluster page
@@ -39,7 +37,7 @@ router.get('/cluster', clusters.getClusters, (req, res) => {
   req.body.forEach((element) => {
     array.push(element);
   });
-  res.render('pages/cluster', { json: array, header: header });
+  res.render('pages/cluster', { json: array, header: creation.header(req) });
 });
 
 // new project page
@@ -52,7 +50,6 @@ router.post('/creation', [
   creation.postNewProject,
   creation.validate,
 ], (req, res) => {
-  header = creation.header();
   res.render(req.body.page, { ihm_data: req.body.ihm, js_folder: req.body.js_folder });
 });
 
