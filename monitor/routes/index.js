@@ -48,7 +48,10 @@ router.get('/creation', creation.getNewProject, (req, res) => {
 })
            
 // new project page
-router.post('/creation', creation.postNewProject, (req, res) =>  {
+router.post('/creation', [
+                          creation.postNewProject,
+                          creation.validate
+                          ], (req, res) =>  {
     header = creation.header();
     res.render(req.body['page'],{ihm_data:req.body['ihm'], js_folder: req.body['js_folder']})
 })

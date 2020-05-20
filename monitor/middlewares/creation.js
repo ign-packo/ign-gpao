@@ -1,6 +1,8 @@
 const ign_gpao =  require('ejs-electron-ign-gpao')
+const checkIhmSchema =  require('../validator/checkIhmSchema')
 
 const serveur = require('../serveur');
+
 
 var ihm_data = {}
 var js_folder = '.'
@@ -30,8 +32,19 @@ function postNewProject(req, res, next) {
     req.on('error', function(e) {
            console.log('problem with request: ' + e.message);
            })
+}
+
+function validate(req, res, next) {
     
-   
+    var result = checkIhmSchema.validate(req.body)
+
+    if (!result.valid) {
+        console.log(result['errors'])
+        req.body['page'] = JSON.stringify(result['errors'], null, '\t')
+        next()
+    } else {
+        next()
+    }
 }
 
 function header() {
@@ -42,5 +55,6 @@ function header() {
 module.exports = {
     getNewProject,
     postNewProject,
+    validate,
     header
 };
