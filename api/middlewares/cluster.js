@@ -20,7 +20,7 @@ async function insertCluster(req, res, next) {
 
   const { host } = params;
 
-  await req.pgPool.query(
+  await req.client.query(
     'LOCK TABLE cluster IN EXCLUSIVE MODE',
   )
     .catch((error) => {
@@ -30,7 +30,7 @@ async function insertCluster(req, res, next) {
         function: 'insertCluster',
       };
     });
-  await req.pgPool.query(
+  await req.client.query(
     'INSERT INTO cluster (host, id_thread, active, available) VALUES ( $1 , (select count(id) from cluster where host = $2 AND available = \'True\'), true, true ) RETURNING id',
     [host, host],
   )
@@ -49,7 +49,7 @@ async function unavailableCluster(req, res, next) {
   const params = matchedData(req);
   const { id } = params;
   debug('update ', id);
-  await req.pgPool.query('UPDATE cluster SET available=\'False\' WHERE id=$1', [id])
+  await req.client.query('UPDATE cluster SET available=\'False\' WHERE id=$1', [id])
     .catch((error) => {
       req.error = {
         msg: error.toString(),
