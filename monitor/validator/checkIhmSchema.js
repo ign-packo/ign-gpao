@@ -75,7 +75,6 @@ function validate(ihm_data) {
     }
     v.addSchema(checkbox_schema, '/CheckBox');
     
-    
     //schema Label
     const label_schema = {
         'type': 'object',
@@ -92,8 +91,6 @@ function validate(ihm_data) {
         }
     }
     v.addSchema(label_schema, '/Label');
-    
-    
     
     //schema ButtonGroup
     const buttongroup_schema = {
@@ -329,7 +326,6 @@ function validate(ihm_data) {
     }
     v.addSchema(dependency_schema, '/Dependency');
     
-    
     //schema environment
     const env_schema = {
         'properties': {
@@ -344,7 +340,6 @@ function validate(ihm_data) {
         }
     }
     v.addSchema(env_schema, '/Environment');
-    
     
     //schema command
     const cmd_schema = {
@@ -379,7 +374,7 @@ function validate(ihm_data) {
     // Schema json ihm
     const ihm_schema = {
         'type': 'object',
-        'required': ['ihm', 'page', 'js_folder'],
+        'required': ['ihm', 'page', 'jsFolder'],
         'properties': {
             'ihm': {
                 'type': 'object',

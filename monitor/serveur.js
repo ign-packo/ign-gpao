@@ -1,7 +1,6 @@
 
-var express = require('express')
-const ign_gpao =  require('ejs-electron-ign-gpao')
-const debug = require('debug');
+const express = require('express');
+const gpaoInterface = require('ejs-electron-ign-gpao');
 
 const app = express();
 
@@ -18,17 +17,17 @@ module.exports = {
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
+const path = require('path');
 const routes = require('./routes');
 
-//java scripts visible from html code
-app.use(express.static(ign_gpao.script_folder()))
+// java scripts visible from html code
+app.use(express.static(gpaoInterface.script_folder()));
 
 // use res.render to load up an ejs view file
-app.use('/', routes)
+app.use('/', routes);
 
-var path = require('path');
-var appDir = path.dirname(require.main.filename);
-console.log('server root:', appDir)
-console.log("URL du moniteur : http://"+URL_API+":"+PORT)
+const appDir = path.dirname(require.main.filename);
+console.log('server root:', appDir);
+console.log(`URL du moniteur : http://${URL_API}:${PORT}`);
 
-app.listen(PORT)
+app.listen(PORT);

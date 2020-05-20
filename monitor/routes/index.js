@@ -4,11 +4,11 @@ const projects = require('../middlewares/project');
 const clusters = require('../middlewares/cluster');
 const creation = require('../middlewares/creation');
 
-var header = '../partials/header'
+let header = '../partials/header';
 
 // home page
 router.get('/', (req, res) => {
-  res.render('pages/index');
+           res.render('pages/index', {header: header });
 });
 
 // job page
@@ -19,7 +19,7 @@ router.get('/job', jobs.getJobs, (req, res) => {
     array.push(element);
   });
 
-  res.render('pages/job', { json: array, header: header});
+           res.render('pages/job', { json: array, header: header });
 });
 
 // project page
@@ -44,16 +44,16 @@ router.get('/cluster', clusters.getClusters, (req, res) => {
 
 // new project page
 router.get('/creation', creation.getNewProject, (req, res) => {
-           res.render(req.body['page'],{ihm_data:req.body['ihm'], js_folder: req.body['js_folder']})
-})
-           
+  res.render(req.body.page, { ihm_data: req.body.ihm, js_folder: req.body.js_folder });
+});
+
 // new project page
 router.post('/creation', [
-                          creation.postNewProject,
-                          creation.validate
-                          ], (req, res) =>  {
-    header = creation.header();
-    res.render(req.body['page'],{ihm_data:req.body['ihm'], js_folder: req.body['js_folder']})
-})
+  creation.postNewProject,
+  creation.validate,
+], (req, res) => {
+  header = creation.header();
+  res.render(req.body.page, { ihm_data: req.body.ihm, js_folder: req.body.js_folder });
+});
 
 module.exports = router;
