@@ -68,7 +68,7 @@ paths:
               - failed
               - done
         - in: query
-          name: return_code
+          name: returnCode
           description: le code de retour de la commande
           required: true
           schema:

@@ -34,12 +34,12 @@ if __name__ == "__main__":
 
             print("Execution de la commande "+ str(command))
             array_command = command.split()
-            return_code = 999
+            returnCode = 999
             try:
                 proc = subprocess.Popen(array_command, stdout=subprocess.PIPE)
                 (out, err) = proc.communicate()
                 status='done'
-                return_code = proc.returncode
+                returnCode = proc.returncode
                 json_data = out.decode()
 
             except Exception as ex:
@@ -47,11 +47,11 @@ if __name__ == "__main__":
                 json_data=str(ex)
                 print('failed', ex)
             
-            if (return_code != 0):
+            if (returnCode != 0):
                 status='failed'
                 print("le job a echoue")
 
-            req=requests.post('http://'+url_api+':8080/api/job?id='+str(id)+'&status='+str(status)+'&return_code='+str(return_code), json={"log": json_data})
+            req=requests.post('http://'+url_api+':8080/api/job?id='+str(id)+'&status='+str(status)+'&returnCode='+str(returnCode), json={"log": json_data})
         else:
             print("Aucun job disponible dans la base")
 
