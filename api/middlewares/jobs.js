@@ -37,7 +37,7 @@ async function updateJobStatus(req, res, next) {
   const params = matchedData(req);
   const { id } = params;
   const { status } = params;
-  const returnCode = params.return_code;
+  const { returnCode } = params;
   const { log } = params;
 
   debug(`id = ${id}`);
