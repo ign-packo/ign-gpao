@@ -2,7 +2,7 @@ const debug = require('debug')('project');
 
 async function insertProject(name, req) {
   debug(`Insertion du projet ${name}`);
-  await req.pgPool.query(
+  await req.client.query(
     'INSERT INTO projects (name) VALUES ($1) RETURNING id', [name],
   )
     .then((results) => { req.idProjects.push(results.rows[0].id); })
@@ -18,7 +18,7 @@ async function insertProject(name, req) {
 
 async function insertJob(name, command, idProject, req) {
   debug(`Insertion du job ${name}`);
-  await req.pgPool.query(
+  await req.client.query(
     'INSERT INTO jobs (name, command, id_project) VALUES ($1, $2, $3) RETURNING id', [name, command, idProject],
   )
     .then((results) => { req.idJobs.push(results.rows[0].id); })
@@ -34,7 +34,7 @@ async function insertJob(name, command, idProject, req) {
 
 async function insertJobDependency(upstream, downstream, req) {
   debug(`Insertion  de la dependance entre le job ${upstream} et ${downstream}`);
-  await req.pgPool.query(
+  await req.client.query(
     'INSERT INTO jobdependencies (upstream, downstream) VALUES ($1, $2)', [upstream, downstream],
   )
     .then()
@@ -50,7 +50,7 @@ async function insertJobDependency(upstream, downstream, req) {
 
 async function insertProjectDependency(upstream, downstream, req) {
   debug(`Insertion  de la dependance entre le projet ${upstream} et ${downstream}`);
-  await req.pgPool.query(
+  await req.client.query(
     'INSERT INTO projectdependencies (upstream, downstream) VALUES ($1, $2)', [upstream, downstream],
   )
     .then()
@@ -113,7 +113,7 @@ async function insertProjectFromJson(req, res, next) {
 }
 
 async function getAllProjects(req, res, next) {
-  await req.pgPool.query('SELECT * FROM projects')
+  await req.client.query('SELECT * FROM projects')
     .then((results) => { req.result = results.rows; })
     .catch((error) => {
       req.error = {
