@@ -38,10 +38,10 @@ router.post('/job', [
     .isInt({ min: 1 })
     .withMessage(createErrorMsg.getInvalidParameterMsg('id')),
 
-  query('return_code')
-    .exists().withMessage(createErrorMsg.getMissingParameterMsg('return_code'))
+  query('returnCode')
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('returnCode'))
     .isInt({ min: 0 })
-    .withMessage(createErrorMsg.getInvalidParameterMsg('return_code')),
+    .withMessage(createErrorMsg.getInvalidParameterMsg('returnCode')),
 ],
 validateParams,
 pgClient.open,
