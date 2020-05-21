@@ -1,7 +1,5 @@
 const debug = require('debug')('creation');
 const gpaoInterface = require('ejs-electron-ign-gpao');
-const checkIhmSchema = require('../validator/checkIhmSchema');
-
 
 let gpaoInterfaceData = {};
 const jsFolder = '.';
@@ -31,7 +29,7 @@ function postNewProject(req, res, next) {
 }
 
 function validate(req, res, next) {
-  const result = checkIhmSchema.validate(req.body);
+  const result = gpaoInterface.validate(req.body);
 
   if (!result.valid) {
     debug(result.errors);
