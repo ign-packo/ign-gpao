@@ -8,6 +8,7 @@ const { Client } = require('pg');
 async function open(req, res, next) {
   debug('open pg connection...');
   try {
+    debug(process.env.PGHOST, process.env.PGDATABASE, process.env.PGUSER, process.env.PGPASSWORD);
     req.client = new Client({
       user: process.env.PGUSER,
       host: process.env.PGHOST,
@@ -17,6 +18,7 @@ async function open(req, res, next) {
     });
     await req.client.connect();
     await req.client.query('BEGIN');
+    debug('transaction ouverte');
     next();
   } catch (error) {
     debug(error);
