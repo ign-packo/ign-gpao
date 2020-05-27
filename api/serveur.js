@@ -34,8 +34,6 @@ app.use('/api', jobs);
 app.use('/api', projects);
 app.use('/api', clusters);
 
-module.exports = app;
-
-app.listen(PORT, () => {
+module.exports = app.listen(PORT, () => {
   debug.log(`URL de l'api : http://localhost:${PORT}/api \nURL de la documentation swagger : http://localhost:${PORT}/api/doc`);
 });
