@@ -24,16 +24,14 @@ sessions.insertSession,
 pgClient.close,
 returnMsg);
 
-router.post('/cluster/unavailable', [
+router.post('/session/close', [
   query('id')
-    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))
-    .isInt({ min: 1 })
-    .withMessage(createErrorMsg.getInvalidParameterMsg('id')),
-],
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))],
 validateParams,
 pgClient.open,
-clusters.unavailableCluster,
+sessions.closeSession,
 pgClient.close,
 returnMsg);
+
 
 module.exports = router;

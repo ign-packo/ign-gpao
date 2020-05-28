@@ -161,16 +161,16 @@ paths:
       responses:
         '200':
           description: OK
-  '/cluster/unavailable':
+  '/session/close':
     post:
       tags:
-        - clusters
-      summary: "Mise a jour d'un client"
-      description: "Mise a jour d'un client pour signaler qu'il n'est plus actif"
-      parameters:
+        - sessions
+      summary: "Fermeture d'une session"
+      description: "Fermeture d'une session"
+      parameters: 
         - in: query
           name: id
-          description: id de la ressource
+          description: id de session
           required: true
           schema:
             type: integer
