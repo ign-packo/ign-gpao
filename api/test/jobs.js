@@ -4,20 +4,20 @@ const server = require('..');
 
 const should = chai.should();
 chai.use(chaiHttp);
-let idCluster;
+let idSession;
 let idJob;
 
 describe('Jobs', () => {
   before((done) => {
     // on ajoute une ressource
     chai.request(server)
-      .put('/api/cluster')
+      .put('/api/session')
       .query({ host: 'a name' })
       .end((err, res) => {
         should.equal(err, null);
         res.should.have.status(200);
         res.body.should.be.an('array');
-        idCluster = res.body[0].id;
+        idSession = res.body[0].id;
         chai.request(server)
           .put('/api/project')
           .send({
@@ -65,11 +65,11 @@ describe('Jobs', () => {
     it('should return an error', (done) => {
       chai.request(server)
         .get('/api/job/ready')
-        .query({ id_cluster: -1 })
+        .query({ id_session: -1 })
         .end((err, res) => {
           should.equal(err, null);
           res.should.have.status(400);
-          res.body.status.should.equal("Le paramètre 'id_cluster' est invalide.");
+          res.body.status.should.equal("Le paramètre 'id_session' est invalide.");
           done();
         });
     });
@@ -79,7 +79,7 @@ describe('Jobs', () => {
     it('should return an array', (done) => {
       chai.request(server)
         .get('/api/job/ready')
-        .query({ id_cluster: idCluster })
+        .query({ id_session: idSession })
         .end((err, res) => {
           should.equal(err, null);
           res.should.have.status(200);

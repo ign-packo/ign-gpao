@@ -266,10 +266,10 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: cluster; Type: TABLE; Schema: public; Owner: postgres
+-- Name: sessions; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.cluster (
+CREATE TABLE public.sessions (
     id integer NOT NULL,
     host character varying NOT NULL,
     id_thread integer NOT NULL,
@@ -278,13 +278,13 @@ CREATE TABLE public.cluster (
 );
 
 
-ALTER TABLE public.cluster OWNER TO postgres;
+ALTER TABLE public.sessions OWNER TO postgres;
 
 --
--- Name: cluster_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.cluster_id_seq
+CREATE SEQUENCE public.sessions_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -293,13 +293,13 @@ CREATE SEQUENCE public.cluster_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.cluster_id_seq OWNER TO postgres;
+ALTER TABLE public.sessions_id_seq OWNER TO postgres;
 
 --
--- Name: cluster_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.cluster_id_seq OWNED BY public.cluster.id;
+ALTER SEQUENCE public.sessions_id_seq OWNED BY public.sessions.id;
 
 
 --
@@ -352,7 +352,7 @@ CREATE TABLE public.jobs (
     return_code integer,
     log character varying,
     id_project integer NOT NULL,
-    id_cluster integer
+    id_session integer
 );
 
 
@@ -452,10 +452,10 @@ ALTER SEQUENCE public.projectdependencies_id_seq OWNED BY public.projectdependen
 
 
 --
--- Name: cluster id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: sessions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.cluster ALTER COLUMN id SET DEFAULT nextval('public.cluster_id_seq'::regclass);
+ALTER TABLE ONLY public.sessions ALTER COLUMN id SET DEFAULT nextval('public.sessions_id_seq'::regclass);
 
 
 --
@@ -487,11 +487,11 @@ ALTER TABLE ONLY public.projects ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
--- Name: cluster cluster_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.cluster
-    ADD CONSTRAINT cluster_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
 
 
 --
@@ -599,11 +599,11 @@ ALTER TABLE ONLY public.projectdependencies
 
 
 --
--- Name: jobs id_cluster_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: jobs id_session_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT id_cluster_fk FOREIGN KEY (id_cluster) REFERENCES public.cluster(id) NOT VALID;
+    ADD CONSTRAINT id_session_fk FOREIGN KEY (id_session) REFERENCES public.sessions(id) NOT VALID;
 
 
 --

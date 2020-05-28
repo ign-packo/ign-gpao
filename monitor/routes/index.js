@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const jobs = require('../middlewares/job');
 const projects = require('../middlewares/project');
-const clusters = require('../middlewares/cluster');
+const sessions = require('../middlewares/session');
 
 
 // home page
@@ -30,14 +30,14 @@ router.get('/project', projects.getProjects, (req, res) => {
   res.render('pages/project', { json: array });
 });
 
-// cluster page
-router.get('/cluster', clusters.getClusters, (req, res) => {
+// session page
+router.get('/session', sessions.getSessions, (req, res) => {
   const array = [];
 
   req.body.forEach((element) => {
     array.push(element);
   });
-  res.render('pages/cluster', { json: array });
+  res.render('pages/session', { json: array });
 });
 
 module.exports = router;
