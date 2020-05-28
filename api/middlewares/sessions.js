@@ -21,7 +21,7 @@ async function insertSession(req, res, next) {
   const { host } = params;
 
   await req.client.query(
-    'INSERT INTO sessions (host, id_thread, active, available) VALUES ( $1 , (select count(id) from sessions where host = $2), true, true ) RETURNING id',
+    'INSERT INTO sessions (host, id_thread, start_date) VALUES ( $1 , (select count(id) from sessions where host = $2), NOW()) RETURNING id',
     [host, host],
   )
     .then((results) => { req.result = results.rows; })

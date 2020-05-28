@@ -27,6 +27,19 @@ CREATE TYPE public.status AS ENUM (
     'failed'
 );
 
+--
+-- Name: session_status; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.session_status AS ENUM (
+    'idle',
+    'active',
+    'idle_requested',
+    'active_requested',
+    'running',
+    'closed'
+);
+
 
 ALTER TYPE public.status OWNER TO postgres;
 
@@ -140,6 +153,30 @@ $$;
 
 
 ALTER FUNCTION public.update_job_when_project_change() OWNER TO postgres;
+
+--
+-- Name: update_session_when_job_change(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.update_session_when_job_change() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF (OLD.status = 'running' AND NEW.status <> OLD.status AND NEW.id_session IS NOT null) THEN
+       UPDATE public.sessions SET status='active' WHERE 
+       status='running' 
+       AND id = NEW.id_session;
+  END IF;
+  IF (NEW.status = 'running' AND NEW.status <> OLD.status AND NEW.id_session IS NOT null) THEN
+       UPDATE public.sessions SET status='running' WHERE 
+       id = NEW.id_session;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.update_session_when_job_change() OWNER TO postgres;
 
 --
 -- Name: update_jobdependencies_when_job_done(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -273,8 +310,9 @@ CREATE TABLE public.sessions (
     id integer NOT NULL,
     host character varying NOT NULL,
     id_thread integer NOT NULL,
-    active boolean NOT NULL,
-    available boolean NOT NULL
+    start_date TIMESTAMPTZ NOT NULL,
+    end_date TIMESTAMPTZ,
+    status public.session_status DEFAULT 'idle'::public.session_status NOT NULL
 );
 
 
@@ -545,6 +583,13 @@ CREATE TRIGGER update_job_when_jobdependency_unactivate AFTER UPDATE OF active O
 --
 
 CREATE TRIGGER update_job_when_project_change AFTER UPDATE OF status ON public.projects FOR EACH ROW EXECUTE PROCEDURE public.update_job_when_project_change();
+
+
+--
+-- Name: projects update_session_when_job_change; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER update_session_when_job_change AFTER UPDATE OF status ON public.jobs FOR EACH ROW EXECUTE PROCEDURE public.update_session_when_job_change();
 
 
 --
