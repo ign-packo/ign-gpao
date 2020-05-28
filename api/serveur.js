@@ -7,7 +7,7 @@ const YAML = require('yamljs');
 const debug = require('debug');
 const jobs = require('./routes/jobs');
 const projects = require('./routes/projects');
-const clusters = require('./routes/cluster');
+const sessions = require('./routes/sessions');
 
 const PORT = 8080;
 
@@ -32,7 +32,7 @@ app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
 
 app.use('/api', jobs);
 app.use('/api', projects);
-app.use('/api', clusters);
+app.use('/api', sessions);
 
 module.exports = app.listen(PORT, () => {
   debug.log(`URL de l'api : http://localhost:${PORT}/api \nURL de la documentation swagger : http://localhost:${PORT}/api/doc`);

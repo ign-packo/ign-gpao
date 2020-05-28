@@ -17,8 +17,8 @@ tags:
     description: Manipulation des jobs
   - name: projects
     description: Manipulation des projets
-  - name: clusters
-    description: Manipulation de clusters
+  - name: sessions
+    description: Manipulation des sessions
 paths:
   '/jobs':
     get:
@@ -37,8 +37,8 @@ paths:
       description: "Récupération de l'identifiant d'un job avec le status ready et mise à jour de son à jour de son status en running"
       parameters:
         - in: query
-          name: id_cluster
-          description: l'identifiant du cluster
+          name: id_session
+          description: l'identifiant de session
           required: true
           schema:
             type: integer
@@ -136,20 +136,20 @@ paths:
      responses:
        '200':
          description: OK
-  '/clusters':
+  '/sessions':
     get:
       tags:
-        - clusters
-      summary: "Récupération de tous les clusters"
-      description: "Récupération de tous les clusters enregistré dans la table cluster"
+        - sessions
+      summary: "Récupération de toutes les sessions"
+      description: "Récupération de toutes les sessions enregistrées dans la table sessions"
       responses:
         '200':
           description: OK
-  '/cluster':
+  '/session':
     put:
       tags:
-        - clusters
-      summary: "Insertion d'un cluster dans la base"
+        - sessions
+      summary: "Insetion d'une session dans la base"
       description: "Insertion d'un client en précisant le nom de la machine"
       parameters: 
         - in: query

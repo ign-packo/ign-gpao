@@ -57,7 +57,7 @@ def process(id):
             time.sleep(random.randrange(10))
     except KeyboardInterrupt:
         print("on demande au process de s'arreter")
-        req=requests.post('http://'+UrlApi+':8080/api/cluster/unavailable?id='+str(id_cluster))
+        req=requests.post('http://'+UrlApi+':8080/api/session/unavailable?id='+str(id_cluster))
     print(strId, "end thread ")
 
 if __name__ == "__main__":

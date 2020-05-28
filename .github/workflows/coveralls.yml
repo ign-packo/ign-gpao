@@ -42,7 +42,7 @@ jobs:
         PGUSER: postgres
         PGPASSWORD: postgres
         PGDATABASE: gpao
-        DEBUG: pgClient, cluster
+        DEBUG: pgClient
       run: |
         npm run test-coveralls
         sed -i -E "s/^SF:/SF:api\//" coverage/lcov.info

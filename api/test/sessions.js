@@ -5,16 +5,16 @@ const server = require('..');
 const should = chai.should();
 chai.use(chaiHttp);
 
-describe('Clusters', () => {
+describe('Sessions', () => {
   after((done) => {
     server.close();
     done();
   });
 
-  describe('Get clusters', () => {
+  describe('Get sessions', () => {
     it('should return an array', (done) => {
       chai.request(server)
-        .get('/api/clusters')
+        .get('/api/sessions')
         .end((err, res) => {
           should.equal(err, null);
           res.should.have.status(200);
@@ -23,10 +23,10 @@ describe('Clusters', () => {
         });
     });
   });
-  describe('Put cluster', () => {
-    it('insert a valid cluster', (done) => {
+  describe('Put session', () => {
+    it('insert a valid session', (done) => {
       chai.request(server)
-        .put('/api/cluster')
+        .put('/api/session')
         .query({ host: 'a name' })
         .end((err, res) => {
           should.equal(err, null);
