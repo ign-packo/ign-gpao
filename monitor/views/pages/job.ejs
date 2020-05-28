@@ -31,6 +31,7 @@
 				<th>Code retour</th>
 				<th>Date début</th>
 				<th>Date fin</th>
+				<th>id session</th>
 			</tr>
 		</thead>
 		<% json.forEach(function( job){ %>
@@ -42,6 +43,7 @@
 			<td> <%= job.return_code %></td>
 			<td> <%= job.start_date %></td>
 			<td> <%= job.end_date %></td>
+			<td> <%= job.id_session %></td>
 		</tr>
 		<% }) %>
  
