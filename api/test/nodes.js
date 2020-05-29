@@ -5,8 +5,6 @@ const server = require('..');
 const should = chai.should();
 chai.use(chaiHttp);
 
-let idSession;
-
 describe('Nodes', () => {
   after((done) => {
     server.close();
@@ -25,5 +23,4 @@ describe('Nodes', () => {
         });
     });
   });
-  
 });
