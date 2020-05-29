@@ -21,10 +21,10 @@ async function getJobReady(req, res, next) {
   try {
     await req.client.query('LOCK TABLE cluster IN EXCLUSIVE MODE');
     await req.client.query(
-      "UPDATE jobs SET status = 'running', start_date=NOW(), id_session = $1 WHERE id = (SELECT id FROM jobs WHERE status = 'ready' LIMIT 1) RETURNING id, command", [id],
+      "UPDATE jobs SET status = 'running', start_date=NOW(), id_session = $1 WHERE (select status from sessions where id =$1) = 'active' AND id = (SELECT id FROM jobs WHERE status = 'ready' LIMIT 1) RETURNING id, command", [id],
     )
       .then((results) => { req.result = results.rows; });
-  } catch (error) {
+    } catch(error) {
       req.error = {
         msg: error.toString(),
         code: 500,
