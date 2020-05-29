@@ -5,6 +5,8 @@ const server = require('..');
 const should = chai.should();
 chai.use(chaiHttp);
 
+let idSession;
+
 describe('Sessions', () => {
   after((done) => {
     server.close();
@@ -23,17 +25,33 @@ describe('Sessions', () => {
         });
     });
   });
+
   describe('Put session', () => {
     it('insert a valid session', (done) => {
+      const hostname = String(Date.now());
       chai.request(server)
         .put('/api/session')
-        .query({ host: 'a name' })
+        .query({ host: hostname })
         .end((err, res) => {
           should.equal(err, null);
           res.should.have.status(200);
           res.body.should.be.an('array');
+          idSession = res.body[0].id;
           done();
         });
     });
+  });
+});
+
+describe('Close session', () => {
+  it('close a session', (done) => {
+    chai.request(server)
+      .post('/api/session/close')
+      .query({ id: idSession })
+      .end((err, res) => {
+        should.equal(err, null);
+        res.should.have.status(200);
+        done();
+      });
   });
 });
