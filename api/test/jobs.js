@@ -10,39 +10,49 @@ let idJob;
 describe('Jobs', () => {
   before((done) => {
     // on ajoute une ressource
+    const hostname = String(Date.now());
     chai.request(server)
       .put('/api/session')
-      .query({ host: 'a name' })
+      .query({ host: hostname })
       .end((err, res) => {
         should.equal(err, null);
         res.should.have.status(200);
         res.body.should.be.an('array');
         idSession = res.body[0].id;
+        // activation de la ressource
         chai.request(server)
-          .put('/api/project')
-          .send({
-            projects: [
-              {
-                name: 'Chantier 1',
-                jobs: [
-                  {
-                    name: 'jobs 1',
-                    command: 'touch file1',
-                  },
-                ],
-              },
-            ],
-          })
+          .post('/api/node/setNbActive')
+          .query({ host: hostname, limit: 1 })
           .end((err2, res2) => {
             should.equal(err2, null);
             res2.should.have.status(200);
-            done();
+            // ajout d'un projet
+            chai.request(server)
+              .put('/api/project')
+              .send({
+                projects: [
+                  {
+                    name: 'Chantier 1',
+                    jobs: [
+                      {
+                        name: 'jobs 1',
+                        command: 'touch file1',
+                      },
+                    ],
+                  },
+                ],
+              })
+              .end((err3, res3) => {
+                should.equal(err3, null);
+                res3.should.have.status(200);
+                done();
+              });
           });
       });
-    // il faut aussi ajouter un chantier avec au moins un job ready
   });
 
   after((done) => {
+    
     server.close();
     done();
   });
