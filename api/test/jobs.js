@@ -52,7 +52,6 @@ describe('Jobs', () => {
   });
 
   after((done) => {
-    
     server.close();
     done();
   });
@@ -116,7 +115,7 @@ describe('Jobs', () => {
   });
 
   describe('Post job', () => {
-    it('should return succed', (done) => {
+    it('should return succeed', (done) => {
       chai.request(server)
         .post('/api/job')
         .query({ id: idJob, status: 'failed', returnCode: 0 })

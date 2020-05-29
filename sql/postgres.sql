@@ -162,12 +162,14 @@ CREATE FUNCTION public.update_session_when_job_change() RETURNS trigger
     AS $$
 BEGIN
   IF (OLD.status = 'running' AND NEW.status <> OLD.status AND NEW.id_session IS NOT null) THEN
-       UPDATE public.sessions SET status='active' WHERE 
-       status='running' 
-       AND id = NEW.id_session;
+--   Dans le cas ou la session est en idle_requested il faut passer en idle
+        UPDATE public.sessions SET status= CASE
+            WHEN status='running'::public.session_status THEN 'active'::public.session_status
+            WHEN status='idle_requested'::public.session_status THEN 'idle'::public.session_status
+            END WHERE id = NEW.id_session;
   END IF;
   IF (NEW.status = 'running' AND NEW.status <> OLD.status AND NEW.id_session IS NOT null) THEN
-       UPDATE public.sessions SET status='running' WHERE 
+       UPDATE public.sessions SET status='running'::public.session_status WHERE 
        id = NEW.id_session;
   END IF;
   RETURN NEW;
@@ -308,7 +310,6 @@ SET default_with_oids = false;
 CREATE TABLE public.sessions (
     id integer NOT NULL,
     host character varying NOT NULL,
-    id_thread integer NOT NULL,
     start_date TIMESTAMPTZ NOT NULL,
     end_date TIMESTAMPTZ,
     status public.session_status DEFAULT 'idle'::public.session_status NOT NULL
