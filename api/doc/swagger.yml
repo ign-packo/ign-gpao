@@ -136,6 +136,37 @@ paths:
      responses:
        '200':
          description: OK
+  '/nodes':
+    get:
+      tags:
+        - nodes
+      summary: "Récupération de toutes les machines"
+      description: "Récupération de toutes les machines"
+      responses:
+        '200':
+          description: OK
+  '/node/setNbActive':
+    post:
+      tags:
+        - nodes
+      summary: "Réglage du nombre de coeurs actifs pour une machine"
+      description: "Réglage du nombre de coeurs actifs pour une machine"
+      parameters:
+        - in: query
+          name: host
+          description: hostname
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: limit
+          description: le nb max de coeurs actifs
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
   '/sessions':
     get:
       tags:

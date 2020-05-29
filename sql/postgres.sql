@@ -35,7 +35,6 @@ CREATE TYPE public.session_status AS ENUM (
     'idle',
     'active',
     'idle_requested',
-    'active_requested',
     'running',
     'closed'
 );

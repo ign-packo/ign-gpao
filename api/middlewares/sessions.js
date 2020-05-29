@@ -1,9 +1,5 @@
 const { matchedData } = require('express-validator/filter');
-<<<<<<< HEAD
-const debug = require('debug')('job');
-=======
 const debug = require('debug')('session');
->>>>>>> d317e49... gestion fermeture des sessions
 
 async function getAllSessions(req, res, next) {
   await req.client.query('SELECT * FROM sessions')
