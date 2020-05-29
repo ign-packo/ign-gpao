@@ -3,4 +3,4 @@ if [ "$(docker ps -aq -f name=client-gpao)" ]; then
     docker rm -f client-gpao
 fi
 
-python client.py
+python3 client.py
