@@ -2,11 +2,9 @@ name: Coveralls
 
 on:
   push:
-    branches:
-     -*
+    branches: '*'
   pull_request:
-    branches:
-     -*
+    branches: '*'
 
 jobs:
 
