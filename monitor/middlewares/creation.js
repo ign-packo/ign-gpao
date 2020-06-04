@@ -17,7 +17,7 @@ function postNewProject(req, res, next) {
   });
   req.on('end', () => {
     gpaoInterfaceData = JSON.parse(body);
-    page = `${gpaoInterface.view_folder()}/pages/creation`;
+    page = `${gpaoInterface.viewFolder()}/pages/creation`;
     gpaoInterfaceData.jsFolder = jsFolder;
     gpaoInterfaceData.page = page;
     req.body = gpaoInterfaceData;
@@ -48,7 +48,7 @@ function header(req) {
   if (!req.headers['user-agent'].includes('Electron')) {
     return '../partials/header';
   }
-  return `${gpaoInterface.view_folder()}/partials/header`;
+  return `${gpaoInterface.viewFolder()}/partials/header`;
 }
 
 

@@ -22,7 +22,7 @@ const path = require('path');
 const routes = require('./routes');
 
 // java scripts visible from html code
-app.use(express.static(gpaoInterface.script_folder()));
+app.use(express.static(gpaoInterface.scriptFolder()));
 
 // use res.render to load up an ejs view file
 app.use('/', routes);
