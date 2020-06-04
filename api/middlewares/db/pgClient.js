@@ -17,6 +17,7 @@ async function open(req, res, next) {
     });
     await req.client.connect();
     await req.client.query('BEGIN');
+    debug('transaction ouverte');
     next();
   } catch (error) {
     debug(error);
