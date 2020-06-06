@@ -32,8 +32,14 @@ function validate(req, res, next) {
   const result = gpaoInterface.validate(req.body);
 
   if (!result.valid) {
-    debug(result.errors);
-    req.body.page = JSON.stringify(result.errors, null, '\t');
+    const messagelist = [];
+    Array.prototype.forEach.call(result.errors, (error) => {
+      const submessagelist = gpaoInterface.analyzeError(error, req.body);
+      Array.prototype.forEach.call(submessagelist, (submessage) => {
+        messagelist.push(submessage);
+      });
+    });
+    req.body.page = messagelist.find((x) => x !== undefined);
     next();
   } else {
     next();
