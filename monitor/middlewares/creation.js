@@ -18,7 +18,7 @@ function postNewProject(req, res, next) {
   req.on('end', () => {
     gpaoInterfaceData = JSON.parse(body);
     page = `${gpaoInterface.viewFolder()}/pages/creation`;
-    gpaoInterfaceData.jsFolder = jsFolder;
+    gpaoInterfaceData.js_folder = jsFolder;
     gpaoInterfaceData.page = page;
     req.body = gpaoInterfaceData;
     next();
@@ -56,7 +56,6 @@ function header(req) {
   }
   return `${gpaoInterface.viewFolder()}/partials/header`;
 }
-
 
 module.exports = {
   getNewProject,

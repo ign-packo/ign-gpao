@@ -1,4 +1,3 @@
-
 const express = require('express');
 const gpaoInterface = require('ejs-electron-ign-gpao');
 const debug = require('debug')('monitor');
