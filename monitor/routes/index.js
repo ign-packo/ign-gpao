@@ -3,7 +3,6 @@ const jobs = require('../middlewares/job');
 const projects = require('../middlewares/project');
 const sessions = require('../middlewares/session');
 
-
 // home page
 router.get('/', (req, res) => {
   res.render('pages/index');
