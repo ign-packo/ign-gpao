@@ -14,7 +14,6 @@ async function getAllSessions(req, res, next) {
   next();
 }
 
-
 async function insertSession(req, res, next) {
   const params = matchedData(req);
 

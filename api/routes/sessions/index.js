@@ -33,5 +33,4 @@ sessions.closeSession,
 pgClient.close,
 returnMsg);
 
-
 module.exports = router;

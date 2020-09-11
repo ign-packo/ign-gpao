@@ -56,7 +56,6 @@ describe('Jobs', () => {
     done();
   });
 
-
   describe('Get jobs', () => {
     it('should return an array', (done) => {
       chai.request(server)
