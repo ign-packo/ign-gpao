@@ -6,7 +6,7 @@ const hosts = require('../middlewares/host');
 
 // home page
 router.get('/', (req, res) => {
-  res.render('pages/index');
+  res.render('pages/index', { api: req.app.api_url });
 });
 
 // job page
