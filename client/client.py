@@ -34,7 +34,7 @@ def process(id):
                 id_job = req.json()[0]['id']
                 command = req.json()[0]['command']
                 print(strId, "L'identifiant du job "+str(id_job)+" est disponible")
-                print(strId, "Execution de la commande "+ str(command))
+                print(strId, "Execution de la commande ["+ str(command)+"]")
                 array_command = command.split()
                 returnCode = 999
                 try:

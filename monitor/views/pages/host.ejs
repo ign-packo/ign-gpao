@@ -1,0 +1,67 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include ("../partials/head") %>
+</head>
+<body class="container">
+
+<header>
+    <%- include ("../partials/header") %>
+</header>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#session').DataTable();
+    } );
+    var api = '<%= api  %>';
+    $(function() {
+    $('button.change').click(function() {
+      var nb = parseInt(prompt("Modifier le nombre de Threads actifs pour "+this.dataset.host, this.dataset.active), 10);
+      if (!isNaN(nb)){
+        //Faire la requete
+        fetch(`${api}/api/node/setNbActive?host=${this.dataset.host}&limit=${nb}`, {
+            method: "POST"
+        }).then(() => {
+            location.reload();
+        });  
+      }
+    });
+  });
+</script>
+
+<main>
+    <div class="jumbotron">
+        <h2>Visualisation des Sessions</h2>
+        <table class="table table-striped table-bordered" style="width:100%" id="session">
+            <thead>
+                <tr>
+                    <th>host</th>
+                    <th>closed</th>
+                    <th>active</th>
+                    <th>idle</th>
+                    <th>running</th>
+                    <th>action</th>
+                </tr>
+            </thead>
+            <% json.forEach(function( host){ %>
+            <tr>
+                <td> <%= host.host %></td>
+                <td> <%= host.closed %></td>
+                <td> <%= host.active %></td>
+                <td> <%= host.idle %></td>
+                <td> <%= host.running %></td>
+                <td> <button class="change" data-host="<%= host.host %>" data-active="<%= host.active %>">Modifier</button> </td>
+            </tr>
+            <% }) %>
+        </table>
+        </div>
+</main>
+
+<footer>
+    <%- include ("../partials/footer") %>
+</footer>
+
+</body>
+</html>

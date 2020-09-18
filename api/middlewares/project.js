@@ -1,3 +1,5 @@
+const { matchedData } = require('express-validator/filter');
+
 const debug = require('debug')('project');
 
 async function insertProject(name, req) {
@@ -123,7 +125,26 @@ async function getAllProjects(req, res, next) {
   next();
 }
 
+async function deleteProject(req, res, next) {
+  const params = matchedData(req);
+  const { id } = params;
+  debug('id : ', id);
+  await req.client.query('DELETE FROM projects WHERE id=$1', [id])
+    .then((results) => {
+      req.result = results.rows;
+    })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 404,
+        function: 'deleteProject',
+      };
+    });
+  next();
+}
+
 module.exports = {
   insertProjectFromJson,
   getAllProjects,
+  deleteProject,
 };

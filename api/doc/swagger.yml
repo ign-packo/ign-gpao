@@ -127,6 +127,23 @@ paths:
      responses:
        '200':
          description: OK
+  '/project/{id}':
+    delete:
+     tags:
+       - projects
+     summary: "Suppression d'un projet"
+     parameters:
+        - in: path
+          name: id
+          description: l'identifiant du job à supprimer
+          required: true
+          schema:
+            type: integer
+     responses:
+       '200':
+         description: OK
+       '404':
+         description: Not Found
   '/projects':
     get:
      tags:
