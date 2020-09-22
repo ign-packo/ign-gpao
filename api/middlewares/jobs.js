@@ -76,7 +76,7 @@ async function updateJobStatus(req, res, next) {
   debug(`log = ${log}`);
 
   await req.client.query(
-    'UPDATE jobs SET status = $1, log = $2, return_code = $4, end_date=NOW() WHERE id = $3', [status, log, id, returnCode],
+    'UPDATE jobs SET status = $1, log = CONCAT( log, CAST($2 AS VARCHAR) ), return_code = $4, end_date=NOW() WHERE id = $3', [status, log, id, returnCode],
   )
     .then((results) => { req.result = results.rows; })
     .catch((error) => {
@@ -89,10 +89,37 @@ async function updateJobStatus(req, res, next) {
   next();
 }
 
+async function appendJobLog(req, res, next) {
+  const params = matchedData(req);
+  const { id } = params;
+  const { log } = params;
+
+  debug('appendJobLog')
+  debug(`id = ${id}`);
+  debug(`log = ${log}`);
+
+
+  await req.client.query(
+    'UPDATE jobs SET log = CONCAT( log, CAST($2 AS VARCHAR) ) WHERE id = $1', [id, log],
+  )
+    .then((results) => { req.result = results.rows; })
+    .catch((error) => {
+      debug(error);
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'appendJobLog',
+      };
+    });
+  next();
+}
+
+
 module.exports = {
   getAllJobs,
   getJobStatus,
   getJobReady,
   getJob,
   updateJobStatus,
+  appendJobLog,
 };

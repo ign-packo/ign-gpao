@@ -10,6 +10,7 @@ import os
 import socket
 import signal
 import tempfile
+import shlex
 
 HostName=socket.gethostname()
 NbProcess = multiprocessing.cpu_count()
@@ -35,25 +36,29 @@ def process(id):
                 command = req.json()[0]['command']
                 print(strId, "L'identifiant du job "+str(id_job)+" est disponible")
                 print(strId, "Execution de la commande ["+ str(command)+"]")
-                array_command = command.split()
-                returnCode = 999
+                returnCode = None
+                error_message = ''
                 try:
-                    proc = subprocess.Popen(array_command, stdout=subprocess.PIPE, cwd=working_dir.name)
-                    (out, err) = proc.communicate()
+                    process=subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=working_dir.name)
+                    while (returnCode == None):
+                        returnCode=process.poll()
+                        line = process.stdout.readline().decode()
+                        if line:
+                            req=requests.post('http://'+UrlApi+':8080/api/job/'+str(id_job)+'/append_log', json={"log": line})
+    
                     status='done'
-                    returnCode = proc.returncode
-                    json_data = out.decode()
+                    error_message+=process.stderr.read().decode()
 
                 except Exception as ex:
                     print('failed : ', ex)
                     status='failed'
-                    json_data=str(ex)
+                    error_message+=str(ex)
                 
                 if (returnCode != 0):
                     status='failed'
 
-                print('Mise a jour : ', returnCode, status, json_data)
-                req=requests.post('http://'+UrlApi+':8080/api/job?id='+str(id_job)+'&status='+str(status)+'&returnCode='+str(returnCode), json={"log": json_data})
+                print('Mise a jour : ', returnCode, status, error_message)
+                req=requests.post('http://'+UrlApi+':8080/api/job?id='+str(id_job)+'&status='+str(status)+'&returnCode='+str(returnCode), json={"log": error_message})
             time.sleep(random.randrange(10))
     except KeyboardInterrupt:
         print("on demande au process de s'arreter")
