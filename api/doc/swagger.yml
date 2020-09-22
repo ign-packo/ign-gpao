@@ -133,6 +133,32 @@ paths:
       responses:
         '200':
           description: OK
+  '/job/{id}/append_log':
+    post:
+      tags:
+        - jobs
+      summary: "Enrichissement du log"
+      description: "Permet de mettre à jour le log et le statut d'un job en fonction de son identifiant"
+      parameters:
+        - in: path
+          name: id
+          description: l'identifiant du job à modifier
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: log en sortie du script
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                log:
+                  type: string
+      responses:
+        '200':
+          description: OK
 
   '/project':
     put:
