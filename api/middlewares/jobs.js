@@ -114,7 +114,6 @@ async function appendJobLog(req, res, next) {
   debug(`id = ${id}`);
   debug(`log = ${log}`);
 
-
   await req.client.query(
     'UPDATE jobs SET log = CONCAT( log, CAST($2 AS VARCHAR) ) WHERE id = $1', [id, log],
   )
@@ -129,7 +128,6 @@ async function appendJobLog(req, res, next) {
     });
   next();
 }
-
 
 module.exports = {
   getAllJobs,
