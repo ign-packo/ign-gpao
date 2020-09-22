@@ -94,7 +94,6 @@ async function appendJobLog(req, res, next) {
   const { id } = params;
   const { log } = params;
 
-  debug('appendJobLog')
   debug(`id = ${id}`);
   debug(`log = ${log}`);
 
