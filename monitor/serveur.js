@@ -20,6 +20,8 @@ const routes = require('./routes');
 
 // use res.render to load up an ejs view file
 app.use('/', routes);
+app.api_url = `http://${URL_API}:${URL_API_PORT}`;
+debug.log(`URL de l'API : ${app.api_url}`);
 
 app.listen(PORT);
 debug.log(`URL du moniteur : http://${URL_API}:${PORT}`);

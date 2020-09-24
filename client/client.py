@@ -18,23 +18,23 @@ UrlApi = os.getenv('URL_API', 'localhost')
 def process(id):
     strId = "["+str(id)+"] : "
     print(strId, "begin")
-    id_cluster = -1
+    id_session = -1
 
     try:
         # On cree un dossier temporaire dans le dossier courant qui devient le dossier d'execution
         working_dir = tempfile.TemporaryDirectory(dir='.')
         print('working dir : ', working_dir.name)
 
-        req=requests.put('http://'+UrlApi+':8080/api/cluster?host='+HostName)
-        id_cluster = req.json()[0]['id']
-        print(strId, "id_cluster = ", str(id_cluster))
+        req=requests.put('http://'+UrlApi+':8080/api/session?host='+HostName)
+        id_session = req.json()[0]['id']
+        print(strId, "id_session = ", str(id_session))
         while True:
-            req=requests.get('http://'+UrlApi+':8080/api/job/ready?id_cluster='+str(id_cluster))
+            req=requests.get('http://'+UrlApi+':8080/api/job/ready?id_session='+str(id_session))
             if(len(req.json())!=0):
                 id_job = req.json()[0]['id']
                 command = req.json()[0]['command']
                 print(strId, "L'identifiant du job "+str(id_job)+" est disponible")
-                print(strId, "Execution de la commande "+ str(command))
+                print(strId, "Execution de la commande ["+ str(command)+"]")
                 array_command = command.split()
                 returnCode = 999
                 try:
@@ -57,7 +57,7 @@ def process(id):
             time.sleep(random.randrange(10))
     except KeyboardInterrupt:
         print("on demande au process de s'arreter")
-        req=requests.post('http://'+UrlApi+':8080/api/cluster/unavailable?id='+str(id_cluster))
+        req=requests.post('http://'+UrlApi+':8080/api/session/close?id='+str(id_session))
     print(strId, "end thread ")
 
 if __name__ == "__main__":

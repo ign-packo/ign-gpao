@@ -10,10 +10,10 @@ const pgClient = require('../../middlewares/db/pgClient');
 const returnMsg = require('../../middlewares/returnMsg');
 
 router.get('/job/ready', [
-  query('id_cluster')
-    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id_cluster'))
+  query('id_session')
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id_session'))
     .isInt({ min: 1 })
-    .withMessage(createErrorMsg.getInvalidParameterMsg('id_cluster')),
+    .withMessage(createErrorMsg.getInvalidParameterMsg('id_session')),
 ],
 validateParams,
 pgClient.open,

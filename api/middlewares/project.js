@@ -1,39 +1,41 @@
+const { matchedData } = require('express-validator/filter');
+
 const debug = require('debug')('project');
 
 async function insertProject(name, req) {
   debug(`Insertion du projet ${name}`);
-  const results = await req.client.query(
-    'INSERT INTO projects (name) VALUES ($1) RETURNING id', [name],
-  )
-    .catch((error) => {
-      req.error = {
-        msg: error.toString(),
-        code: 500,
-        function: 'insertProject',
-      };
-      debug('Erreur dans insertProject');
-    });
-  const idProject = results.rows[0].id;
-  req.idProjects.push(idProject);
+  let idProject;
+  try {
+    const results = await req.client.query('INSERT INTO projects (name) VALUES ($1) RETURNING id', [name]);
+    idProject = results.rows[0].id;
+    req.idProjects.push(idProject);
+  } catch (error) {
+    req.error = {
+      msg: error.toString(),
+      code: 500,
+      function: 'insertProject',
+    };
+    debug('Erreur dans insertProject');
+  }
   debug('Fin insertion projet');
   return idProject;
 }
 
 async function insertJob(name, command, idProject, req) {
   debug(`Insertion du job ${name}`);
-  const results = await req.client.query(
-    'INSERT INTO jobs (name, command, id_project) VALUES ($1, $2, $3) RETURNING id', [name, command, idProject],
-  )
-    .catch((error) => {
-      req.error = {
-        msg: error.toString(),
-        code: 500,
-        function: 'insertJob',
-      };
-      debug('Erreur dans insertJob');
-    });
-  const idJob = results.rows[0].id;
-  req.idJobs.push(idJob);
+  let idJob;
+  try {
+    const results = await req.client.query('INSERT INTO jobs (name, command, id_project) VALUES ($1, $2, $3) RETURNING id', [name, command, idProject]);
+    idJob = results.rows[0].id;
+    req.idJobs.push(idJob);
+  } catch (error) {
+    req.error = {
+      msg: error.toString(),
+      code: 500,
+      function: 'insertJob',
+    };
+    debug('Erreur dans insertJob');
+  }
   debug('Fin insertion job');
   return idJob;
 }
@@ -110,7 +112,9 @@ async function insertProjectFromJson(req, res, next) {
 
 async function getAllProjects(req, res, next) {
   await req.client.query('SELECT * FROM projects')
-    .then((results) => { req.result = results.rows; })
+    .then((results) => {
+      req.result = results.rows;
+    })
     .catch((error) => {
       req.error = {
         msg: error.toString(),
@@ -121,7 +125,26 @@ async function getAllProjects(req, res, next) {
   next();
 }
 
+async function deleteProject(req, res, next) {
+  const params = matchedData(req);
+  const { id } = params;
+  debug('id : ', id);
+  await req.client.query('DELETE FROM projects WHERE id=$1', [id])
+    .then((results) => {
+      req.result = results.rows;
+    })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 404,
+        function: 'deleteProject',
+      };
+    });
+  next();
+}
+
 module.exports = {
   insertProjectFromJson,
   getAllProjects,
+  deleteProject,
 };

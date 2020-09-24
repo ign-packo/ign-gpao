@@ -5,16 +5,18 @@ const server = require('..');
 const should = chai.should();
 chai.use(chaiHttp);
 
-describe('Clusters', () => {
+let idSession;
+
+describe('Sessions', () => {
   after((done) => {
     server.close();
     done();
   });
 
-  describe('Get clusters', () => {
+  describe('Get sessions', () => {
     it('should return an array', (done) => {
       chai.request(server)
-        .get('/api/clusters')
+        .get('/api/sessions')
         .end((err, res) => {
           should.equal(err, null);
           res.should.have.status(200);
@@ -23,17 +25,33 @@ describe('Clusters', () => {
         });
     });
   });
-  describe('Put cluster', () => {
-    it('insert a valid cluster', (done) => {
+
+  describe('Put session', () => {
+    it('insert a valid session', (done) => {
+      const hostname = String(Date.now());
       chai.request(server)
-        .put('/api/cluster')
-        .query({ host: 'a name' })
+        .put('/api/session')
+        .query({ host: hostname })
         .end((err, res) => {
           should.equal(err, null);
           res.should.have.status(200);
           res.body.should.be.an('array');
+          idSession = res.body[0].id;
           done();
         });
     });
+  });
+});
+
+describe('Close session', () => {
+  it('close a session', (done) => {
+    chai.request(server)
+      .post('/api/session/close')
+      .query({ id: idSession })
+      .end((err, res) => {
+        should.equal(err, null);
+        res.should.have.status(200);
+        done();
+      });
   });
 });

@@ -5,34 +5,31 @@ const {
 
 const validateParams = require('../../middlewares/validateParams');
 const createErrorMsg = require('../../middlewares/createErrorMsg');
-const clusters = require('../../middlewares/cluster');
+const sessions = require('../../middlewares/sessions');
 const pgClient = require('../../middlewares/db/pgClient');
 const returnMsg = require('../../middlewares/returnMsg');
 
-router.get('/clusters',
+router.get('/sessions',
   pgClient.open,
-  clusters.getAllClusters,
+  sessions.getAllSessions,
   pgClient.close,
   returnMsg);
 
-router.put('/cluster', [
+router.put('/session', [
   query('host')
     .exists().withMessage(createErrorMsg.getMissingParameterMsg('host'))],
 validateParams,
 pgClient.open,
-clusters.insertCluster,
+sessions.insertSession,
 pgClient.close,
 returnMsg);
 
-router.post('/cluster/unavailable', [
+router.post('/session/close', [
   query('id')
-    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))
-    .isInt({ min: 1 })
-    .withMessage(createErrorMsg.getInvalidParameterMsg('id')),
-],
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))],
 validateParams,
 pgClient.open,
-clusters.unavailableCluster,
+sessions.closeSession,
 pgClient.close,
 returnMsg);
 

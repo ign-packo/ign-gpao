@@ -16,7 +16,7 @@ Nous étudions une nouvelle approche de la problématique avec un nouveau modèl
 
 - project
 
-- cluster
+- sessions
 
 - jobDependencies
 

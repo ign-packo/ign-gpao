@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { body } = require('express-validator/check');
+const { body, param } = require('express-validator/check');
 
 const validateParams = require('../../middlewares/validateParams');
 const createErrorMsg = require('../../middlewares/createErrorMsg');
@@ -20,6 +20,17 @@ router.put('/project',
   validateParams,
   pgClient.open,
   project.insertProjectFromJson,
+  pgClient.close,
+  returnMsg);
+
+router.delete('/project/:id',
+  param('id')
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))
+    .isInt({ min: 1 })
+    .withMessage(createErrorMsg.getInvalidParameterMsg('id')),
+  validateParams,
+  pgClient.open,
+  project.deleteProject,
   pgClient.close,
   returnMsg);
 

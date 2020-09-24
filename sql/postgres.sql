@@ -16,6 +16,21 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: session_status; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.session_status AS ENUM (
+    'idle',
+    'active',
+    'idle_requested',
+    'running',
+    'closed'
+);
+
+
+ALTER TYPE public.session_status OWNER TO postgres;
+
+--
 -- Name: status; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -29,6 +44,28 @@ CREATE TYPE public.status AS ENUM (
 
 
 ALTER TYPE public.status OWNER TO postgres;
+
+--
+-- Name: set_nb_active_nodes(character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.set_nb_active_nodes(hostname character varying, nb_limit integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+
+BEGIN
+   UPDATE sessions SET status = (
+    CASE
+    WHEN status = 'idle' AND id in (SELECT id FROM sessions WHERE host=hostname AND status <> 'closed' ORDER BY id LIMIT nb_limit) THEN 'active'::session_status
+    WHEN status = 'idle_requested' AND id in (SELECT id FROM sessions WHERE host=hostname AND status <> 'closed' ORDER BY id LIMIT nb_limit) THEN 'running'::session_status
+    WHEN status = 'active' AND id not in (SELECT id FROM sessions WHERE host=hostname AND status <> 'closed' ORDER BY id LIMIT nb_limit) THEN 'idle'::session_status
+    WHEN status = 'running' AND id not in (SELECT id FROM sessions WHERE host=hostname AND status <> 'closed' ORDER BY id LIMIT nb_limit) THEN 'idle_requested'::session_status
+    ELSE status END) WHERE status <> 'closed';
+END;
+$$;
+
+
+ALTER FUNCTION public.set_nb_active_nodes(hostname character varying, nb_limit integer) OWNER TO postgres;
 
 --
 -- Name: udate_jobDependency(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -261,46 +298,35 @@ $$;
 
 ALTER FUNCTION public.update_projectdependencies_when_project_done() OWNER TO postgres;
 
+--
+-- Name: update_session_when_job_change(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.update_session_when_job_change() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF (OLD.status = 'running' AND NEW.status <> OLD.status AND NEW.id_session IS NOT null) THEN
+--   Dans le cas ou la session est en idle_requested il faut passer en idle
+        UPDATE public.sessions SET status= CASE
+            WHEN status='running'::public.session_status THEN 'active'::public.session_status
+            WHEN status='idle_requested'::public.session_status THEN 'idle'::public.session_status
+            END WHERE id = NEW.id_session;
+  END IF;
+  IF (NEW.status = 'running' AND NEW.status <> OLD.status AND NEW.id_session IS NOT null) THEN
+       UPDATE public.sessions SET status='running'::public.session_status WHERE 
+       id = NEW.id_session;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.update_session_when_job_change() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
-
---
--- Name: cluster; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.cluster (
-    id integer NOT NULL,
-    host character varying NOT NULL,
-    id_thread integer NOT NULL,
-    active boolean NOT NULL,
-    available boolean NOT NULL
-);
-
-
-ALTER TABLE public.cluster OWNER TO postgres;
-
---
--- Name: cluster_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.cluster_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.cluster_id_seq OWNER TO postgres;
-
---
--- Name: cluster_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.cluster_id_seq OWNED BY public.cluster.id;
-
 
 --
 -- Name: jobdependencies; Type: TABLE; Schema: public; Owner: postgres
@@ -345,14 +371,14 @@ ALTER SEQUENCE public.jobdependencies_id_seq OWNED BY public.jobdependencies.id;
 CREATE TABLE public.jobs (
     id integer NOT NULL,
     name character varying NOT NULL,
-    start_date TIMESTAMPTZ,
-    end_date TIMESTAMPTZ,
+    start_date timestamp with time zone,
+    end_date timestamp with time zone,
     command character varying NOT NULL,
     status public.status DEFAULT 'ready'::public.status NOT NULL,
     return_code integer,
     log character varying,
     id_project integer NOT NULL,
-    id_cluster integer
+    id_session integer
 );
 
 
@@ -452,10 +478,40 @@ ALTER SEQUENCE public.projectdependencies_id_seq OWNED BY public.projectdependen
 
 
 --
--- Name: cluster id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: sessions; Type: TABLE; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.cluster ALTER COLUMN id SET DEFAULT nextval('public.cluster_id_seq'::regclass);
+CREATE TABLE public.sessions (
+    id integer NOT NULL,
+    host character varying NOT NULL,
+    start_date timestamp with time zone NOT NULL,
+    end_date timestamp with time zone,
+    status public.session_status DEFAULT 'idle'::public.session_status NOT NULL
+);
+
+
+ALTER TABLE public.sessions OWNER TO postgres;
+
+--
+-- Name: sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.sessions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_id_seq OWNER TO postgres;
+
+--
+-- Name: sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.sessions_id_seq OWNED BY public.sessions.id;
 
 
 --
@@ -487,11 +543,10 @@ ALTER TABLE ONLY public.projects ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
--- Name: cluster cluster_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: sessions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.cluster
-    ADD CONSTRAINT cluster_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.sessions ALTER COLUMN id SET DEFAULT nextval('public.sessions_id_seq'::regclass);
 
 
 --
@@ -524,6 +579,14 @@ ALTER TABLE ONLY public.projects
 
 ALTER TABLE ONLY public.projectdependencies
     ADD CONSTRAINT projectdependencies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
 
 
 --
@@ -583,6 +646,13 @@ CREATE TRIGGER update_projectdependencies_when_project_done AFTER UPDATE OF stat
 
 
 --
+-- Name: jobs update_session_when_job_change; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER update_session_when_job_change AFTER UPDATE OF status ON public.jobs FOR EACH ROW EXECUTE PROCEDURE public.update_session_when_job_change();
+
+
+--
 -- Name: jobdependencies downstream_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -599,19 +669,19 @@ ALTER TABLE ONLY public.projectdependencies
 
 
 --
--- Name: jobs id_cluster_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT id_cluster_fk FOREIGN KEY (id_cluster) REFERENCES public.cluster(id) NOT VALID;
-
-
---
 -- Name: jobs id_project_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.jobs
     ADD CONSTRAINT id_project_fk FOREIGN KEY (id_project) REFERENCES public.projects(id) ON DELETE CASCADE NOT VALID;
+
+
+--
+-- Name: jobs id_session_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.jobs
+    ADD CONSTRAINT id_session_fk FOREIGN KEY (id_session) REFERENCES public.sessions(id) NOT VALID;
 
 
 --
@@ -633,3 +703,4 @@ ALTER TABLE ONLY public.projectdependencies
 --
 -- PostgreSQL database dump complete
 --
+
