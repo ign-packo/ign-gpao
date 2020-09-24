@@ -37,14 +37,7 @@ async function setNbActiveNodes(req, res, next) {
   const { limit } = params;
   debug(`host = ${host}`);
   debug(`limit = ${limit}`);
-  await req.client.query('UPDATE sessions SET status = ('
-    + 'CASE '
-      + "WHEN status = 'idle' AND id in (SELECT id FROM sessions WHERE host=$1 AND status <> 'closed' ORDER BY id LIMIT $2) THEN 'active'::session_status "
-      + "WHEN status = 'idle_requested' AND id in (SELECT id FROM sessions WHERE host=$1 AND status <> 'closed' ORDER BY id LIMIT $2) THEN 'running'::session_status "
-      + "WHEN status = 'active' AND id not in (SELECT id FROM sessions WHERE host=$1 AND status <> 'closed' ORDER BY id LIMIT $2) THEN 'idle'::session_status "
-      + "WHEN status = 'running' AND id not in (SELECT id FROM sessions WHERE host=$1 AND status <> 'closed' ORDER BY id LIMIT $2) THEN 'idle_requested'::session_status "
-      + 'ELSE status '
-    + "END) WHERE status <> 'closed'", [host, limit])
+  await req.client.query('SELECT set_nb_active_nodes ($1, $2)', [host, limit])
     .catch((error) => {
       req.error = {
         msg: error.toString(),
