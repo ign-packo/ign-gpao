@@ -150,6 +150,20 @@ describe('Jobs', () => {
           res.body.should.be.an('array');
           done();
         });
+      });
+    });
+  });
+
+  describe('Append job log', () => {
+    it('should return Bad Request Error', (done) => {
+      chai.request(server)
+        .post('/api/job/-1/append_log')
+        .send({ log: 'string' })
+        .end((err, res) => {
+          should.equal(err, null);
+          res.should.have.status(400);
+          done();
+        });
     });
   });
 
@@ -161,6 +175,19 @@ describe('Jobs', () => {
           should.equal(err, null);
           res.should.have.status(200);
           res.body.should.be.an('array');
+          done();
+        });
+      });
+    });
+
+  describe('Append job log', () => {
+    it('should return succeed', (done) => {
+      chai.request(server)
+        .post(`/api/job/${idJob}/append_log`)
+        .send({ log: 'test append' })
+        .end((err, res) => {
+          should.equal(err, null);
+          res.should.have.status(200);
           done();
         });
     });
