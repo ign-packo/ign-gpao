@@ -273,7 +273,7 @@ paths:
       responses:
         '200':
           description: OK
-  '/dependency':
+  '/dependencies':
     get:
       tags:
         - dependencies
