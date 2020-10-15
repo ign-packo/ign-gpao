@@ -126,4 +126,16 @@ describe('Jobs', () => {
         });
     });
   });
+  describe('Get job/status', () => {
+    it('should return an array', (done) => {
+      chai.request(server)
+        .get('/api/job/status')
+        .end((err, res) => {
+          should.equal(err, null);
+          res.should.have.status(200);
+          res.body.should.be.an('array');
+          done();
+        });
+      });
+    });
 });
