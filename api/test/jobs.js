@@ -136,6 +136,6 @@ describe('Jobs', () => {
           res.body.should.be.an('array');
           done();
         });
-      });
     });
+  });
 });
