@@ -40,13 +40,13 @@ router.get('/projects',
   pgClient.close,
   returnMsg);
 
-router.get('/projects/status',
+router.get('/projects/status_by_jobs',
   pgClient.open,
   project.getProjectStatus,
   pgClient.close,
   returnMsg);
 
-router.get('/projects/status_global',
+router.get('/projects/status',
   pgClient.open,
   project.getProjectStatusGlobal,
   pgClient.close,

@@ -174,16 +174,16 @@ paths:
      responses:
        '200':
          description: OK
-  '/projects/status':
+  '/projects/status_by_jobs':
     get:
       tags:
         - projects
-      summary: "Récupération du statut de tous les projets"
-      description: "Récupération du nombre de projet par statut"
+      summary: "Récupération du nombre de job pour chaque statut différents"
+      description: "Récupération de tous les projets avec le nombre de jobs par statut"
       responses:
         '200':
           description: OK
-  '/projects/status_global':
+  '/projects/status':
     get:
       tags:
         - projects
