@@ -40,7 +40,7 @@ router.get('/projects',
   pgClient.close,
   returnMsg);
 
-router.get('/projects/status_by_jobs',
+router.get('/projects/statusByJobs',
   pgClient.open,
   project.getProjectStatus,
   pgClient.close,
