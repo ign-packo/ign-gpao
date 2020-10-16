@@ -55,3 +55,16 @@ describe('Close session', () => {
       });
   });
 });
+
+describe('Get sessions status', () => {
+  it('should return an array', (done) => {
+    chai.request(server)
+      .get('/api/sessions/status')
+      .end((err, res) => {
+        should.equal(err, null);
+        res.should.have.status(200);
+        res.body.should.be.an('array');
+        done();
+      });
+  });
+});
