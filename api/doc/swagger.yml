@@ -55,7 +55,7 @@ paths:
       tags:
         - jobs
       summary: "Récupération de l'identifiant d'un job"
-      description: "Récupération de l'identifiant d'un job avec le status ready et mise à jour de son à jour de son status en running"
+      description: "Récupération de l'identifiant d'un job avec le statut ready et mise à jour de son à jour de son statut en running"
       parameters:
         - in: query
           name: id_session
@@ -170,7 +170,7 @@ paths:
      tags:
        - projects
      summary: "Récupération de tous les projets"
-     description: "Récupération de tous les projets quelque soit leur status"
+     description: "Récupération de tous les projets quelque soit leur statut"
      responses:
        '200':
          description: OK
@@ -236,7 +236,7 @@ paths:
     get:
       tags:
         - sessions
-      summary: "Récupération du status de toutes les sessions"
+      summary: "Récupération du statut de toutes les sessions"
       description: "Récupération du nombre de sessions pour chaque type de statut"
       responses:
         '200':
