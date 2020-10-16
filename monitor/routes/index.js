@@ -3,51 +3,71 @@ const jobs = require('../middlewares/job');
 const projects = require('../middlewares/project');
 const sessions = require('../middlewares/session');
 const hosts = require('../middlewares/host');
+const dependencies = require('../middlewares/dependencies');
 
-// home page
-router.get('/', (req, res) => {
-  res.render('pages/index', { api: req.app.api_url });
+const topBar = require('../middlewares/topBar');
+
+// dashboard page
+router.get('/', topBar.getInfo, projects.getProjectStatus, (req, res) => {
+  res.render('pages/index', {
+    topBar: req.topBar,
+    jobStatus: req.topBar.jobStatus,
+    projects: req.projectStatus,
+    api: req.app.get('apiUrl'),
+    server: req.app.get('server'),
+  });
 });
 
-// job page
-router.get('/job', jobs.getJobs, (req, res) => {
-  const array = [];
-
-  req.body.forEach((element) => {
-    array.push(element);
+// jobs page with id
+router.get('/job/:id', topBar.getInfo, jobs.getJob, dependencies.getDependencies, (req, res) => {
+  res.render('pages/job', {
+    topBar: req.topBar,
+    id: req.params.id,
+    job: req.job,
+    deps: req.deps,
+    api: req.app.get('apiUrl'),
+    server: req.app.get('server'),
   });
-
-  res.render('pages/job', { json: array, api: req.app.api_url });
 });
 
-// project page
-router.get('/project', projects.getProjects, (req, res) => {
-  const array = [];
-
-  req.body.forEach((element) => {
-    array.push(element);
+// jobs page
+router.get('/jobs', topBar.getInfo, jobs.getJobs, (req, res) => {
+  res.render('pages/jobs', {
+    topBar: req.topBar,
+    jobs: req.jobs,
+    api: req.app.get('apiUrl'),
+    server: req.app.get('server'),
   });
-  res.render('pages/project', { json: array, api: req.app.api_url });
 });
 
-// session page
-router.get('/session', sessions.getSessions, (req, res) => {
-  const array = [];
-
-  req.body.forEach((element) => {
-    array.push(element);
+// projects page
+router.get('/projects', topBar.getInfo, projects.getProjects, (req, res) => {
+  res.render('pages/projects', {
+    topBar: req.topBar,
+    projects: req.projects,
+    api: req.app.get('apiUrl'),
+    server: req.app.get('server'),
   });
-  res.render('pages/session', { json: array, api: req.app.api_url });
 });
 
-// host page
-router.get('/host', hosts.getHosts, (req, res) => {
-  const array = [];
-
-  req.body.forEach((element) => {
-    array.push(element);
+// sessions page
+router.get('/sessions', topBar.getInfo, sessions.getSessions, (req, res) => {
+  res.render('pages/sessions', {
+    topBar: req.topBar,
+    sessions: req.sessions,
+    api: req.app.get('apiUrl'),
+    server: req.app.get('server'),
   });
-  res.render('pages/host', { json: array, api: req.app.api_url });
+});
+
+// hosts page
+router.get('/hosts', topBar.getInfo, hosts.getHosts, (req, res) => {
+  res.render('pages/hosts', {
+    topBar: req.topBar,
+    hosts: req.hosts,
+    api: req.app.get('apiUrl'),
+    server: req.app.get('server'),
+  });
 });
 
 module.exports = router;
