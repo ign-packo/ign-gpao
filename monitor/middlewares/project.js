@@ -10,7 +10,7 @@ async function getProjects(req, res, next) {
 }
 
 async function getProjectStatus(req, res, next) {
-  const json = await axios.get(`${req.app.get('apiUrl')}/api/projects/status_by_jobs`);
+  const json = await axios.get(`${req.app.get('apiUrl')}/api/projects/statusByJobs`);
 
   const projects = json.data;
 
