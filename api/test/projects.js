@@ -84,7 +84,7 @@ describe('Projects', () => {
   describe('Get projects status by jobs', () => {
     it('should return an array', (done) => {
       chai.request(server)
-        .get('/api/projects/status_by_jobs')
+        .get('/api/projects/statusByJobs')
         .end((err, res) => {
           should.equal(err, null);
           res.should.have.status(200);
