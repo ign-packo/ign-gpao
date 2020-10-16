@@ -33,6 +33,10 @@ app.use('/vendor', express.static(`${__dirname}/resources/vendor`));
 app.use('/css', express.static(`${__dirname}/resources/css`));
 app.use('/js', express.static(`${__dirname}/resources/js`));
 
+app.use('/vendor', express.static(`${__dirname}/resources/vendor`));
+app.use('/css', express.static(`${__dirname}/resources/css`));
+app.use('/js', express.static(`${__dirname}/resources/js`));
+
 // use res.render to load up an ejs view file
 app.use('/', routes);
 debug.log(`URL de l'API : ${app.get('apiUrl')}`);

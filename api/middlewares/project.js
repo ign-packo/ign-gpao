@@ -143,8 +143,40 @@ async function deleteProject(req, res, next) {
   next();
 }
 
+async function getStatusByJobs(req, res, next) {
+  await req.client.query('SELECT * FROM view_project_status_by_jobs')
+    .then((results) => {
+      req.result = results.rows;
+    })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'getStatusByJobs',
+      };
+    });
+  next();
+}
+
+async function getProjectStatus(req, res, next) {
+  await req.client.query('SELECT * FROM view_project_status')
+    .then((results) => {
+      req.result = results.rows;
+    })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'getProjectStatus',
+      };
+    });
+  next();
+}
+
 module.exports = {
   insertProjectFromJson,
   getAllProjects,
+  getStatusByJobs,
+  getProjectStatus,
   deleteProject,
 };
