@@ -607,7 +607,7 @@ ALTER TABLE public.view_job_status OWNER TO postgres;
 -- Name: view_project_status; Type: VIEW; Schema: public; Owner: postgres
 --
 
-CREATE VIEW public.view_project_status AS
+CREATE VIEW public.view_project_status_by_jobs AS
  SELECT jobs.id_project,
     projects.name,
     sum(
@@ -651,7 +651,7 @@ ALTER TABLE public.view_project_status OWNER TO postgres;
 -- Name: view_project_status_global; Type: VIEW; Schema: public; Owner: postgres
 --
 
-CREATE VIEW public.view_project_status_global AS
+CREATE VIEW public.view_project_status AS
  SELECT sum(
         CASE
             WHEN (projects.status = 'ready'::public.status) THEN 1
