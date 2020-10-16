@@ -277,8 +277,8 @@ paths:
     get:
       tags:
         - dependencies
-      summary: "Récupération des dépendences"
-      description: "Récupération de toutes les dépendences liées à un job"
+      summary: "Récupération des dépendances"
+      description: "Récupération de toutes les dépendances liées à un job"
       parameters:
         - in: query
           name: id_job
