@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>GPAO - Dashboard</title>
+    <title>GPAO - Machines</title>
 
     <%- include ("../partials/head") %>
 
@@ -27,17 +27,15 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <h1 class="h3 mb-0 text-gray-800">Visualisation des machines</h1>
           </div>
 
           <%- include ("../partials/menu/topbar") %>
 
           <!-- Content Row -->
-          <div class="row">
+          <div class="column">
 
-            <%- include ("../partials/components/projects_info") %>
-
-            <%- include ("../partials/components/jobs_info") %>
+            <%- include ("../partials/tab/hosts_tab") %>
 
           </div>
 
@@ -62,5 +60,6 @@
 
   <!-- Custom scripts for all pages-->
   <script src="/js/sb-admin-2.min.js"></script>
+
 </body>
 </html>
