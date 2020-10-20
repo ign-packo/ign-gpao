@@ -66,7 +66,7 @@ jobs.updateJobStatus,
 pgClient.close,
 returnMsg);
 
-router.post('/job/:id/append_log', [
+router.post('/job/:id/appendLog', [
   body('log').exists().withMessage(createErrorMsg.getMissingParameterMsg('log')),
   param('id')
     .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))
@@ -75,7 +75,7 @@ router.post('/job/:id/append_log', [
 ],
 validateParams,
 pgClient.open,
-jobs.appendJobLog,
+jobs.appendLog,
 pgClient.close,
 returnMsg);
 

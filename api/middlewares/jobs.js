@@ -89,7 +89,7 @@ async function updateJobStatus(req, res, next) {
   next();
 }
 
-async function appendJobLog(req, res, next) {
+async function appendLog(req, res, next) {
   const params = matchedData(req);
   const { id } = params;
   const { log } = params;
@@ -105,7 +105,7 @@ async function appendJobLog(req, res, next) {
         req.error = {
           msg: 'Invalid Job Id',
           code: 500,
-          function: 'appendJobLog',
+          function: 'appendLog',
         };
       } else {
         req.result = results.rows;
@@ -116,7 +116,7 @@ async function appendJobLog(req, res, next) {
       req.error = {
         msg: error.toString(),
         code: 500,
-        function: 'appendJobLog',
+        function: 'appendLog',
       };
     });
   next();
@@ -128,5 +128,5 @@ module.exports = {
   getJobReady,
   getJob,
   updateJobStatus,
-  appendJobLog,
+  appendLog,
 };

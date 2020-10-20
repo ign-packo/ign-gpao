@@ -107,7 +107,7 @@ paths:
       responses:
         '200':
           description: OK
-  '/job/{id}/append_log':
+  '/job/{id}/appendLog':
     post:
       tags:
         - jobs
