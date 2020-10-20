@@ -38,7 +38,7 @@ def process(thread_id):
         print(str_id, "id_session = ", str(id_session))
         while True:
             # on verifie l'espace disponible dans le dossier de travail
-            stat=os.statvfs(working_dir.name)
+            stat = os.statvfs(working_dir.name)
             freeGb = int(stat.f_frsize * stat.f_bavail / (1024 * 1024 * 1024))
             req = None
             if freeGb < minAvailableSpace:
