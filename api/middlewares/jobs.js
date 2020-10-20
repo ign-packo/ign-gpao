@@ -122,7 +122,7 @@ async function appendJobLog(req, res, next) {
         req.error = {
           msg: 'Invalid Job Id',
           code: 500,
-          function: 'appendJobLog',
+          function: 'appendLog',
         };
       } else {
         req.result = results.rows;
@@ -133,7 +133,7 @@ async function appendJobLog(req, res, next) {
       req.error = {
         msg: error.toString(),
         code: 500,
-        function: 'appendJobLog',
+        function: 'appendLog',
       };
     });
   next();

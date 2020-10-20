@@ -170,7 +170,7 @@ describe('Get job/:id', () => {
 describe('Append job log', () => {
   it('should return succeed', (done) => {
     chai.request(server)
-      .post(`/api/job/${idJob}/append_log`)
+      .post(`/api/job/${idJob}/appendLog`)
       .send({ log: 'test append' })
       .end((err, res) => {
         should.equal(err, null);
@@ -183,7 +183,7 @@ describe('Append job log', () => {
 describe('Append job log with wrong id', () => {
   it('should failed', (done) => {
     chai.request(server)
-      .post('/api/job/-1/append_log')
+      .post('/api/job/-1/appendLog')
       .send({ log: 'test append' })
       .end((err, res) => {
         should.equal(err, null);
@@ -196,7 +196,7 @@ describe('Append job log with wrong id', () => {
 describe('Append job log with wrong id', () => {
   it('should failed', (done) => {
     chai.request(server)
-      .post('/api/job/999/append_log')
+      .post('/api/job/999/appendLog')
       .send({ log: 'test append' })
       .end((err, res) => {
         should.equal(err, null);
