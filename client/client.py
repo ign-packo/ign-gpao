@@ -16,8 +16,8 @@ import tempfile
 import requests
 
 HostName = socket.gethostname()
-NbProcess = multiprocessing.cpu_count()
-UrlApi = os.getenv('URL_API', 'localhost')
+nb_process = multiprocessing.cpu_count()
+url_api = os.getenv('URL_API', 'localhost')
 MIN_AVAILABLE_SPACE = 1
 
 
@@ -33,7 +33,10 @@ def process(thread_id):
         working_dir = tempfile.TemporaryDirectory(dir='.')
         print('working dir : ', working_dir.name)
 
-        req = requests.put('http://'+UrlApi+':8080/api/session?host='+HostName)
+        req = requests.put('http://' +
+                           url_api +
+                           ':8080/api/session?host=' +
+                           HostName)
         id_session = req.json()[0]['id']
         print(str_id, "id_session = ", str(id_session))
         while True:
@@ -48,7 +51,7 @@ def process(thread_id):
                       MIN_AVAILABLE_SPACE)
             else:
                 req = requests.get('http://' +
-                                   UrlApi +
+                                   url_api +
                                    ':8080/api/job/ready?id_session=' +
                                    str(id_session))
             if (req) and (req.json()):
@@ -82,7 +85,7 @@ def process(thread_id):
                     status = 'failed'
 
                 print('Mise a jour : ', return_code, status, json_data)
-                req = requests.post('http://' + UrlApi +
+                req = requests.post('http://' + url_api +
                                     ':8080/api/job?id=' +
                                     str(id_job) +
                                     '&status=' +
@@ -93,7 +96,7 @@ def process(thread_id):
     except KeyboardInterrupt:
         print("on demande au process de s'arreter")
         req = requests.post('http://' +
-                            UrlApi +
+                            url_api +
                             ':8080/api/session/close?id=' +
                             str(id_session))
     print(str_id, "end thread ")
@@ -104,11 +107,11 @@ if __name__ == "__main__":
     print("Demarrage du client GPAO")
     print("Hostname : ", HostName)
 
-    POOL = multiprocessing.Pool(NbProcess)
+    POOL = multiprocessing.Pool(nb_process)
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
     try:
-        POOL.map(process, range(NbProcess))
+        POOL.map(process, range(nb_process))
 
     except KeyboardInterrupt:
         print("on demande au pool de s'arreter")
