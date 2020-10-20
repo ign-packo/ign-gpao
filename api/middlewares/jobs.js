@@ -117,7 +117,17 @@ async function appendJobLog(req, res, next) {
   await req.client.query(
     'UPDATE jobs SET log = CONCAT( log, CAST($2 AS VARCHAR) ) WHERE id = $1', [id, log],
   )
-    .then((results) => { req.result = results.rows; })
+    .then((results) => {
+      if (results.rowCount !== 1) {
+        req.error = {
+          msg: 'Invalid Job Id',
+          code: 500,
+          function: 'appendJobLog',
+        };
+      } else {
+        req.result = results.rows;
+      }
+    })
     .catch((error) => {
       debug(error);
       req.error = {
