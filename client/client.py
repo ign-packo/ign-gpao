@@ -18,7 +18,7 @@ import requests
 HostName = socket.gethostname()
 NbProcess = multiprocessing.cpu_count()
 UrlApi = os.getenv('URL_API', 'localhost')
-minAvailableSpace = 10
+MIN_AVAILABLE_SPACE = 1
 
 
 def process(thread_id):
@@ -39,34 +39,44 @@ def process(thread_id):
         while True:
             # on verifie l'espace disponible dans le dossier de travail
             stat = os.statvfs(working_dir.name)
-            freeGb = int(stat.f_frsize * stat.f_bavail / (1024 * 1024 * 1024))
+            free_gb = int(stat.f_frsize * stat.f_bavail / (1024 * 1024 * 1024))
             req = None
-            if freeGb < minAvailableSpace:
-                print('espace disque insuffisant pour prendre des traitements : ', freeGb, '/', minAvailableSpace)
+            if free_gb < MIN_AVAILABLE_SPACE:
+                print('espace disque insuffisant : ',
+                      free_gb,
+                      '/',
+                      MIN_AVAILABLE_SPACE)
             else:
-                req=requests.get('http://'+UrlApi+':8080/api/job/ready?id_session='+str(id_session))
+                req = requests.get('http://' +
+                                   UrlApi +
+                                   ':8080/api/job/ready?id_session=' +
+                                   str(id_session))
             if (req) and (req.json()):
                 id_job = req.json()[0]['id']
-                command = req.json()[0]['command']
                 print(str_id, "L'identifiant du job " +
                       str(id_job) + " est disponible")
                 print(str_id, "Execution de la commande [" +
-                      str(command)+"]")
-                array_command = command.split()
+                      str(req.json()[0]['command'])+"]")
                 return_code = 999
                 try:
-                    proc = subprocess.Popen(array_command,
+                    proc = subprocess.Popen(req.json()[0]['command'].split(),
                                             stdout=subprocess.PIPE,
+                                            stderr=subprocess.STDOUT,
                                             cwd=working_dir.name)
                     (out, _) = proc.communicate()
                     status = 'done'
                     return_code = proc.returncode
                     json_data = out.decode()
 
-                except subprocess.SubprocessError as ex:
+                except subprocess.CalledProcessError as ex:
                     print('failed : ', ex)
                     status = 'failed'
-                    json_data = str(ex)
+                    json_data += str(ex)
+
+                except FileNotFoundError as ex:
+                    print('failed : ', ex)
+                    status = 'failed'
+                    json_data += str(ex)
 
                 if return_code != 0:
                     status = 'failed'
@@ -95,7 +105,7 @@ if __name__ == "__main__":
     print("Hostname : ", HostName)
 
     POOL = multiprocessing.Pool(NbProcess)
-    ORIGINAL_SIGINT_HANDLER = signal.signal(signal.SIGINT, signal.SIG_IGN)
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
     try:
         POOL.map(process, range(NbProcess))
