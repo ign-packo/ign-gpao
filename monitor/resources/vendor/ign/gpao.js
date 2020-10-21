@@ -87,7 +87,7 @@ function txtChanged(file) {
   reader.readAsText(file);
 }
 
-//Fonction qui permet de réinitialiser une liste de jobs
+//Fonction qui permet de réinitialiser un tableau de jobs
 function reinitJobs(ids){
   let data = {ids:ids};
 
@@ -100,4 +100,21 @@ function reinitJobs(ids){
   }).then(() => {
     location.reload();
   });
+}
+
+//Fonction qui réinitialise tous les jobs avec le statut failed
+function reinitAllJobs(){
+  var table = $('#dataTable').DataTable();
+
+  var ids = [];
+  
+  table.rows().eq( 0 ).each( function (idx) {
+    var row = table.row( idx );
+ 
+    if ( row.data()[2] === 'failed' ) {
+        ids.push(row.data()[0])
+    }
+  });
+
+  reinitJobs(ids);
 }
