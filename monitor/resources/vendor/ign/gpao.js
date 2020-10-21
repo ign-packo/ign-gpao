@@ -86,3 +86,18 @@ function txtChanged(file) {
   // read as text file
   reader.readAsText(file);
 }
+
+//Fonction qui permet de réinitialiser une liste de jobs
+function reinitJobs(ids){
+  let data = {ids:ids};
+
+  fetch(`${apiUrl}/api/jobs/reinit`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+  }).then(() => {
+    location.reload();
+  });
+}
