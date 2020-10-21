@@ -89,10 +89,28 @@ async function updateJobStatus(req, res, next) {
   next();
 }
 
+async function reinitJobs(req, res, next) {
+  const { ids } = req.body;
+
+  await req.client.query(
+    'SELECT reinit_jobs($1::integer[]) AS nb_jobs', [ids],
+  )
+    .then((results) => { req.result = results.rows; })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'reinitJobs',
+      };
+    });
+  next();
+}
+
 module.exports = {
   getAllJobs,
   getJobStatus,
   getJobReady,
   getJob,
   updateJobStatus,
+  reinitJobs,
 };

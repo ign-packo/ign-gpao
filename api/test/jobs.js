@@ -93,6 +93,7 @@ describe('Jobs', () => {
           res.should.have.status(200);
           res.body.should.be.an('array');
           idJob = res.body[0].id;
+          console.log("id = "+idJob);
           done();
         });
     });
@@ -119,6 +120,19 @@ describe('Jobs', () => {
         .post('/api/job')
         .query({ id: idJob, status: 'failed', returnCode: 0 })
         .send({ log: 'string' })
+        .end((err, res) => {
+          should.equal(err, null);
+          res.should.have.status(200);
+          done();
+        });
+    });
+  });
+
+  describe('Reinit job', () => {
+    it('should return succeed', (done) => {
+      chai.request(server)
+        .post('/api/jobs/reinit')
+        .send({ ids: [idJob] })
         .end((err, res) => {
           should.equal(err, null);
           res.should.have.status(200);

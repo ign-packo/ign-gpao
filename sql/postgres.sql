@@ -46,6 +46,26 @@ CREATE TYPE public.status AS ENUM (
 ALTER TYPE public.status OWNER TO postgres;
 
 --
+-- Name: reinit_jobs(integer[]); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.reinit_jobs(ids integer[]) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  nb_jobs integer;
+BEGIN
+  UPDATE jobs SET status = 'ready', id_session = NULL, log=NULL, return_code=NULL, start_date=NULL, end_date=NULL
+  WHERE id = ANY(ids::integer[]) AND status = 'failed';
+  GET DIAGNOSTICS nb_jobs = ROW_COUNT;
+  RETURN nb_jobs;
+END;
+$$;
+
+
+ALTER FUNCTION public.reinit_jobs(ids integer[]) OWNER TO postgres;
+
+--
 -- Name: set_nb_active_nodes(character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -607,6 +627,46 @@ ALTER TABLE public.view_job_status OWNER TO postgres;
 -- Name: view_project_status; Type: VIEW; Schema: public; Owner: postgres
 --
 
+CREATE VIEW public.view_project_status AS
+ SELECT sum(
+        CASE
+            WHEN (projects.status = 'ready'::public.status) THEN 1
+            ELSE 0
+        END) AS ready,
+    sum(
+        CASE
+            WHEN (projects.status = 'done'::public.status) THEN 1
+            ELSE 0
+        END) AS done,
+    sum(
+        CASE
+            WHEN (projects.status = 'waiting'::public.status) THEN 1
+            ELSE 0
+        END) AS waiting,
+    sum(
+        CASE
+            WHEN (projects.status = 'running'::public.status) THEN 1
+            ELSE 0
+        END) AS running,
+    sum(
+        CASE
+            WHEN (projects.status = 'failed'::public.status) THEN 1
+            ELSE 0
+        END) AS failed,
+    sum(
+        CASE
+            WHEN ((projects.status = 'failed'::public.status) OR (projects.status = 'running'::public.status) OR (projects.status = 'waiting'::public.status) OR (projects.status = 'done'::public.status) OR (projects.status = 'ready'::public.status)) THEN 1
+            ELSE 0
+        END) AS total
+   FROM public.projects;
+
+
+ALTER TABLE public.view_project_status OWNER TO postgres;
+
+--
+-- Name: view_project_status_by_jobs; Type: VIEW; Schema: public; Owner: postgres
+--
+
 CREATE VIEW public.view_project_status_by_jobs AS
  SELECT jobs.id_project,
     projects.name,
@@ -645,47 +705,7 @@ CREATE VIEW public.view_project_status_by_jobs AS
   GROUP BY jobs.id_project, projects.name;
 
 
-ALTER TABLE public.view_project_status OWNER TO postgres;
-
---
--- Name: view_project_status_global; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.view_project_status AS
- SELECT sum(
-        CASE
-            WHEN (projects.status = 'ready'::public.status) THEN 1
-            ELSE 0
-        END) AS ready,
-    sum(
-        CASE
-            WHEN (projects.status = 'done'::public.status) THEN 1
-            ELSE 0
-        END) AS done,
-    sum(
-        CASE
-            WHEN (projects.status = 'waiting'::public.status) THEN 1
-            ELSE 0
-        END) AS waiting,
-    sum(
-        CASE
-            WHEN (projects.status = 'running'::public.status) THEN 1
-            ELSE 0
-        END) AS running,
-    sum(
-        CASE
-            WHEN (projects.status = 'failed'::public.status) THEN 1
-            ELSE 0
-        END) AS failed,
-    sum(
-        CASE
-            WHEN ((projects.status = 'failed'::public.status) OR (projects.status = 'running'::public.status) OR (projects.status = 'waiting'::public.status) OR (projects.status = 'done'::public.status) OR (projects.status = 'ready'::public.status)) THEN 1
-            ELSE 0
-        END) AS total
-   FROM public.projects;
-
-
-ALTER TABLE public.view_project_status_global OWNER TO postgres;
+ALTER TABLE public.view_project_status_by_jobs OWNER TO postgres;
 
 --
 -- Name: view_sessions_status; Type: VIEW; Schema: public; Owner: postgres
