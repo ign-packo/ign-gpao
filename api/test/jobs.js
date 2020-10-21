@@ -93,7 +93,6 @@ describe('Jobs', () => {
           res.should.have.status(200);
           res.body.should.be.an('array');
           idJob = res.body[0].id;
-          console.log("id = "+idJob);
           done();
         });
     });
