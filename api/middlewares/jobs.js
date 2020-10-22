@@ -106,7 +106,7 @@ async function reinitJobs(req, res, next) {
   next();
 }
 
-async function appendJobLog(req, res, next) {
+async function appendLog(req, res, next) {
   const params = matchedData(req);
   const { id } = params;
   const { log } = params;
@@ -146,5 +146,5 @@ module.exports = {
   getJob,
   updateJobStatus,
   reinitJobs,
-  appendJobLog,
+  appendLog,
 };
