@@ -57,7 +57,7 @@ router.post('/job', [
     .withMessage(createErrorMsg.getInvalidParameterMsg('id')),
   query('returnCode')
     .exists().withMessage(createErrorMsg.getMissingParameterMsg('returnCode'))
-    .isInt({ min: 0 })
+    .isInt()
     .withMessage(createErrorMsg.getInvalidParameterMsg('returnCode')),
 ],
 validateParams,
