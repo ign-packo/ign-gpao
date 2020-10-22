@@ -76,7 +76,7 @@ async function updateJobStatus(req, res, next) {
   debug(`log = ${log}`);
 
   await req.client.query(
-    'UPDATE jobs SET status = $1, log = $2, return_code = $4, end_date=NOW() WHERE id = $3', [status, log, id, returnCode],
+    'UPDATE jobs SET status = $1, log = CONCAT( log, CAST($2 AS VARCHAR) ), return_code = $4, end_date=NOW() WHERE id = $3', [status, log, id, returnCode],
   )
     .then((results) => { req.result = results.rows; })
     .catch((error) => {
@@ -106,6 +106,39 @@ async function reinitJobs(req, res, next) {
   next();
 }
 
+async function appendLog(req, res, next) {
+  const params = matchedData(req);
+  const { id } = params;
+  const { log } = params;
+
+  debug(`id = ${id}`);
+  debug(`log = ${log}`);
+
+  await req.client.query(
+    'UPDATE jobs SET log = CONCAT( log, CAST($2 AS VARCHAR) ) WHERE id = $1', [id, log],
+  )
+    .then((results) => {
+      if (results.rowCount !== 1) {
+        req.error = {
+          msg: 'Invalid Job Id',
+          code: 500,
+          function: 'appendLog',
+        };
+      } else {
+        req.result = results.rows;
+      }
+    })
+    .catch((error) => {
+      debug(error);
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'appendLog',
+      };
+    });
+  next();
+}
+
 module.exports = {
   getAllJobs,
   getJobStatus,
@@ -113,4 +146,5 @@ module.exports = {
   getJob,
   updateJobStatus,
   reinitJobs,
+  appendLog,
 };
