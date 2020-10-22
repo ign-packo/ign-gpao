@@ -23,5 +23,5 @@ jobs:
         pylint client/client.py
     - name: Analysing the code with flake8
       run: |
-        flake client/client.py
+        flake8 client/client.py
 
