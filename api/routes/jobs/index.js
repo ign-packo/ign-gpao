@@ -45,6 +45,12 @@ router.get('/jobs/status',
   pgClient.close,
   returnMsg);
 
+router.post('/jobs/reinit',
+  pgClient.open,
+  jobs.reinitJobs,
+  pgClient.close,
+  returnMsg);
+
 router.post('/job', [
   body('log').exists().withMessage(createErrorMsg.getMissingParameterMsg('log')),
   query('status')

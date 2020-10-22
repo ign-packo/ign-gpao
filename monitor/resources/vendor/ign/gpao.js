@@ -86,3 +86,35 @@ function txtChanged(file) {
   // read as text file
   reader.readAsText(file);
 }
+
+//Fonction qui permet de réinitialiser un tableau de jobs
+function reinitJobs(ids){
+  let data = {ids:ids};
+
+  fetch(`${apiUrl}/api/jobs/reinit`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+  }).then(() => {
+    location.reload();
+  });
+}
+
+//Fonction qui réinitialise tous les jobs avec le statut failed
+function reinitAllJobs(){
+  var table = $('#dataTable').DataTable();
+
+  var ids = [];
+  
+  table.rows().eq( 0 ).each( function (idx) {
+    var row = table.row( idx );
+ 
+    if ( row.data()[2] === 'failed' ) {
+        ids.push(row.data()[0])
+    }
+  });
+
+  reinitJobs(ids);
+}

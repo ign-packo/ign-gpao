@@ -25,6 +25,32 @@ paths:
       responses:
         '200':
           description: OK
+  '/jobs/reinit':
+    post:
+      tags:
+        - jobs
+      summary: "Réinitialisation des jobs"
+      description: "Réinitialise le statut à ready, le log, start_date, end_date, return_code de tous les jobs passé en paramétre"
+      requestBody:
+        description: l'ensemble des identifiants des jobs à réinitialiser
+        required: true
+        content:
+         application/json:
+           schema:
+              type: object
+              properties:
+                  ids:
+                    type: array
+                    items:
+                      type: integer
+              example:
+                ids:
+                  - 1
+                  - 2
+                  - 3
+      responses:
+        '200':
+          description: OK
   '/jobs/status':
     get:
       tags:

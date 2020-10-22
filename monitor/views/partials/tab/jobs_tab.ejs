@@ -40,9 +40,14 @@
                 <td> <%= job.end_date %></td>
                 <td> <%= job.id_session %></td>
                 <td>
-                    <button type="button" onclick="location.href='/job/<%= job.id %>'" data-toggle="tooltip" title="Affiche une vue détaillée sur le job <%= job.id %>" class="btn btn-circle btn-info">
+                    <button type="button" onclick="location.href='/job/<%= job.id %>'" data-toggle="tooltip" title="Affiche une vue détaillée sur le job <%= job.id %>" class="btn btn-circle btn-success">
                         <i class="fas fa-search fa-1x" aria-hidden="true"></i>
                     </button>
+                    <%if (job.status == 'failed') { %>
+                      <button type="button" onclick='reinitJobs([<%= job.id %>])' data-toggle="tooltip" title="Réinitialise le job <%= job.id %>" class="btn btn-circle btn-warning">
+                        <i class="fas fa-sync-alt fa-1x" aria-hidden="true"></i>
+                      </button>
+                    <%}%>
                 </td>
             </tr>
         <% }) %>
@@ -51,3 +56,19 @@
     </div>
   </div>
 </div>
+<script>
+  $(document).ready(function() {
+    var i = jQuery('<i></i>');
+    i.addClass('fas fa-sync-alt fa-1x')
+
+    var button = jQuery('<button></button>');
+    button.addClass('btn btn-warning');
+    button.attr('type', 'button')
+          .attr('data-toggle', "tooltip")
+          .attr('title', 'Réinitialise tous les jobs en échecs')
+          .attr('onclick', 'reinitAllJobs()')
+          .append(i)
+          .append(' Réinitialiser les jobs en échecs');
+    $("div.toolbar_tab").append(button);
+  } );
+</script>

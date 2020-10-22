@@ -43,7 +43,7 @@ $(document).ready(function() {
             }
         },
         "order": [[ 0, "asc" ]],
-        "dom": '<"d-flex"<"mr-auto p-2"l><"p-2"f>>t<"d-flex"<"mr-auto p-2"i><"p-2"p>>',
+        "dom": '<"d-flex"<"mr-auto p-2"l<"toolbar_tab">><"p-2"f>>t<"d-flex"<"mr-auto p-2"i><"p-2"p>>',
         "rowCallback": function( row, data, index ) {
             var status = data[2];
             switch(status){
@@ -76,5 +76,5 @@ $(document).ready(function() {
 <script type="text/javascript">
 $(document).ready(function() {
     $("body").tooltip({ selector: '[data-toggle=tooltip]' });
-});
+} );
 </script>

@@ -127,6 +127,19 @@ describe('Jobs', () => {
     });
   });
 
+  describe('Reinit job', () => {
+    it('should return succeed', (done) => {
+      chai.request(server)
+        .post('/api/jobs/reinit')
+        .send({ ids: [idJob] })
+        .end((err, res) => {
+          should.equal(err, null);
+          res.should.have.status(200);
+          done();
+        });
+    });
+  });
+
   describe('Get job/status', () => {
     it('should return an array', (done) => {
       chai.request(server)
