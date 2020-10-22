@@ -99,6 +99,9 @@ def process(thread_id):
                     if return_code is None:
                         return_code = -1
 
+                if not error_message:
+                    error_message += 'FIN'
+
                 print('Mise a jour : ', return_code, status, error_message)
                 req = requests.post('http://' +
                                     url_api +
@@ -106,9 +109,12 @@ def process(thread_id):
                                     str(id_job) +
                                     '&status=' +
                                     str(status) +
-                                    '&return_code=' +
+                                    '&returnCode=' +
                                     str(return_code),
                                     json={"log": error_message})
+                if (req.status_code != 200):
+                    print('Error : ', req.status_code)
+                    print(req.content)
             time.sleep(random.randrange(10))
     except KeyboardInterrupt:
         print("on demande au process de s'arreter")
