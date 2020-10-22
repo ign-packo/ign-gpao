@@ -624,7 +624,7 @@ CREATE VIEW public.view_job_status AS
 ALTER TABLE public.view_job_status OWNER TO postgres;
 
 --
--- Name: view_project_status; Type: VIEW; Schema: public; Owner: postgres
+-- Name: view_project_status_by_jobs; Type: VIEW; Schema: public; Owner: postgres
 --
 
 CREATE VIEW public.view_project_status AS
