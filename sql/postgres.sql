@@ -604,7 +604,7 @@ CREATE VIEW public.view_job_status AS
 ALTER TABLE public.view_job_status OWNER TO postgres;
 
 --
--- Name: view_project_status; Type: VIEW; Schema: public; Owner: postgres
+-- Name: view_project_status_by_jobs; Type: VIEW; Schema: public; Owner: postgres
 --
 
 CREATE VIEW public.view_project_status_by_jobs AS
@@ -645,10 +645,10 @@ CREATE VIEW public.view_project_status_by_jobs AS
   GROUP BY jobs.id_project, projects.name;
 
 
-ALTER TABLE public.view_project_status OWNER TO postgres;
+ALTER TABLE public.view_project_status_by_jobs OWNER TO postgres;
 
 --
--- Name: view_project_status_global; Type: VIEW; Schema: public; Owner: postgres
+-- Name: view_project_status; Type: VIEW; Schema: public; Owner: postgres
 --
 
 CREATE VIEW public.view_project_status AS
@@ -685,7 +685,7 @@ CREATE VIEW public.view_project_status AS
    FROM public.projects;
 
 
-ALTER TABLE public.view_project_status_global OWNER TO postgres;
+ALTER TABLE public.view_project_status OWNER TO postgres;
 
 --
 -- Name: view_sessions_status; Type: VIEW; Schema: public; Owner: postgres
