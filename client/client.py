@@ -24,21 +24,24 @@ MIN_AVAILABLE_SPACE = 1
 def process(thread_id):
     """ Traitement pour un thread """
     str_id = "["+str(thread_id)+"] : "
-    print(str_id, "begin")
     id_session = -1
 
     try:
         # On cree un dossier temporaire dans le dossier
         # courant qui devient le dossier d'execution
         working_dir = tempfile.TemporaryDirectory(dir='.')
-        print('working dir : ', working_dir.name)
 
         req = requests.put('http://' +
                            url_api +
                            ':8080/api/session?host=' +
                            HostName)
         id_session = req.json()[0]['id']
-        print(str_id, "id_session = ", str(id_session))
+        print(str_id +
+              ' : working dir (' +
+              working_dir.name +
+              ') id_session (' +
+              str(id_session) +
+              ')')
         while True:
             # on verifie l'espace disponible dans le dossier de travail
             stat = os.statvfs(working_dir.name)
@@ -59,9 +62,8 @@ def process(thread_id):
                 command = req.json()[0]['command']
                 print(str_id, "L'identifiant du job " +
                       str(id_job) +
-                      " est disponible")
-                print(str_id,
-                      "Execution de la commande [" +
+                      " est disponible" +
+                      " Execution de la commande [" +
                       str(command) +
                       "]")
                 return_code = None
@@ -85,12 +87,10 @@ def process(thread_id):
                     error_message += proc.stderr.read().decode()
 
                 except subprocess.CalledProcessError as ex:
-                    print('failed : ', ex)
                     status = 'failed'
                     error_message += str(ex)
 
                 except FileNotFoundError as ex:
-                    print('failed : ', ex)
                     status = 'failed'
                     error_message += str(ex)
 
@@ -99,8 +99,10 @@ def process(thread_id):
                     if return_code is None:
                         return_code = -1
 
-                if not error_message:
-                    error_message += 'FIN'
+                if error_message:
+                    print('Erreur : '+error_message)
+
+                error_message += 'FIN'
 
                 print('Mise a jour : ', return_code, status, error_message)
                 req = requests.post('http://' +
@@ -112,9 +114,10 @@ def process(thread_id):
                                     '&returnCode=' +
                                     str(return_code),
                                     json={"log": error_message})
-                if (req.status_code != 200):
-                    print('Error : ', req.status_code)
-                    print(req.content)
+                if req.status_code != 200:
+                    print('Error : ',
+                          req.status_code,
+                          req.content)
             time.sleep(random.randrange(10))
     except KeyboardInterrupt:
         print("on demande au process de s'arreter")
