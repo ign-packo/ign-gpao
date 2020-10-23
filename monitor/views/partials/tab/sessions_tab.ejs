@@ -38,3 +38,19 @@
       </div>
     </div>
   </div>
+  <script>
+    $(document).ready(function() {
+      var i = jQuery('<i></i>');
+      i.addClass('fas fa-trash fa-1x')
+  
+      var button = jQuery('<button></button>');
+      button.addClass('btn btn-warning');
+      button.attr('type', 'button')
+            .attr('data-toggle', "tooltip")
+            .attr('title', 'Suuprime les sessions inutiles')
+            .attr('onclick', 'deleteUnusedSession()')
+            .append(i)
+            .append(' Supprime les sessions inutiles');
+      $("div.toolbar_tab").append(button);
+    } );
+  </script>

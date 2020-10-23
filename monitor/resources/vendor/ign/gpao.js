@@ -118,3 +118,15 @@ function reinitAllJobs(){
 
   reinitJobs(ids);
 }
+
+//Fonction qui supprime toutes les sessions inutiles
+function deleteUnusedSession(){
+  fetch(`${apiUrl}/api/session/cleanUnused`, {
+    method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+  }).then(() => {
+    location.reload();
+  });
+}
