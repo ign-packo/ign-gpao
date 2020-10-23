@@ -42,11 +42,7 @@ ToDo : Faire un jolie schéma
 | Moniteur      | 8000 | http://localhost:8000/         |
 | Client 1... N |      |                                |
 
-## Création / initialisation de la base de données via le psql local
-
-    ./create-db.sh
-
-## Création / initialisation de la base de données via le psql du docker
+## Création / initialisation de la base de données via docker
 
 Lancer le script `start.sh` pour démarrer le service postgres.
 
