@@ -325,6 +325,15 @@ paths:
       responses:
         '200':
           description: OK
+  '/session/cleanUnused':
+    delete:
+      tags:
+        - sessions
+      summary: "Supprime les sessions inutiles"
+      description: "Supprime les sessions dont le statut est 'closed' est qui ne sont pas intervenues dans les calculs"
+      responses:
+        '200':
+          description: OK
   '/dependencies':
     get:
       tags:

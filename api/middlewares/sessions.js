@@ -70,9 +70,23 @@ async function closeSession(req, res, next) {
   debug('fin');
 }
 
+async function cleanUnused(req, res, next) {
+  await req.client.query('SELECT clean_unused_session() as nb_sessions')
+    .then((results) => { req.result = results.rows; })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'cleanUnused',
+      };
+    });
+  next();
+}
+
 module.exports = {
   getAllSessions,
   getSessionStatus,
   insertSession,
   closeSession,
+  cleanUnused,
 };

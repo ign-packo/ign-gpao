@@ -56,6 +56,18 @@ describe('Close session', () => {
   });
 });
 
+describe('Clean unUsed session', () => {
+  it('close a session', (done) => {
+    chai.request(server)
+      .delete('/api/session/cleanUnused')
+      .end((err, res) => {
+        should.equal(err, null);
+        res.should.have.status(200);
+        done();
+      });
+  });
+});
+
 describe('Get sessions status', () => {
   it('should return an array', (done) => {
     chai.request(server)

@@ -46,6 +46,28 @@ CREATE TYPE public.status AS ENUM (
 ALTER TYPE public.status OWNER TO postgres;
 
 --
+-- Name: clean_unused_session(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.clean_unused_session() RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  nb_sessions integer;
+BEGIN
+  DELETE FROM sessions WHERE id IN (SELECT sessions.id
+  FROM sessions
+  LEFT JOIN jobs ON sessions.id = jobs.id_session
+  WHERE jobs.id_session IS NULL and sessions.status = 'closed');
+  GET DIAGNOSTICS nb_sessions = ROW_COUNT;
+  RETURN nb_sessions;
+END;
+$$;
+
+
+ALTER FUNCTION public.clean_unused_session() OWNER TO postgres;
+
+--
 -- Name: reinit_jobs(integer[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -624,7 +646,7 @@ CREATE VIEW public.view_job_status AS
 ALTER TABLE public.view_job_status OWNER TO postgres;
 
 --
--- Name: view_project_status_by_jobs; Type: VIEW; Schema: public; Owner: postgres
+-- Name: view_project_status; Type: VIEW; Schema: public; Owner: postgres
 --
 
 CREATE VIEW public.view_project_status AS
