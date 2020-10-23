@@ -28,7 +28,7 @@
                     <td> <%= project.name %></td>
                     <td> <%= project.status %></td>
                     <td>
-                        <button type="button" onclick='delChantier("<%= project.id %>", "<%= project.name %>")' data-toggle="tooltip" title="Supprime le projet de la base" class="btn btn-circle btn-danger"><i class="fas fa-trash fa-1x" aria-hidden="true"></i></button>
+                        <button type="button" onclick='deleteProject("<%= project.id %>", "<%= project.name %>")' data-toggle="tooltip" title="Supprime le projet de la base" class="btn btn-circle btn-danger"><i class="fas fa-trash fa-1x" aria-hidden="true"></i></button>
                     </td>
                 </tr>
                 <% }) %>
@@ -37,3 +37,20 @@
       </div>
     </div>
   </div>
+
+  <script>
+    $(document).ready(function() {
+      var i = jQuery('<i></i>');
+      i.addClass('fas fa-trash fa-1x')
+  
+      var button = jQuery('<button></button>');
+      button.addClass('btn btn-danger');
+      button.attr('type', 'button')
+            .attr('data-toggle', "tooltip")
+            .attr('title', 'Supprime tous les projets')
+            .attr('onclick', 'deleteAllProjects()')
+            .append(i)
+            .append(' Supprimer tous les projets');
+      $("div.toolbar_tab").append(button);
+    } );
+  </script>
