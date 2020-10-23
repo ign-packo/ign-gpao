@@ -2,7 +2,7 @@ version: '3.5'
 services:
   postgres:
     container_name: postgres
-    hostname: postgres
+    #hostname: postgres
     image: mdillon/postgis
     restart: always
     environment:
@@ -11,6 +11,7 @@ services:
       - 5432:5432
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - .:/gpao
     networks:
       - gpao-network
   api-gpao:

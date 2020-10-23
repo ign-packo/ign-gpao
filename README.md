@@ -42,6 +42,25 @@ ToDo : Faire un jolie schéma
 | Moniteur      | 8000 | http://localhost:8000/         |
 | Client 1... N |      |                                |
 
+## Création / initialisation de la base de données via docker
+
+Lancer le script `start.sh` pour démarrer le service postgres.
+
+Lancer ensuite :
+
+    docker-compose run postgres bash
+
+pour avoir un terminal dans le service postgres ; dans ce terminal :
+
+    cd gpao/
+    ./create-db.sh
+
+La base de données est ainsi créée.
+
+Pour infomation, pour supprimer totalement les volumes nommés, donc la base de données, faire : 
+
+    docker-compose down -v
+
 ## Lancement de la stack
 
 A la racine du projet se trouve le script `build-image.sh` à lancer impérativement à la première utilisation car il permet de construire les images composant la stack applicative.
