@@ -30,8 +30,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: create db
-      env:
-        PGHOST: localhost
       run: ./create-db.sh
     - name: install
       working-directory: api
