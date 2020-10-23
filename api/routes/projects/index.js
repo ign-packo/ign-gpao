@@ -52,4 +52,10 @@ router.get('/projects/status',
   pgClient.close,
   returnMsg);
 
+router.delete('/projects/delete',
+  pgClient.open,
+  project.deleteProjects,
+  pgClient.close,
+  returnMsg);
+
 module.exports = router;
