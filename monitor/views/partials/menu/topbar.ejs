@@ -4,7 +4,7 @@
 
     <!-- Jobs -->
     <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card border-left-primary shadow h-100 py-2">
+      <div id="job_card" class="card border-left-primary shadow">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
@@ -34,7 +34,7 @@
 
     <!-- Sessions -->
     <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card border-left-success shadow h-100 py-2">
+      <div id="session_card" class="card border-left-success shadow">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
@@ -65,7 +65,7 @@
 
     <!-- Hosts -->
     <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card border-left-info shadow h-100 py-2">
+      <div id="host_card" class="card border-left-info shadow">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
@@ -92,7 +92,7 @@
 
     <!-- Projects -->
     <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card border-left-warning shadow h-100 py-2">
+      <div id="project_card" class="card border-left-warning shadow">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
@@ -122,14 +122,34 @@
   </div>
 
   <script type="text/javascript">
-    $(document).ready(function() {  
+    $(document).ready(function() {
+        
+        var url = location.href;
+        var split = url.split('/');
+        var page = split[split.length-1];
+
+        switch(page){
+          case 'jobs':
+            $('#job_card').addClass('shadow-lg h-100 py-2');
+            break;
+          case 'sessions':
+            $('#session_card').addClass('shadow-lg h-100 py-2');
+            break;
+          case 'hosts':
+            $('#host_card').addClass('shadow-lg h-100 py-2');
+            break;
+          case 'projects':
+            $('#project_card').addClass('shadow-lg h-100 py-2');
+            break;
+        }
+
         $('#topbar_jobs_pg').attr('style', 'width: '+percent(<%= topBar.jobStatus.done %>, <%= topBar.jobStatus.total %>)+"%");
         $('#topbar_jobs_value').text(percent(<%= topBar.jobStatus.done %>, <%= topBar.jobStatus.total %>)+"%");
 
         <% if (topBar.sessionStatus) { %>
           $('#topbar_sessions_pg').attr('style', 'width: '+percent(<%= topBar.sessionStatus.active %>, <%= topBar.sessionStatus.total %>)+"%");
           $('#topbar_sessions_value').text(percent(<%= topBar.sessionStatus.active %>, <%= topBar.sessionStatus.total %>)+"%");
-          <% } %>
+        <% } %>
 
         $('#topbar_hosts_value').text(<%= topBar.nbHosts %>);
 
