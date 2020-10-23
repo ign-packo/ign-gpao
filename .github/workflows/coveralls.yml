@@ -37,7 +37,7 @@ jobs:
     - name: test
       working-directory: api
       env:
-        PGHOST: localhost
+        PGHOST: postgres
         PGPORT: 5432
         PGUSER: postgres
         PGPASSWORD: postgres
