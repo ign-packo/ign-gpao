@@ -53,7 +53,7 @@ Lancer ensuite :
 pour avoir un terminal dans le service postgres ; dans ce terminal :
 
     cd gpao/
-    ./create-db.sh
+    PGHOST=postgres ./create-db.sh
 
 La base de données est ainsi créée.
 
