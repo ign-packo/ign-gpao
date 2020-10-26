@@ -120,7 +120,7 @@ function reinitAllJobs(){
 }
 
 // Fonction permettant de supprimer tous les projets
-function deleteAllProjects (id, name) {
+function deleteAllProjects () {
   if (window.confirm(`Supprimer tous les projets ?`)) {
     // on fait une requete sur l'API
     fetch(`${apiUrl}/api/projects/delete`, {

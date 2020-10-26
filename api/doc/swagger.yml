@@ -249,7 +249,7 @@ paths:
      tags:
        - projects
      summary: "Supprime tous les projets de la base"
-     description: "Supprime tous les projets de la base ainsi que les jobs, dependences correspondante"
+     description: "Supprime tous les projets de la base ainsi que les jobs, dependances correspondantes"
      responses:
        '200':
          description: OK
