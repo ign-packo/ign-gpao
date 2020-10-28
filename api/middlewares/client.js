@@ -8,6 +8,7 @@ async function getClient(req, res, next) {
   debug(`dirname = ${__dirname}`);
   zip.addLocalFile(`${__dirname}/../../client/client.py`);
   zip.addLocalFile(`${__dirname}/../../client/start.sh`);
+  zip.addLocalFile(`${__dirname}/../../client/requirements.txt`);
 
   // AB : A decommenter lorsque ce fichier sera dans le dépôt
   // zip.addLocalFile(`${__dirname}/../../client/start.bat`);
