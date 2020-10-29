@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const os = require('os');
+const git = require('git-last-commit');
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
@@ -12,14 +13,17 @@ const sessions = require('./routes/sessions');
 const nodes = require('./routes/nodes');
 const dependencies = require('./routes/dependencies');
 
-const git = require('git-last-commit');
-
-git.getLastCommit(function(err, commit) {
-  // read commit object properties
-  console.log(commit);
-});
-
 const PORT = 8080;
+
+function getLastCommit(){
+  return new Promise((resolve, reject) => {
+    git.getLastCommit(
+      (err, commit) => {
+       resolve(commit);
+      }
+    )
+  })
+}
 
 const app = express();
 
@@ -39,6 +43,10 @@ const options = {
 const swaggerDocument = YAML.load('./doc/swagger.yml');
 const hostname = process.env.SERVER || os.hostname();
 swaggerDocument.servers[0].url = `http://${hostname}:${PORT}/api`;
+
+getLastCommit().then((commit) => {
+  swaggerDocument.info.version = "0.1."+commit.shortHash;
+});
 
 app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
 
