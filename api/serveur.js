@@ -12,6 +12,13 @@ const sessions = require('./routes/sessions');
 const nodes = require('./routes/nodes');
 const dependencies = require('./routes/dependencies');
 
+const git = require('git-last-commit');
+
+git.getLastCommit(function(err, commit) {
+  // read commit object properties
+  console.log(commit);
+});
+
 const PORT = 8080;
 
 const app = express();
