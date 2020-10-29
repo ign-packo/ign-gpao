@@ -15,14 +15,14 @@ const dependencies = require('./routes/dependencies');
 
 const PORT = 8080;
 
-function getLastCommit(){
-  return new Promise((resolve, reject) => {
+function getLastCommit() {
+  return new Promise((resolve) => {
     git.getLastCommit(
       (err, commit) => {
-       resolve(commit);
-      }
-    )
-  })
+        resolve(commit);
+      },
+    );
+  });
 }
 
 const app = express();
@@ -45,7 +45,7 @@ const hostname = process.env.SERVER_HOSTNAME || os.hostname();
 swaggerDocument.servers[0].url = `http://${hostname}:${PORT}/api`;
 
 getLastCommit().then((commit) => {
-  swaggerDocument.info.version = "0.1."+commit.shortHash.toUpperCase();
+  swaggerDocument.info.version = `0.1.${commit.shortHash.toUpperCase()}`;
 });
 
 app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
