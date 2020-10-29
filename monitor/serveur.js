@@ -15,7 +15,7 @@ function getLastCommit(){
   }
 
   getLastCommit().then((commit) => {
-    app.set("version", "0.1."+commit.shortHash);
+    app.set("version", "0.1."+commit.shortHash.toUpperCase());
   });
 
 // Url du moniteur sur lequel fonctionne le moniteur

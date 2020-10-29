@@ -41,11 +41,11 @@ const options = {
 };
 
 const swaggerDocument = YAML.load('./doc/swagger.yml');
-const hostname = process.env.SERVER || os.hostname();
+const hostname = process.env.SERVER_HOSTNAME || os.hostname();
 swaggerDocument.servers[0].url = `http://${hostname}:${PORT}/api`;
 
 getLastCommit().then((commit) => {
-  swaggerDocument.info.version = "0.1."+commit.shortHash;
+  swaggerDocument.info.version = "0.1."+commit.shortHash.toUpperCase();
 });
 
 app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
