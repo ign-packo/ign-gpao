@@ -48,30 +48,5 @@ A la racine du projet se trouve le script `build-image.sh` à lancer impérative
 
 Ensuite le script `start.sh` lance les différents service en s'appuyant sur le fichier descriptif `docker-compose.yml``.
 
-## Example d'appel de l'api
+[Installation du client](./client/INSTALL.md)
 
-### Python
-
-```python
-import requests
-import subprocess
-
-# Récupération de tous les jobs de la base
-x=requests.get('http://localhost:8080/api/jobs')
-
-# recuperation d'un job a traiter
-x=requests.get('http://localhost:3000/jobs')
-job=x.json()[0]
-print('Job a traiter : ', job)
-
-# Traitement du job avec recuperation du code et des messages
-proc = subprocess.Popen(job['command'], stdout=subprocess.PIPE)
-(out, err) = proc.communicate()
-status='done'
-if (proc.returncode != 0):
-    status='failed'
-
-# mise a jour de la Bd
-x=requests.put('http://localhost:3000/jobs/'+str(job['id']), data={'status':status, 'log':out})
-print(x.text)
-```
