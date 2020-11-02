@@ -129,6 +129,7 @@ function deleteUnusedSession(){
   }).then(() => {
     location.reload();
   });
+}
 
 // Fonction permettant de supprimer tous les projets
 function deleteAllProjects () {
