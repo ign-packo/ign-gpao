@@ -106,6 +106,11 @@ async function insertProjectFromJson(req, res, next) {
         await insertProjectDependency(upstream, downstream, req);
       }
     }
+    // Il faut vider le tableau des identifiants de jobs
+    // lorsqu'on insére les jobs du projet suivant
+    // sinon au moment d'insérer les dépendances entre job du projet suivant
+    // il va se baser sur les identifiants du projet précédent
+    req.idJobs = [];
   }
   next();
 }
