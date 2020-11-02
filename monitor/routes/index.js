@@ -15,6 +15,7 @@ router.get('/', topBar.getInfo, projects.getProjectStatus, (req, res) => {
     projects: req.projectStatus,
     api: req.app.get('apiUrl'),
     server: req.app.get('server'),
+    version: req.app.get('version'),
   });
 });
 
@@ -27,6 +28,7 @@ router.get('/job/:id', topBar.getInfo, jobs.getJob, dependencies.getDependencies
     deps: req.deps,
     api: req.app.get('apiUrl'),
     server: req.app.get('server'),
+    version: req.app.get('version'),
   });
 });
 
@@ -37,6 +39,7 @@ router.get('/jobs', topBar.getInfo, jobs.getJobs, (req, res) => {
     jobs: req.jobs,
     api: req.app.get('apiUrl'),
     server: req.app.get('server'),
+    version: req.app.get('version'),
   });
 });
 
@@ -47,6 +50,7 @@ router.get('/projects', topBar.getInfo, projects.getProjects, (req, res) => {
     projects: req.projects,
     api: req.app.get('apiUrl'),
     server: req.app.get('server'),
+    version: req.app.get('version'),
   });
 });
 
@@ -57,6 +61,7 @@ router.get('/sessions', topBar.getInfo, sessions.getSessions, (req, res) => {
     sessions: req.sessions,
     api: req.app.get('apiUrl'),
     server: req.app.get('server'),
+    version: req.app.get('version'),
   });
 });
 
@@ -67,6 +72,7 @@ router.get('/hosts', topBar.getInfo, hosts.getHosts, (req, res) => {
     hosts: req.hosts,
     api: req.app.get('apiUrl'),
     server: req.app.get('server'),
+    version: req.app.get('version'),
   });
 });
 

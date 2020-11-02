@@ -1,7 +1,22 @@
 const express = require('express');
 const debug = require('debug');
+const git = require('git-last-commit');
 
 const app = express();
+
+function getLastCommit() {
+  return new Promise((resolve) => {
+    git.getLastCommit(
+      (err, commit) => {
+        resolve(commit);
+      },
+    );
+  });
+}
+
+getLastCommit().then((commit) => {
+  app.set('version', `0.1.${commit.shortHash.toUpperCase()}`);
+});
 
 // Url du moniteur sur lequel fonctionne le moniteur
 // par défaut http://localhost:8000
