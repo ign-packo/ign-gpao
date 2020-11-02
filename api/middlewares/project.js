@@ -173,10 +173,26 @@ async function getProjectStatus(req, res, next) {
   next();
 }
 
+async function deleteProjects(req, res, next) {
+  await req.client.query('TRUNCATE TABLE projects CASCADE')
+    .then((results) => {
+      req.result = results.rows;
+    })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 404,
+        function: 'deleteProjects',
+      };
+    });
+  next();
+}
+
 module.exports = {
   insertProjectFromJson,
   getAllProjects,
   getStatusByJobs,
   getProjectStatus,
   deleteProject,
+  deleteProjects,
 };
