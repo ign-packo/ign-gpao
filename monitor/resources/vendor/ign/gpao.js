@@ -119,6 +119,17 @@ function reinitAllJobs(){
   reinitJobs(ids);
 }
 
+//Fonction qui supprime toutes les sessions inutiles
+function deleteUnusedSession(){
+  fetch(`${apiUrl}/api/session/cleanUnused`, {
+    method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+  }).then(() => {
+    location.reload();
+  });
+
 // Fonction permettant de supprimer tous les projets
 function deleteAllProjects () {
   if (window.confirm(`Supprimer tous les projets ?`)) {
