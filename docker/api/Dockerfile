@@ -6,6 +6,7 @@ LABEL version="1.0"
 #ENV https_proxy=$http_proxy
 
 ADD api /usr/local/src/api
+ADD client /usr/local/src/client
 
 WORKDIR /usr/local/src/api
 
