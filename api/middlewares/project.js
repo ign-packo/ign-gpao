@@ -106,6 +106,11 @@ async function insertProjectFromJson(req, res, next) {
         await insertProjectDependency(upstream, downstream, req);
       }
     }
+    // Il faut vider le tableau des identifiants de jobs
+    // lorsqu'on insére les jobs du projet suivant
+    // sinon au moment d'insérer les dépendances entre job du projet suivant
+    // il va se baser sur les identifiants du projet précédent
+    req.idJobs = [];
   }
   next();
 }
@@ -173,10 +178,26 @@ async function getProjectStatus(req, res, next) {
   next();
 }
 
+async function deleteProjects(req, res, next) {
+  await req.client.query('TRUNCATE TABLE projects CASCADE')
+    .then((results) => {
+      req.result = results.rows;
+    })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 404,
+        function: 'deleteProjects',
+      };
+    });
+  next();
+}
+
 module.exports = {
   insertProjectFromJson,
   getAllProjects,
   getStatusByJobs,
   getProjectStatus,
   deleteProject,
+  deleteProjects,
 };

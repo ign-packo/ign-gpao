@@ -15,6 +15,8 @@ tags:
     description: Manipulation des sessions
   - name: dependencies
     description: Manipulation des dépendances
+  - name: client
+    description: Gestion du client python
 paths:
   '/jobs':
     get:
@@ -244,6 +246,15 @@ paths:
       responses:
         '200':
           description: OK
+  '/projects/delete':
+    delete:
+     tags:
+       - projects
+     summary: "Supprime tous les projets de la base"
+     description: "Supprime tous les projets de la base ainsi que les jobs, dependances correspondantes"
+     responses:
+       '200':
+         description: OK
   '/nodes':
     get:
       tags:
@@ -325,6 +336,15 @@ paths:
       responses:
         '200':
           description: OK
+  '/session/cleanUnused':
+    delete:
+      tags:
+        - sessions
+      summary: "Supprime les sessions inutiles"
+      description: "Supprime les sessions dont le statut est 'closed' est qui ne sont pas intervenues dans les calculs"
+      responses:
+        '200':
+          description: OK
   '/dependencies':
     get:
       tags:
@@ -341,6 +361,25 @@ paths:
       responses:
         '200':
           description: OK
+  '/client':
+    get:
+      tags:
+        - client
+      summary: Renvoie le client Python
+      description: Permet de télécharger le client GPAO écrit en Python ainsi que tous les fichiers utiles à son execution sous forme de zip
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: attachment; filename="client.zip"
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
 components:
   schemas:
     projects:

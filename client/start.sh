@@ -3,4 +3,6 @@ if [ "$(docker ps -aq -f name=client-gpao)" ]; then
     docker rm -f client-gpao
 fi
 
+export NO_PROXY=localhost
+
 python3 client.py

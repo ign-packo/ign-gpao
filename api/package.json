@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "adm-zip": "^0.4.16",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "debug": "^4.1.1",
@@ -27,8 +28,8 @@
     "jsonschema": "^1.2.6",
     "npm": "^6.14.8",
     "pg": "^8.2.1",
-    "swagger-editor-dist": "^3.10.0",
-    "swagger-ui-dist": "^3.25.5",
+    "swagger-editor-dist": "^3.14.4",
+    "swagger-ui-dist": "^3.36.0",
     "swagger-ui-express": "^4.1.4",
     "yamljs": "^0.3.0"
   },

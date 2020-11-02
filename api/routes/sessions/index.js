@@ -39,4 +39,10 @@ sessions.closeSession,
 pgClient.close,
 returnMsg);
 
+router.delete('/session/cleanUnused',
+  pgClient.open,
+  sessions.cleanUnused,
+  pgClient.close,
+  returnMsg);
+
 module.exports = router;

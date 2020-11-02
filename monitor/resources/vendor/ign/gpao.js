@@ -1,8 +1,8 @@
 const apiUrl = document.currentScript.getAttribute('api-url');
 
-// Fonction permettant de supprimer un chantier
-function delChantier(id, name) {
-  if (window.confirm(`Supprimer le chantier : ${name} ?`)) {
+// Fonction permettant de supprimer un projet
+function deleteProject(id, name) {
+  if (window.confirm(`Supprimer le projet : ${name} ?`)) {
     // on fait une requete sur l'API
     fetch(`${apiUrl}/api/project/${id}`, {
       method: 'DELETE',
@@ -117,4 +117,30 @@ function reinitAllJobs(){
   });
 
   reinitJobs(ids);
+}
+
+//Fonction qui supprime toutes les sessions inutiles
+function deleteUnusedSession(){
+  fetch(`${apiUrl}/api/session/cleanUnused`, {
+    method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+  }).then(() => {
+    location.reload();
+  });
+
+// Fonction permettant de supprimer tous les projets
+function deleteAllProjects () {
+  if (window.confirm(`Supprimer tous les projets ?`)) {
+    // on fait une requete sur l'API
+    fetch(`${apiUrl}/api/projects/delete`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(() => {
+      location.reload();
+    });
+  }
 }

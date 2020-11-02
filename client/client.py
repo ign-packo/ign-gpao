@@ -13,12 +13,36 @@ import socket
 import signal
 import tempfile
 import shlex
+import platform
+import ctypes
 import requests
 
-HostName = socket.gethostname()
-nb_process = multiprocessing.cpu_count()
-url_api = os.getenv('URL_API', 'localhost')
-MIN_AVAILABLE_SPACE = 1
+HOSTNAME = socket.gethostname()
+NB_PROCESS = multiprocessing.cpu_count()
+URL_API = "http://" \
+    + os.getenv('URL_API', 'localhost') \
+    + ":"+os.getenv('API_PORT', '8080') \
+    + "/api/"
+MIN_AVAILABLE_SPACE = 5
+
+
+def get_free_space_gb(dirname):
+    """ Fonction renvoyant l'espace disque disponible """
+    space_available = 0
+    if platform.system() == 'Windows':
+        free_bytes = ctypes.c_ulonglong(0)
+        ctypes.windll.kernel32.GetDiskFreeSpaceExW(
+            ctypes.c_wchar_p(dirname),
+            None,
+            None,
+            ctypes.pointer(free_bytes)
+        )
+        space_available = free_bytes.value / 1024 / 1024 / 1024
+    else:
+        stat = os.statvfs(dirname)
+        space_available = stat.f_bavail * stat.f_frsize / 1024 / 1024 / 1024
+
+    return space_available
 
 
 def process(thread_id):
@@ -31,10 +55,9 @@ def process(thread_id):
         # courant qui devient le dossier d'execution
         working_dir = tempfile.TemporaryDirectory(dir='.')
 
-        req = requests.put('http://' +
-                           url_api +
-                           ':8080/api/session?host=' +
-                           HostName)
+        req = requests.put(URL_API +
+                           'session?host=' +
+                           HOSTNAME)
         id_session = req.json()[0]['id']
         print(str_id +
               ' : working dir (' +
@@ -44,8 +67,7 @@ def process(thread_id):
               ')')
         while True:
             # on verifie l'espace disponible dans le dossier de travail
-            stat = os.statvfs(working_dir.name)
-            free_gb = int(stat.f_frsize * stat.f_bavail / (1024 * 1024 * 1024))
+            free_gb = get_free_space_gb(working_dir.name)
             req = None
             if free_gb < MIN_AVAILABLE_SPACE:
                 print('espace disque insuffisant : ',
@@ -53,9 +75,8 @@ def process(thread_id):
                       '/',
                       MIN_AVAILABLE_SPACE)
             else:
-                req = requests.get('http://' +
-                                   url_api +
-                                   ':8080/api/job/ready?id_session=' +
+                req = requests.get(URL_API +
+                                   'job/ready?id_session=' +
                                    str(id_session))
             if req and req.json():
                 id_job = req.json()[0]['id']
@@ -75,9 +96,8 @@ def process(thread_id):
                                             cwd=working_dir.name)
                     for line in io.TextIOWrapper(proc.stdout,
                                                  encoding="utf-8"):
-                        req = requests.post('http://' +
-                                            url_api +
-                                            ':8080/api/job/' +
+                        req = requests.post(URL_API +
+                                            'job/' +
                                             str(id_job) +
                                             '/appendLog',
                                             json={"log": line})
@@ -90,7 +110,7 @@ def process(thread_id):
                     status = 'failed'
                     error_message += str(ex)
 
-                except FileNotFoundError as ex:
+                except OSError as ex:
                     status = 'failed'
                     error_message += str(ex)
 
@@ -105,9 +125,8 @@ def process(thread_id):
                 error_message += 'FIN'
 
                 print('Mise a jour : ', return_code, status, error_message)
-                req = requests.post('http://' +
-                                    url_api +
-                                    ':8080/api/job?id=' +
+                req = requests.post(URL_API +
+                                    'job?id=' +
                                     str(id_job) +
                                     '&status=' +
                                     str(status) +
@@ -121,9 +140,8 @@ def process(thread_id):
             time.sleep(random.randrange(10))
     except KeyboardInterrupt:
         print("on demande au process de s'arreter")
-        req = requests.post('http://' +
-                            url_api +
-                            ':8080/api/session/close?id=' +
+        req = requests.post(URL_API +
+                            'session/close?id=' +
                             str(id_session))
     print(str_id, "end thread ")
 
@@ -131,20 +149,21 @@ def process(thread_id):
 if __name__ == "__main__":
 
     print("Demarrage du client GPAO")
-    print("Hostname : ", HostName)
+    print("HOSTNAME : ", HOSTNAME)
+    print("URL_API : "+URL_API)
 
-    pool = multiprocessing.Pool(nb_process)
+    POOL = multiprocessing.Pool(NB_PROCESS)
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
     try:
-        pool.map(process, range(nb_process))
+        POOL.map(process, range(NB_PROCESS))
 
     except KeyboardInterrupt:
         print("on demande au pool de s'arreter")
-        pool.terminate()
+        POOL.terminate()
     else:
         print("Normal termination")
-        pool.close()
-    pool.join()
+        POOL.close()
+    POOL.join()
 
     print("Fin du client GPAO")
