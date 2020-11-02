@@ -244,6 +244,15 @@ paths:
       responses:
         '200':
           description: OK
+  '/projects/delete':
+    delete:
+     tags:
+       - projects
+     summary: "Supprime tous les projets de la base"
+     description: "Supprime tous les projets de la base ainsi que les jobs, dependances correspondantes"
+     responses:
+       '200':
+         description: OK
   '/nodes':
     get:
       tags:
