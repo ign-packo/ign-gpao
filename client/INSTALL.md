@@ -26,7 +26,8 @@ Si il n'est pas disponible directement, il est possible de l'activer en créant 
 
 ## 3. Configuration de l'API
 
-Pour se connecter à l'api le client utilise une variable d'environement `URL_API` qui doit pointer sur le bon serveur.
+Pour se connecter à l'api le client utilise une variable d'environement `URL_API` (par défaut localhost) qui doit pointer sur le bon serveur.
+Il existe aussi une variable `API_PORT` qui permet de changer le port par défaut (8080) de l'api.
 
 ### Windows
 
