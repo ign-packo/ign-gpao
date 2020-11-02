@@ -348,7 +348,7 @@ paths:
       tags:
         - client
       summary: Renvoie le client Python
-      description: Permet de télécharger le client Python ainsi que tous les fichiers utiles à son execution sous forme de zip
+      description: Permet de télécharger le client GPAO écrit en Python ainsi que tous les fichiers utiles à son execution sous forme de zip
       responses:
         '200':
           description: OK
