@@ -8,7 +8,6 @@ import random
 import subprocess
 import time
 import os
-import io
 import socket
 import signal
 import tempfile
@@ -24,6 +23,16 @@ URL_API = "http://" \
     + ":"+os.getenv('API_PORT', '8080') \
     + "/api/"
 MIN_AVAILABLE_SPACE = 5
+
+CMD_WINDOWS_SYSTEM = ['mkdir',
+                      'dir',
+                      'copy',
+                      'rmdir',
+                      'echo',
+                      'rd',
+                      'del',
+                      'move',
+                      'rename']
 
 
 def get_free_space_gb(dirname):
@@ -89,37 +98,32 @@ def process(thread_id):
                       "]")
                 return_code = None
                 error_message = ''
+
                 try:
-                    
+                    shlex_cmd = shlex.split(command)
+                    encoding = None
 
-                    shlex_cmd = shlex.split(command)                    
-                    encoding=None
-
-                    # AB : Il faut passer shell=True sous windows pour que les commandes systemes soient reconnues
-                    cmd_windows_system = ['mkdir', 'dir', 'copy', 'rmdir', 'echo', 'rd', 'del', 'move', 'rename']
-                    
+# AB : Il faut passer shell=True sous windows
+# pour que les commandes systemes soient reconnues
                     shell = False
                     if platform.system() == 'Windows':
-                        encoding="cp1252"
-                        if shlex_cmd[0] in cmd_windows_system:
-                            print("Commande Windows système detecté")
-                            shell=True
-                            encoding="cp850"
+                        encoding = "cp1252"
+                        if shlex_cmd[0] in CMD_WINDOWS_SYSTEM:
+                            shell = True
+                            encoding = "cp850"
                     else:
-                        encoding="utf8"
-
+                        encoding = "utf8"
 
                     proc = subprocess.Popen(shlex_cmd,
                                             shell=shell,
                                             stdout=subprocess.PIPE,
-                                            stderr=subprocess.STDOUT, # Redirection du flux d'erreur vers le flux de sortie standard
+                                            stderr=subprocess.STDOUT,
                                             encoding=encoding,
                                             errors='replace',
                                             universal_newlines=True,
                                             cwd=working_dir.name)
 
-
-                    while(True):
+                    while True:
                         realtime_output = proc.stdout.readline()
 
                         if realtime_output == '' and proc.poll() is not None:
@@ -127,10 +131,10 @@ def process(thread_id):
 
                         if realtime_output:
                             req = requests.post(URL_API +
-                                            'job/' +
-                                            str(id_job) +
-                                            '/appendLog',
-                                            json={"log": realtime_output})
+                                                'job/' +
+                                                str(id_job) +
+                                                '/appendLog',
+                                                json={"log": realtime_output})
 
                     return_code = proc.poll()
 
