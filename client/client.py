@@ -90,22 +90,51 @@ def process(thread_id):
                 return_code = None
                 error_message = ''
                 try:
-                    proc = subprocess.Popen(shlex.split(command),
+                    
+
+                    shlex_cmd = shlex.split(command)                    
+                    encoding=None
+
+                    # AB : Il faut passer shell=True sous windows pour que les commandes systemes soient reconnues
+                    cmd_windows_system = ['mkdir', 'dir', 'copy', 'rmdir', 'echo', 'rd', 'del', 'move', 'rename']
+                    
+                    shell = False
+                    if platform.system() == 'Windows':
+                        encoding="cp1252"
+                        if shlex_cmd[0] in cmd_windows_system:
+                            print("Commande Windows système detecté")
+                            shell=True
+                            encoding="cp850"
+                    else:
+                        encoding="utf8"
+
+
+                    proc = subprocess.Popen(shlex_cmd,
+                                            shell=shell,
                                             stdout=subprocess.PIPE,
-                                            stderr=subprocess.PIPE,
+                                            stderr=subprocess.STDOUT, # Redirection du flux d'erreur vers le flux de sortie standard
+                                            encoding=encoding,
+                                            errors='replace',
+                                            universal_newlines=True,
                                             cwd=working_dir.name)
-                    for line in io.TextIOWrapper(proc.stdout,
-                                                 encoding="utf-8"):
-                        req = requests.post(URL_API +
+
+
+                    while(True):
+                        realtime_output = proc.stdout.readline()
+
+                        if realtime_output == '' and proc.poll() is not None:
+                            break
+
+                        if realtime_output:
+                            req = requests.post(URL_API +
                                             'job/' +
                                             str(id_job) +
                                             '/appendLog',
-                                            json={"log": line})
+                                            json={"log": realtime_output})
+
                     return_code = proc.poll()
 
                     status = 'done'
-                    error_message += proc.stderr.read().decode()
-
                 except subprocess.CalledProcessError as ex:
                     status = 'failed'
                     error_message += str(ex)
