@@ -24,16 +24,6 @@ URL_API = "http://" \
     + "/api/"
 MIN_AVAILABLE_SPACE = 5
 
-CMD_WINDOWS_SYSTEM = ['mkdir',
-                      'dir',
-                      'copy',
-                      'rmdir',
-                      'echo',
-                      'rd',
-                      'del',
-                      'move',
-                      'rename']
-
 
 def get_free_space_gb(dirname):
     """ Fonction renvoyant l'espace disque disponible """
@@ -52,6 +42,22 @@ def get_free_space_gb(dirname):
         space_available = stat.f_bavail * stat.f_frsize / 1024 / 1024 / 1024
 
     return space_available
+
+
+def read_stdout_process(proc, id_job):
+    """ Lecture de la sortie console """
+    while True:
+        realtime_output = proc.stdout.readline()
+
+        if realtime_output == '' and proc.poll() is not None:
+            break
+
+        if realtime_output:
+            requests.post(URL_API +
+                          'job/' +
+                          str(id_job) +
+                          '/appendLog',
+                          json={"log": realtime_output})
 
 
 def process(thread_id):
@@ -101,40 +107,21 @@ def process(thread_id):
 
                 try:
                     shlex_cmd = shlex.split(command)
-                    encoding = None
 
 # AB : Il faut passer shell=True sous windows
 # pour que les commandes systemes soient reconnues
-                    shell = False
-                    if platform.system() == 'Windows':
-                        encoding = "cp1252"
-                        if shlex_cmd[0] in CMD_WINDOWS_SYSTEM:
-                            shell = True
-                            encoding = "cp850"
-                    else:
-                        encoding = "utf8"
+                    shell = platform.system() == 'Windows'
 
                     proc = subprocess.Popen(shlex_cmd,
                                             shell=shell,
                                             stdout=subprocess.PIPE,
                                             stderr=subprocess.STDOUT,
-                                            encoding=encoding,
+                                            encoding='utf8',
                                             errors='replace',
                                             universal_newlines=True,
                                             cwd=working_dir.name)
 
-                    while True:
-                        realtime_output = proc.stdout.readline()
-
-                        if realtime_output == '' and proc.poll() is not None:
-                            break
-
-                        if realtime_output:
-                            req = requests.post(URL_API +
-                                                'job/' +
-                                                str(id_job) +
-                                                '/appendLog',
-                                                json={"log": realtime_output})
+                    read_stdout_process(proc, id_job)
 
                     return_code = proc.poll()
 
