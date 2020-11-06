@@ -8,7 +8,6 @@ import random
 import subprocess
 import time
 import os
-import io
 import socket
 import signal
 import tempfile
@@ -43,6 +42,22 @@ def get_free_space_gb(dirname):
         space_available = stat.f_bavail * stat.f_frsize / 1024 / 1024 / 1024
 
     return space_available
+
+
+def read_stdout_process(proc, id_job):
+    """ Lecture de la sortie console """
+    while True:
+        realtime_output = proc.stdout.readline()
+
+        if realtime_output == '' and proc.poll() is not None:
+            break
+
+        if realtime_output:
+            requests.post(URL_API +
+                          'job/' +
+                          str(id_job) +
+                          '/appendLog',
+                          json={"log": realtime_output})
 
 
 def process(thread_id):
@@ -89,23 +104,28 @@ def process(thread_id):
                       "]")
                 return_code = None
                 error_message = ''
+
                 try:
-                    proc = subprocess.Popen(shlex.split(command),
+                    shlex_cmd = shlex.split(command)
+
+# AB : Il faut passer shell=True sous windows
+# pour que les commandes systemes soient reconnues
+                    shell = platform.system() == 'Windows'
+
+                    proc = subprocess.Popen(shlex_cmd,
+                                            shell=shell,
                                             stdout=subprocess.PIPE,
-                                            stderr=subprocess.PIPE,
+                                            stderr=subprocess.STDOUT,
+                                            encoding='utf8',
+                                            errors='replace',
+                                            universal_newlines=True,
                                             cwd=working_dir.name)
-                    for line in io.TextIOWrapper(proc.stdout,
-                                                 encoding="utf-8"):
-                        req = requests.post(URL_API +
-                                            'job/' +
-                                            str(id_job) +
-                                            '/appendLog',
-                                            json={"log": line})
+
+                    read_stdout_process(proc, id_job)
+
                     return_code = proc.poll()
 
                     status = 'done'
-                    error_message += proc.stderr.read().decode()
-
                 except subprocess.CalledProcessError as ex:
                     status = 'failed'
                     error_message += str(ex)
