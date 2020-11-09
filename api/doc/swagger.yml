@@ -17,6 +17,8 @@ tags:
     description: Manipulation des dépendances
   - name: client
     description: Gestion du client python
+  - name: changelog
+    description: Visualisation des évolutions
 paths:
   '/jobs':
     get:
@@ -380,6 +382,15 @@ paths:
               schema:
                 type: string
                 format: binary
+  '/changeLog':
+    get:
+      tags:
+        - changelog
+      summary: "Récupération du journal des évolutions"
+      description: "Récupération de toutes les évolutions de la GPAO sous forme de JSon"
+      responses:
+        '200':
+          description: OK
 components:
   schemas:
     projects:
