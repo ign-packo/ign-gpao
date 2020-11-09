@@ -650,36 +650,36 @@ ALTER TABLE public.view_job_status OWNER TO postgres;
 --
 
 CREATE VIEW public.view_project_status AS
- SELECT sum(
+ SELECT COALESCE(sum(
         CASE
             WHEN (projects.status = 'ready'::public.status) THEN 1
             ELSE 0
-        END) AS ready,
-    sum(
+        END), 0) AS ready,
+    COALESCE(sum(
         CASE
             WHEN (projects.status = 'done'::public.status) THEN 1
             ELSE 0
-        END) AS done,
-    sum(
+        END), 0) AS done,
+    COALESCE(sum(
         CASE
             WHEN (projects.status = 'waiting'::public.status) THEN 1
             ELSE 0
-        END) AS waiting,
-    sum(
+        END), 0) AS waiting,
+    COALESCE(sum(
         CASE
             WHEN (projects.status = 'running'::public.status) THEN 1
             ELSE 0
-        END) AS running,
-    sum(
+        END), 0) AS running,
+    COALESCE(sum(
         CASE
             WHEN (projects.status = 'failed'::public.status) THEN 1
             ELSE 0
-        END) AS failed,
-    sum(
+        END), 0) AS failed,
+    COALESCE(sum(
         CASE
             WHEN ((projects.status = 'failed'::public.status) OR (projects.status = 'running'::public.status) OR (projects.status = 'waiting'::public.status) OR (projects.status = 'done'::public.status) OR (projects.status = 'ready'::public.status)) THEN 1
             ELSE 0
-        END) AS total
+        END), 0) AS total
    FROM public.projects;
 
 
