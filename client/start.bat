@@ -3,4 +3,4 @@ chcp 65001
 
 SET PYTHONIOENCODING=UTF-8
 
-python client.py
+python3 client.py
