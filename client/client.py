@@ -106,7 +106,7 @@ def process(thread_id):
                 error_message = ''
 
                 try:
-                    shlex_cmd = shlex.split(command)
+                    shlex_cmd = shlex.split(command, posix=False)
 
 # AB : Il faut passer shell=True sous windows
 # pour que les commandes systemes soient reconnues
