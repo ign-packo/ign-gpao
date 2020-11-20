@@ -1,7 +1,18 @@
 <!-- views/partials/jobs_info.ejs -->
 <div class="card shadow mb-4">
   <div class="card-header py-3">
-    <h6 class="m-0 font-weight-bold text-primary">Job : <%= job.job_id %></h6>
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h6 class="m-0 font-weight-bold text-primary">Job : <%= job.job_id %></h6>
+      </div>
+        <%if (job.job_status == 'failed') { %>
+          <div class="col-lg-6 text-right">
+            <button type="button" onclick='reinitJobs([<%= job.job_id %>])' data-toggle="tooltip" title="Réinitialise le job <%= job.job_id %>" class="btn btn-circle btn-warning">
+              <i class="fas fa-sync-alt fa-1x" aria-hidden="true"></i>
+            </button>
+          </div>
+        <%}%>
+    </div>
   </div>
   <div class="card-body">
       <ul class="list-group list-group-flush">

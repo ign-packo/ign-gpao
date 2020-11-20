@@ -61,14 +61,10 @@ function txtChanged(file) {
   // contents of file in variable     
     var text = e.target.result.split(/\r\n|\n/);
     let P = { projects:[{name: file.name, jobs:[]}]};
-    let lastId;
     text.forEach((line, index) => {
       if (line.length>0){
         let job = {name: `job ${index}`, command: line};
-        if (lastId !== undefined){
-          job.deps = [{id:lastId}];
-        }
-        lastId = P.projects[0].jobs.push(job) - 1;
+        P.projects[0].jobs.push(job);
       }
     });
     var json = JSON.stringify(P);
