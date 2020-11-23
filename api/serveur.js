@@ -1,69 +1,63 @@
-const swaggerJsdoc = require("swagger-jsdoc")
-const swaggerUi = require("swagger-ui-express")
-const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
-const chantiers = require("./routes/chantiers")
-const ressources = require("./routes/ressources")
-const jobs = require("./routes/jobs")
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const os = require('os');
+const git = require('git-last-commit');
 
-const PORT = 8080
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const debug = require('debug');
+const jobs = require('./routes/jobs');
+const projects = require('./routes/projects');
+const sessions = require('./routes/sessions');
+const nodes = require('./routes/nodes');
+const dependencies = require('./routes/dependencies');
+const client = require('./routes/client');
 
-const app = express()
+const PORT = 8080;
+
+function getLastCommit() {
+  return new Promise((resolve) => {
+    git.getLastCommit(
+      (err, commit) => {
+        resolve(commit);
+      },
+    );
+  });
+}
+
+const app = express();
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb', extended: true }));
 
-app.use(function (req, res, next) {
-	console.log(req.method, ' ', req.path, ' ', req.body)
-	console.log("received at " + Date.now())
-	next()
-})
+app.use((req, res, next) => {
+  debug.log(req.method, ' ', req.path, ' ', req.body);
+  debug.log(`received at ${Date.now()}`);
+  next();
+});
 
-// Swagger set up
 const options = {
-  swaggerDefinition: {
-    openapi: "3.0.0",
-    info: {
-      title: "API GPAO",
-      version: "1.0.0",
-      description: "Documentation de l'API mise en place dans le cadre de la refonte de la GPAO.",
-    },
-
-    servers: [
-      {
-        url: "http://koolyce.ddns.net:8080/api",
-        description: "Serveur d'Arnaud"
-      },
-      {
-        url: "http://localhost:8080/api",
-        description: "Serveur de dev"
-      },
-      {
-        url: "http://api-gpao:8080/api",
-        description: "Serveur de test"
-      }
-    ]
-  },
-  apis: ["model/job.js", "routes/job"]
+  customCss: '.swagger-ui .topbar { display: none }',
 };
 
+const swaggerDocument = YAML.load('./doc/swagger.yml');
+const hostname = process.env.SERVER_HOSTNAME || os.hostname();
+swaggerDocument.servers[0].url = `http://${hostname}:${PORT}/api`;
 
-const specs = swaggerJsdoc(options);
-app.use("/api/doc", swaggerUi.serve);
-app.get(
-  "/api/doc",
-  swaggerUi.setup(specs, {
-    explorer: false
-  })
-);
+getLastCommit().then((commit) => {
+  swaggerDocument.info.version = `0.1.${commit.shortHash.toUpperCase()}`;
+});
 
-app.use('/api', chantiers);
-app.use('/api', ressources);
+app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
+
 app.use('/api', jobs);
+app.use('/api', projects);
+app.use('/api', sessions);
+app.use('/api', nodes);
+app.use('/api', dependencies);
+app.use('/api', client);
 
-module.exports = app
-
-app.listen(PORT, function () {
-  console.log("URL de l'api : http://localhost:"+PORT+"/api \nURL de la documentation swagger : http://localhost:"+PORT+"/api/doc")
-})
+module.exports = app.listen(PORT, () => {
+  debug.log(`URL de l'api : http://localhost:${PORT}/api \nURL de la documentation swagger : http://localhost:${PORT}/api/doc`);
+});

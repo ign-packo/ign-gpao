@@ -1,50 +1,189 @@
-#!/usr/bin/python
-import requests
+"""
+Client pour la GPAO
+Permet de lancer un thread par coeur
+"""
+# !/usr/bin/python
+import multiprocessing
+import random
 import subprocess
-import json
 import time
 import os
+import socket
+import signal
+import tempfile
+import shlex
+import platform
+import ctypes
+import requests
+
+HOSTNAME = socket.gethostname()
+NB_PROCESS = multiprocessing.cpu_count()
+URL_API = "http://" \
+    + os.getenv('URL_API', 'localhost') \
+    + ":"+os.getenv('API_PORT', '8080') \
+    + "/api/"
+MIN_AVAILABLE_SPACE = 5
+
+
+def get_free_space_gb(dirname):
+    """ Fonction renvoyant l'espace disque disponible """
+    space_available = 0
+    if platform.system() == 'Windows':
+        free_bytes = ctypes.c_ulonglong(0)
+        ctypes.windll.kernel32.GetDiskFreeSpaceExW(
+            ctypes.c_wchar_p(dirname),
+            None,
+            None,
+            ctypes.pointer(free_bytes)
+        )
+        space_available = free_bytes.value / 1024 / 1024 / 1024
+    else:
+        stat = os.statvfs(dirname)
+        space_available = stat.f_bavail * stat.f_frsize / 1024 / 1024 / 1024
+
+    return space_available
+
+
+def read_stdout_process(proc, id_job):
+    """ Lecture de la sortie console """
+    while True:
+        realtime_output = proc.stdout.readline()
+
+        if realtime_output == '' and proc.poll() is not None:
+            break
+
+        if realtime_output:
+            requests.post(URL_API +
+                          'job/' +
+                          str(id_job) +
+                          '/appendLog',
+                          json={"log": realtime_output})
+
+
+def process(thread_id):
+    """ Traitement pour un thread """
+    str_id = "["+str(thread_id)+"] : "
+    id_session = -1
+
+    try:
+        # On cree un dossier temporaire dans le dossier
+        # courant qui devient le dossier d'execution
+        working_dir = tempfile.TemporaryDirectory(dir='.')
+
+        req = requests.put(URL_API +
+                           'session?host=' +
+                           HOSTNAME)
+        id_session = req.json()[0]['id']
+        print(str_id +
+              ' : working dir (' +
+              working_dir.name +
+              ') id_session (' +
+              str(id_session) +
+              ')')
+        while True:
+            # on verifie l'espace disponible dans le dossier de travail
+            free_gb = get_free_space_gb(working_dir.name)
+            req = None
+            if free_gb < MIN_AVAILABLE_SPACE:
+                print('espace disque insuffisant : ',
+                      free_gb,
+                      '/',
+                      MIN_AVAILABLE_SPACE)
+            else:
+                req = requests.get(URL_API +
+                                   'job/ready?id_session=' +
+                                   str(id_session))
+            if req and req.json():
+                id_job = req.json()[0]['id']
+                command = req.json()[0]['command']
+                print(str_id, "L'identifiant du job " +
+                      str(id_job) +
+                      " est disponible" +
+                      " Execution de la commande [" +
+                      str(command) +
+                      "]")
+                return_code = None
+                error_message = ''
+
+                try:
+                    shlex_cmd = shlex.split(command, posix=False)
+
+# AB : Il faut passer shell=True sous windows
+# pour que les commandes systemes soient reconnues
+                    shell = platform.system() == 'Windows'
+
+                    proc = subprocess.Popen(shlex_cmd,
+                                            shell=shell,
+                                            stdout=subprocess.PIPE,
+                                            stderr=subprocess.STDOUT,
+                                            encoding='utf8',
+                                            errors='replace',
+                                            universal_newlines=True,
+                                            cwd=working_dir.name)
+
+                    read_stdout_process(proc, id_job)
+
+                    return_code = proc.poll()
+
+                    status = 'done'
+                except subprocess.CalledProcessError as ex:
+                    status = 'failed'
+                    error_message += str(ex)
+
+                except OSError as ex:
+                    status = 'failed'
+                    error_message += str(ex)
+
+                if return_code != 0:
+                    status = 'failed'
+                    if return_code is None:
+                        return_code = -1
+
+                if error_message:
+                    print('Erreur : '+error_message)
+
+                error_message += 'FIN'
+
+                print('Mise a jour : ', return_code, status, error_message)
+                req = requests.post(URL_API +
+                                    'job?id=' +
+                                    str(id_job) +
+                                    '&status=' +
+                                    str(status) +
+                                    '&returnCode=' +
+                                    str(return_code),
+                                    json={"log": error_message})
+                if req.status_code != 200:
+                    print('Error : ',
+                          req.status_code,
+                          req.content)
+            time.sleep(random.randrange(10))
+    except KeyboardInterrupt:
+        print("on demande au process de s'arreter")
+        req = requests.post(URL_API +
+                            'session/close?id=' +
+                            str(id_session))
+    print(str_id, "end thread ")
 
 
 if __name__ == "__main__":
 
     print("Demarrage du client GPAO")
+    print("HOSTNAME : ", HOSTNAME)
+    print("URL_API : "+URL_API)
 
-    url_api = os.getenv('URL_API', 'localhost')
+    POOL = multiprocessing.Pool(NB_PROCESS)
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
-    print(url_api)
+    try:
+        POOL.map(process, range(NB_PROCESS))
 
-    while True:
-        print("Recherche d'un nouveau job")
-        req=requests.get('http://'+url_api+':8080/api/job/ready')
-        #print (req.json())
-        if(len(req.json())!=0):
-            id = req.json()[0]['id']
-            command = req.json()[0]['command']
+    except KeyboardInterrupt:
+        print("on demande au pool de s'arreter")
+        POOL.terminate()
+    else:
+        print("Normal termination")
+        POOL.close()
+    POOL.join()
 
-            print("L'identifiant du job "+str(id)+" est disponible")
-
-            print("Execution de la commande "+ str(command))
-            array_command = command.split()
-            return_code = -1
-            try:
-                proc = subprocess.Popen(array_command, stdout=subprocess.PIPE)
-                (out, err) = proc.communicate()
-                status='done'
-                return_code = proc.returncode
-                json_data = out.decode()
-
-            except Exception as ex:
-                status='failed'
-                json_data=str(ex)
-                print('failed', ex)
-            
-            if (return_code != 0):
-                status='failed'
-                print("le job a echoue")
-
-            req=requests.post('http://'+url_api+':8080/api/job/'+str(id)+'/'+str(status)+'/'+str(return_code), json={"log": json_data})
-        else:
-            print("Aucun job disponible dans la base")
-
-        time.sleep(5)
+    print("Fin du client GPAO")

@@ -1,76 +1,150 @@
-const Pool = require('pg').Pool
-const pool = new Pool({
-        user: process.env.PGUSER,
-        host: process.env.PGHOST,
-        database: process.env.PGDATABASE,
-        password: process.env.PGPASSWORD,
-        port: process.env.PGPORT
-})
-
 const { matchedData } = require('express-validator/filter');
+const debug = require('debug')('job');
 
-
-function getAllJobs(req, res){
-	pool.query("SELECT * FROM jobs", (error, results) => {
-
-	if (error) {
-		throw error
-	}
-
-	res.status(200).json(results.rows)
-	})
+async function getAllJobs(req, res, next) {
+  await req.client.query('SELECT * FROM jobs')
+    .then((results) => { req.result = results.rows; })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'getAlljobs',
+      };
+    });
+  next();
 }
 
-function getJobReady(req, res){
-	pool.query("UPDATE jobs SET status = 'running', start_date=NOW() WHERE id = (SELECT id FROM jobs WHERE status = 'ready' LIMIT 1) RETURNING id, command", (error, results) => {
-
-	if (error){
-		throw error
-	}
-	res.status(200).json(results.rows)
-	})
+async function getJobStatus(req, res, next) {
+  await req.client.query('SELECT * FROM view_job_status')
+    .then((results) => { req.result = results.rows; })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'getJobStatus',
+      };
+    });
+  next();
 }
 
-function updateJobStatus(req, res){
-	var params = matchedData(req);
+async function getJob(req, res, next) {
+  const params = matchedData(req);
 
-    const id = req.params.id
-  const status = req.params.status
-  const return_code = req.params.return_code
-	const log = req.body.log
-	
-    pool.query(
-      'UPDATE jobs SET status = $1, log = $2, return_code = $4, end_date=NOW() WHERE id = $3',
-      [status, log, id, return_code],
-      (error, results) => {
-        if (error) {
-          throw error
-        }
-        res.status(200).send(`Job updated`)
-      }
+  const { id } = params;
+  await req.client.query('SELECT * FROM view_job WHERE job_id=$1', [id])
+    .then((results) => { req.result = results.rows; })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'getJob',
+      };
+    });
+  next();
+}
+
+async function getJobReady(req, res, next) {
+  const params = matchedData(req);
+
+  const id = params.id_session;
+  try {
+    await req.client.query('LOCK TABLE jobs IN EXCLUSIVE MODE');
+    await req.client.query(
+      "UPDATE jobs SET status = 'running', start_date=NOW(), id_session = $1 WHERE (select status from sessions where id =$1) = 'active' AND id = (SELECT id FROM jobs WHERE status = 'ready' LIMIT 1) RETURNING id, command", [id],
     )
+      .then((results) => { req.result = results.rows; });
+  } catch (error) {
+    req.error = {
+      msg: error.toString(),
+      code: 500,
+      function: 'getJobReady',
+    };
+  }
+  next();
 }
 
-function insertJob(req, res){	
-	const command = req.body.command
-	const status = 'ready'
-	const log = ''
-	
-    pool.query(
-      'INSERT INTO jobs (command, status, log) VALUES ($1, $2, $3)',
-      [command, status, log],
-      (error, results) => {
-        if (error) {
-          throw error
-        }
-        res.status(200).send(`Job inserted`)
+async function updateJobStatus(req, res, next) {
+  const params = matchedData(req);
+  const { id } = params;
+  const { status } = params;
+  const { returnCode } = params;
+  const { log } = params;
+
+  debug(`id = ${id}`);
+  debug(`status = ${status}`);
+  debug(`returnCode = ${returnCode}`);
+  debug(`log = ${log}`);
+
+  await req.client.query(
+    'UPDATE jobs SET status = $1, log = CONCAT( log, CAST($2 AS VARCHAR) ), return_code = $4, end_date=NOW() WHERE id = $3', [status, log, id, returnCode],
+  )
+    .then((results) => { req.result = results.rows; })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'updateJobStatus',
+      };
+    });
+  next();
+}
+
+async function reinitJobs(req, res, next) {
+  const { ids } = req.body;
+
+  await req.client.query(
+    'SELECT reinit_jobs($1::integer[]) AS nb_jobs', [ids],
+  )
+    .then((results) => { req.result = results.rows; })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'reinitJobs',
+      };
+    });
+  next();
+}
+
+async function appendLog(req, res, next) {
+  const params = matchedData(req);
+  const { id } = params;
+  const { log } = params;
+
+  debug(`id = ${id}`);
+  debug(`log = ${log}`);
+
+  await req.client.query(
+    'UPDATE jobs SET log = CONCAT( log, CAST($2 AS VARCHAR) ) WHERE id = $1', [id, log],
+  )
+    .then((results) => {
+      if (results.rowCount !== 1) {
+        req.error = {
+          msg: 'Invalid Job Id',
+          code: 500,
+          function: 'appendLog',
+        };
+      } else {
+        req.result = results.rows;
       }
-    )
+    })
+    .catch((error) => {
+      debug(error);
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'appendLog',
+      };
+    });
+  next();
 }
 
 module.exports = {
-	getAllJobs,
-	getJobReady,
-	updateJobStatus,
-	insertJob
-}
+  getAllJobs,
+  getJobStatus,
+  getJobReady,
+  getJob,
+  updateJobStatus,
+  reinitJobs,
+  appendLog,
+};

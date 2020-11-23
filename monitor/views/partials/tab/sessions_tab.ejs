@@ -1,0 +1,56 @@
+  <div class="card shadow mb-4 border-left-success h-100 py-2">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-success">Sessions</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped" id="dataTable" cellspacing="0">
+          <thead>
+              <tr>
+                <th>Id</th>
+                <th>Host</th>
+                <th>Status</th>
+                <th>Date début</th>
+                <th>Date fin</th>
+              </tr>
+          </thead>
+          <tfoot>
+              <tr>
+                <th>Id</th>
+                <th>Host</th>
+                <th>Status</th>
+                <th>Date début</th>
+                <th>Date fin</th>
+              </tr>
+          </tfoot>
+          <tbody>
+            <% sessions.forEach(function( session ){ %>
+                <tr>
+                    <td> <%= session.id %></td>
+                    <td> <%= session.host %></td>
+                    <td> <%= session.status %></td>
+                    <td> <%= session.start_date %></td>
+                    <td> <%= session.end_date %></td>
+                </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function() {
+      var i = jQuery('<i></i>');
+      i.addClass('fas fa-trash fa-1x')
+  
+      var button = jQuery('<button></button>');
+      button.addClass('btn btn-warning');
+      button.attr('type', 'button')
+            .attr('data-toggle', "tooltip")
+            .attr('title', 'Supprime les sessions qui ont un statut closed')
+            .attr('onclick', 'deleteUnusedSession()')
+            .append(i)
+            .append(' Supprime les sessions fermées');
+      $("div.toolbar_tab").append(button);
+    } );
+  </script>

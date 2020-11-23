@@ -1,14 +1,25 @@
-async function getJobs (req, res, next){
+const axios = require('axios');
 
-    const axios = require('axios');
-    const serveur = require('../serveur');
-    
-    json = await axios.get('http://'+serveur.URL_API+':'+serveur.URL_API_PORT+'/api/jobs')
-  
-    req.body = json.data
-    next()
-  }
+async function getJobs(req, res, next) {
+  const json = await axios.get(`${req.app.get('apiUrl')}/api/jobs`);
+
+  const jobs = json.data;
+
+  req.jobs = jobs;
+  next();
+}
+
+async function getJob(req, res, next) {
+  const json = await axios.get(`${req.app.get('apiUrl')}/api/job/${req.params.id}`);
+
+  const job = json.data[0];
+
+  req.job = job;
+
+  next();
+}
 
 module.exports = {
-    getJobs
-}
+  getJobs,
+  getJob,
+};
