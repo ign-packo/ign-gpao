@@ -130,8 +130,6 @@ def write_Elt_JSON(key, data):
 	elif key == 'DEP_POJECT':
 		prinf(f"{key}")
 	
-
-
 def parse_line(line):
     p=re.compile(r'(\  {2,})')
     line=p.sub(' ', line)
@@ -222,18 +220,12 @@ def write_JSON4GPAO(data, data_json):
 
         data_json['PROJECTS'].append(dict_project)
     # end for key_project.......
-    #switch_idName_id(df_p, dict_project['jobs'])
-
+    switch_idName_id(df_p, data_json['PROJECTS'])
     return data_json
     
         
 		
-def parse_file(infile, way):
-    if way=="direct":
-        print ("sens direct")
-    elif way =="reverse":
-        print ("sens inverse")
-    save_rank = 0
+def parse_flat_file(infile):
     data={"PROJECTS":{}} 
     with open(infile, 'r') as file_object:
         dict_data=data['PROJECTS']
@@ -241,18 +233,24 @@ def parse_file(infile, way):
         if not line.isspace():
             key, match = parse_line(line)
             read_next(key, match, file_object, dict_data)
-
-        # line = file_object.readline()
-        # print(f"****[{line}]")
-        # if line.split("\n") != "":
-        #     key, match = parse_line(line)    
-        #     read_next(key, match, file_object, dict_data)
-        # else :
-        #     
     data_json = {"PROJECTS":[]} 
     data_json = write_JSON4GPAO(data, data_json)
     return data_json
-        #print_JSON(dict_data)
+       
+def parse_json_file(infile):
+    print(f'function not implented yet.......')
+    return None
+
+def parse_file(infile, extend):
+    if in_extend[1]=="flat" :
+        dj=parse_flat_file(in_filepath)
+    elif in_extend[1]=="json":
+        dj=parse_json_file(in_filepath)
+    else:
+        dj=None 
+        print(f"Warning: [{extend}] unprocessed file type")
+
+    return dj
 
 if __name__ == '__main__':
 
@@ -264,22 +262,19 @@ if __name__ == '__main__':
         generate_empty_project()
     elif sys.argv[1]=='print':
         in_filepath = sys.argv[2]
-        dj=parse_file(in_filepath)
+        in_extend=in_filepath.split(".")
+        dj=parse_file(in_filepath,in_extend[1])
         mstr=json.dumps(dj, indent=2)
         print(f"{mstr}")
     else:
         in_filepath = sys.argv[1]
         in_extend=in_filepath.split(".")
-        if in_extend[1]=="flat" :
-            dj=parse_file(in_filepath, "direct")
-        elif in_extend[1]=="json":
-            dj=parse_file(in_filepath, "reverse") 
+        dj=parse_file(in_filepath,in_extend[1])
 
-        out_filepath = sys.argv[2]
-        with open(out_filepath, 'w') as outfile:
-            json.dump(dj, outfile, indent=2)
-            # mstr=json.dumps(dj, indent=2)
-            # print(f"*****> 1 data_json:{mstr}")
+        if dj != None:
+            out_filepath = sys.argv[2]
+            with open(out_filepath, 'w') as outfile:
+                json.dump(dj, outfile, indent=2)
 
      
     if return_code !=0:
