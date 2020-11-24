@@ -64,12 +64,13 @@ def print_format():
 
 def print_help():
     print(f"-----------------------------------------------------------------------------")
-    print(f"Usage: python parsing_flat_project.py format|generate|inputfile.flat outfile.json")
+    print(f"Usage: python parsing_flat_project.py format|generate|print|my_project.flat my_project.json")
     print(f"-----------------------------------------------------------------------------")
-    print(f"\tTranslate a flat project file into JSON project file can be used by GPAO V2.0.")
+    print(f"\tTranslates a project flat file into project JSON file usable by GPAO V2.0.")
     print(f"\tformat        : Print help about flat format syntax.")
     print(f"\tgenerate      : Print on screen a simple project in flat format.")
-    print(f"\tinputfile.flat: Translate my project flat format file (inputfile.flat)\n\t\t\tinto JSON format file (outfile.json).")
+    print(f"\tprint         : Print on screen result of translate (output file is ignore).")
+    print(f"\tinputfile.flat: Translates a project \"my_project.flat\" \n\t\t\tinto \"my_project.json\".")
     print(f"-----------------------------------------------------------------------------")
 
 def switch_idName_id(data_f, data_dict):
@@ -132,6 +133,10 @@ def write_Elt_JSON(key, data):
 
 
 def parse_line(line):
+    p=re.compile(r'(\  {2,})')
+    line=p.sub(' ', line)
+    p=re.compile(r',\ ')
+    line=p.sub(',', line)
     for key, rx in rx_dict.items():
         match = rx.search(line)
         if match:
@@ -158,8 +163,11 @@ def read_next(key, match, file_object, data):
 
     elif key == 'DEP_PROJECT':
         data[get_last_key(data)]['DEP_PROJECTS'].append(match.group('p_name'))
-              
-    line = file_object.readline()
+    
+    line = "\n"
+    while line.isspace(): 
+        line = file_object.readline()
+
     key, match = parse_line(line)
    
     if key != None: read_next(key, match, file_object, data)
@@ -220,18 +228,28 @@ def write_JSON4GPAO(data, data_json):
     
         
 		
-def parse_file(infile):
+def parse_file(infile, way):
+    if way=="direct":
+        print ("sens direct")
+    elif way =="reverse":
+        print ("sens inverse")
     save_rank = 0
     data={"PROJECTS":{}} 
     with open(infile, 'r') as file_object:
         dict_data=data['PROJECTS']
         line = file_object.readline()
-        key, match = parse_line(line)    
-        read_next(key, match, file_object, dict_data)
+        if not line.isspace():
+            key, match = parse_line(line)
+            read_next(key, match, file_object, dict_data)
 
+        # line = file_object.readline()
+        # print(f"****[{line}]")
+        # if line.split("\n") != "":
+        #     key, match = parse_line(line)    
+        #     read_next(key, match, file_object, dict_data)
+        # else :
+        #     
     data_json = {"PROJECTS":[]} 
-    # mystr=json.dumps(data_json, indent=2)
-    # print(mystr) 
     data_json = write_JSON4GPAO(data, data_json)
     return data_json
         #print_JSON(dict_data)
@@ -244,12 +262,20 @@ if __name__ == '__main__':
         print_format()
     elif sys.argv[1]=='generate':
         generate_empty_project()
+    elif sys.argv[1]=='print':
+        in_filepath = sys.argv[2]
+        dj=parse_file(in_filepath)
+        mstr=json.dumps(dj, indent=2)
+        print(f"{mstr}")
     else:
         in_filepath = sys.argv[1]
-        out_filepath = sys.argv[2]
-        dj=parse_file(in_filepath)
+        in_extend=in_filepath.split(".")
+        if in_extend[1]=="flat" :
+            dj=parse_file(in_filepath, "direct")
+        elif in_extend[1]=="json":
+            dj=parse_file(in_filepath, "reverse") 
 
-        
+        out_filepath = sys.argv[2]
         with open(out_filepath, 'w') as outfile:
             json.dump(dj, outfile, indent=2)
             # mstr=json.dumps(dj, indent=2)
