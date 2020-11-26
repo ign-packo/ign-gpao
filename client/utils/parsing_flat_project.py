@@ -4,6 +4,8 @@ import unittest
 import re
 import json
 import pandas as pan
+import random
+import string
 
 
 save_rank=0
@@ -24,14 +26,19 @@ errFile=None
 
 
 rx_dict = {
-    'PROJECT' :    re.compile(r'\[(P|p)\](?P<p_name>.*),(?P<p_comment>.*)'),
+    'ReKey_PROJECT' :    re.compile(r'\[(P|p)\](?P<p_name>.*),(?P<p_comment>.*)'),
     # 'JOB' :        re.compile(r'\t{1}\[(J|j)\](?P<j_name>.*),(?P<j_command>.*)'),
     # 'DEP_JOB':     re.compile(r'\t{2}\[(DJ|dj)\](?P<j_name>.*)'),
     # 'DEP_PROJECT': re.compile(r'\t{1}\[(DP|dp)\](?P<p_name>.*)')
-    'JOB' :        re.compile(r'\t?\[(J|j)\](?P<j_name>.*),(?P<j_command>.*)'),
-    'DEP_JOB':     re.compile(r'\t{0,2}\[(DJ|dj)\](?P<j_name>.*)'),
-    'DEP_PROJECT': re.compile(r'\t?\[(DP|dp)\](?P<p_name>.*)')
+    'ReKey_JOB' :        re.compile(r'\t?\[(J|j)\](?P<j_name>.*),(?P<j_command>.*)'),
+    'ReKey_DEP_JOB':     re.compile(r'\t{0,2}\[(DJ|dj)\](?P<j_name>.*)'),
+    'ReKey_DEP_PROJECT': re.compile(r'\t?\[(DP|dp)\](?P<p_name>.*)')
     }
+
+def generate_random_id(length):
+    letters = string.ascii_letters
+    result_id = ''.join(random.choice(letters) for i in range(length))
+    return result_id 
 
 def generate_empty_project():
     print(f"[P]FIRST_PROJECT_NAME, A simple project")
@@ -155,34 +162,34 @@ def write_TEXT(file_out, data_dict):
     print(f"--> write_TEXT")
     
 def write_JSON(key, match):
-    if key=='PROJECT' :
+    if key=='ReKey_PROJECT' :
         name = match.group('p_name')
         comm = match.group('p_comment')
         print(f" project name:{name} comment:{comm}")
 
-    if key=='JOB' :
+    if key=='ReKey_JOB' :
         name = match.group('j_name')
         cmd = match.group('j_command')
         print(f" job name:{name} comment:{cmd}")
 
-    if key=='DEP_JOB' :
+    if key=='ReKey_DEP_JOB' :
         name = match.group('j_name')
         print(f" dep job name:{name}")
 
-    if key=='DEP_PROJECT' :
+    if key=='ReKey_DEP_PROJECT' :
         name = match.group('p_name')
         print(f" dep project name:{name}")
 
 
 def write_Elt_JSON(key, data):
-	if key == 'PROJECTS':
-		for key, values in data['PROJECTS'].items():
+	if key == 'ReKey_PROJECT':
+		for key, values in data['projects'].items():
 			print(f"{double_quotes}{kw_name}{double_quotes}{colon}{double_quotes}{key}{double_quotes}")
-	elif key == 'JOBS':
+	elif key == 'ReKey_JOBS':
 		prinf(f"{key}")
-	elif key == 'DEP_JOB':
+	elif key == 'ReKey_DEP_JOB':
 		prinf(f"{key}")
-	elif key == 'DEP_POJECT':
+	elif key == 'ReKey_DEP_PROJECT':
 		prinf(f"{key}")
 	
 def parse_line(line):
@@ -213,24 +220,24 @@ def read_next(numline, file_object, data):
 
     key, match = parse_line(line)
 
-    if key=='PROJECT':
+    if key=='ReKey_PROJECT':
         if match.group('p_name') in data :
             errFile.write(f"PROJECT ERROR, DUPLICATE NAME(line:{numline}): project \"{match.group('p_name')}\" already exist\n")
             return_code=1
         else:
             data[match.group('p_name')] = {"COM": (match.group('p_comment')), "JOBS":{}, "DEP_PROJECTS":[], "NUMLINE":numline}
 
-    elif key=='JOB':
+    elif key=='ReKey_JOB':
         if match.group('j_name') in data[get_last_key(data)]['JOBS'] :
             errFile.write(f"JOB ERROR, DUPLICATE NAME(line:{numline}): job \"{match.group('j_name')}\" already exist\n")
             return_code=1
         else:
             data[get_last_key(data)]['JOBS'][match.group('j_name')]={"CMD": (match.group('j_command')), "DEP_JOBS":[], "NUMLINE":numline }
 
-    elif key == 'DEP_JOB':
+    elif key == 'ReKey_DEP_JOB':
         data[get_last_key(data)]['JOBS'][get_last_key(data[get_last_key(data)]['JOBS'])]['DEP_JOBS'].append({ "id_job":match.group('j_name'), "NUMLINE":numline})
 
-    elif key == 'DEP_PROJECT':
+    elif key == 'ReKey_DEP_PROJECT':
         data[get_last_key(data)]['DEP_PROJECTS'].append({"id_project":match.group('p_name'), "NUMLINE":numline})
     
     numline+=1
@@ -239,12 +246,12 @@ def read_next(numline, file_object, data):
 
 
 def write_JSON4GPAO(data, data_json):
-    data_json['PROJECTS']=[]
+    data_json['projects']=[]
 
     df_p=pan.DataFrame({'C_TARGET':{}})
     i_p=0
 
-    for key_project, values in data['PROJECTS'].items():
+    for key_project, values in data['projects'].items():
         dict_project={}
         dict_project['name']=key_project
 
@@ -255,53 +262,53 @@ def write_JSON4GPAO(data, data_json):
 
         df_j=pan.DataFrame({'C_TARGET':{}})
         i_j=0
-        for key_job in data['PROJECTS'][key_project]['JOBS'].keys():
+        for key_job in data['projects'][key_project]['JOBS'].keys():
             dict_job={}
             dict_job['name']=key_job
-            dict_job['command']=data['PROJECTS'][key_project]['JOBS'][key_job]['CMD']
+            dict_job['command']=data['projects'][key_project]['JOBS'][key_job]['CMD']
 
             df_j.loc[key_job,'C_TARGET']=i_j
             i_j+=1
 
-            len_dep_jobs=len(data['PROJECTS'][key_project]['JOBS'][key_job]['DEP_JOBS'])
+            len_dep_jobs=len(data['projects'][key_project]['JOBS'][key_job]['DEP_JOBS'])
             if len_dep_jobs > 0:
                 dict_job['deps']=[]
                 i=0
                 while i < len_dep_jobs:
                     dict_dep_job={}
-                    dict_dep_job['id']=data['PROJECTS'][key_project]['JOBS'][key_job]['DEP_JOBS'][i]['id_job']
+                    dict_dep_job['id']=data['projects'][key_project]['JOBS'][key_job]['DEP_JOBS'][i]['id_job']
                     dict_job['deps'].append(dict_dep_job)
                     i+=1
 
             dict_project['jobs'].append(dict_job)
 
-        len_dep_projects=len(data['PROJECTS'][key_project]['DEP_PROJECTS'])
+        len_dep_projects=len(data['projects'][key_project]['DEP_PROJECTS'])
         if len_dep_projects > 0:
             dict_project['deps']=[]
             i=0
             while i < len_dep_projects:
                 dict_dep_project={}
-                dict_dep_project['id']=data['PROJECTS'][key_project]['DEP_PROJECTS'][i]['id_project']
+                dict_dep_project['id']=data['projects'][key_project]['DEP_PROJECTS'][i]['id_project']
                 dict_project['deps'].append(dict_dep_project)
                 i+=1
 
-        data_json['PROJECTS'].append(dict_project)
+        data_json['projects'].append(dict_project)
     # end for key_project.......
     return data_json
     
         
 		
 def parse_flat_file(infile):
-    data={"PROJECTS":{}} 
+    data={"projects":{}} 
     numline=1
     with open(infile, 'r') as file_object:
-        projects_dict=data['PROJECTS']    
+        projects_dict=data['projects']    
         read_next(numline, file_object, projects_dict)
     
     check_idName(projects_dict)
 
     if return_code==0:
-        data_json = {"PROJECTS":[]} 
+        data_json = {"projects":[]} 
         data_json = write_JSON4GPAO(data, data_json)
         return data_json
     else :
