@@ -12,7 +12,7 @@
     "start": "supervisor -e node,js,yml serveur.js",
     "test": "nyc --reporter=text mocha",
     "test-coveralls": "nyc --reporter=lcov --report-dir=coverage mocha",
-    "release": "release-it --no-npm"
+    "release": "release-it"
   },
   "author": "",
   "license": "ISC",
