@@ -78,8 +78,7 @@ def print_help():
 
 def check_idName(data):
     global return_code
-    # print(f"{json.dumps(data, indent=2)}")
-
+   
     projects_dict={}   
     index_project=0
     #Init dict with project id and rank {key=id_project, value=rank}
@@ -122,12 +121,6 @@ def check_idName(data):
                     return_code=1
 
             index_depproject+=1   
-        
-    #print(f"---{projects_dict}")
-    #print(f"---{jobs_dict}")
-
-    #print(f"{json.dumps(data, indent=2)}") 
-
     return 
     
 def switch_idName_id(data_f, data_dict):
@@ -231,10 +224,8 @@ def read_next(numline, file_object, data):
 
     elif key == 'DEP_JOB':
         data[get_last_key(data)]['JOBS'][get_last_key(data[get_last_key(data)]['JOBS'])]['DEP_JOBS'].append({ "id_job":match.group('j_name'), "NUMLINE":numline})
-        #data[get_last_key(data)]['JOBS'][get_last_key(data[get_last_key(data)]['JOBS'])]['DEP_JOBS'].append(numline)
 
     elif key == 'DEP_PROJECT':
-        #data[get_last_key(data)]['DEP_PROJECTS'].append(match.group('p_name'))
         data[get_last_key(data)]['DEP_PROJECTS'].append({"id_project":match.group('p_name'), "NUMLINE":numline})
     
     numline+=1
@@ -279,9 +270,6 @@ def write_JSON4GPAO(data, data_json):
 
             dict_project['jobs'].append(dict_job)
 
-        #switch_idName_id(df_j, dict_project['jobs'])
-        # End for key_job in.....
-
         len_dep_projects=len(data['PROJECTS'][key_project]['DEP_PROJECTS'])
         if len_dep_projects > 0:
             dict_project['deps']=[]
@@ -294,7 +282,6 @@ def write_JSON4GPAO(data, data_json):
 
         data_json['PROJECTS'].append(dict_project)
     # end for key_project.......
-    #switch_idName_id(df_p, data_json['PROJECTS'])
     return data_json
     
         
@@ -307,9 +294,6 @@ def parse_flat_file(infile):
         read_next(numline, file_object, projects_dict)
     
     check_idName(projects_dict)
-
-    # print(f"{json.dumps(projects_dict, indent=2)}")
-    # exit (1)
 
     if return_code==0:
         data_json = {"PROJECTS":[]} 
@@ -324,11 +308,12 @@ def parse_json_file(infile):
     return None
 
 def parse_file(infile):
+    global errFile
+
     a_infile=infile.split('.')
     errFileName=a_infile[0]+".err"
     if os.path.exists(errFileName):
         os.remove(errFileName)
-    global errFile
     errFile = open(errFileName, "x")
 
     if a_infile[1]=="flat" :
@@ -357,6 +342,10 @@ if __name__ == '__main__':
         if dj!=None:
             mstr=json.dumps(dj, indent=2)
             print(f"{mstr}")
+            if os.path.exists(errFile.name):
+              errFile.close()  
+              os.remove(errFile.name)  
+
     else:
         in_filepath = sys.argv[1]
         dj=parse_file(in_filepath)
@@ -366,8 +355,13 @@ if __name__ == '__main__':
             with open(out_filepath, 'w') as outfile:
                 json.dump(dj, outfile, indent=2)
 
+            if os.path.exists(errFile.name):
+              errFile.close()  
+              os.remove(errFile.name)  
+
      
     if return_code !=0:
+        errFile.close() 
         print(f"ENDED WITH ERROR(s) see output file errors !!!!")
     else :
-        print(f"ENDED WITH NO ERROR")   
+        print(f"ENDED WITH NO ERROR")
