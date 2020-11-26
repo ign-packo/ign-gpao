@@ -41,19 +41,15 @@ def generate_random_id(length):
     return result_id 
 
 def generate_empty_project():
-    print(f"[P]FIRST_PROJECT_NAME, A simple project")
-    print(f"\t[J]JOB_1,echo \"this is job named JOB_1\"")
-    print(f"\t[J]JOB_2,echo \"this is job named JOB_2\"")
-    print(f"\t\t[DJ]JOB_1")
-    print(f"[P]SECOND_PROJECT_NAME, An over simple project")
-    print(f"\t[J]JOB_20,echo \"this is job named JOB_20\"")
-    print(f"\t\t[DJ]JOB_23")
-    print(f"\t[J]JOB_21,echo \"this is job named JOB_21\"")
-    print(f"\t[J]JOB_22,echo \"this is job named JOB_22\"")
-    print(f"\t\t[DJ]JOB_20")
-    print(f"\t\t[DJ]JOB_21")
-    print(f"\t[J]JOB_23,echo \"this is job named JOB_23\"")
-    print(f"\t[DP]FIRST_PROJECT_NAME")
+    print(f"[P]Chantier_1, Comment about this current \"Chantier_1\".")
+    print(f"\t[J]jobs_1, echo \"this is job_1\"")
+    print(f"\t[J]jobs_2, echo \"this is job_2\"")
+    print(f"\t[J]jobs_3, echo \"this is job_3\"")
+    print(f"\t\t[DJ]jobs_1")
+    print(f"\t\t[DJ]jobs_2")
+    print(f"[P]Chantier_2, Comment about this current \"Chantier_2\".")
+    print(f"\t[J]jobs_1, echo \"this is job_1\"")
+    print(f"\t[DP]Chantier_1")
 
 
 def print_JSON(data_dict):
