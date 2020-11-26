@@ -66,14 +66,19 @@ def print_format():
 
 def print_help():
     print(f"-----------------------------------------------------------------------------")
-    print(f"Usage: python parsing_flat_project.py format|generate|print|my_project.flat my_project.json")
-    print(f"-----------------------------------------------------------------------------")
+    print(f"Usage: python parsing_flat_project.py (--format|-f)")
+    print(f"                                      (--generate|-g)")
+    print(f"                                      (--print|-p)")
+    print(f"                                      my_project.flat (my_project.json)?")
+    print(f"-----------------------------------------------------------------------------\n")
     print(f"\tTranslates a project flat file into project JSON file usable by GPAO V2.0.")
-    print(f"\tformat        : Print help about flat format syntax.")
-    print(f"\tgenerate      : Print on screen a simple project in flat format.")
-    print(f"\tprint         : Print on screen result of translate (output file is ignore).")
-    print(f"\tinputfile.flat: Translates a project \"my_project.flat\" \n\t\t\tinto \"my_project.json\".")
-    print(f"-----------------------------------------------------------------------------")
+    print(f"python parsing_flat_project.py --format                         : Print help about flat format syntax.")
+    print(f"python parsing_flat_project.py --generate                       : Generate and print on screen a simple project in flat format.")
+    print(f"python parsing_flat_project.py --print my_project.flat          : Print on screen result of translate of my project file.")
+    print(f"python parsing_flat_project.py in_project.flat out_project.json : Translate \"in_project.flat\" into \"out_project.json\".")
+    print(f"or")
+    print(f"python parsing_flat_project.py myProject.flat                   : Translate \"myProject.flat\" into \"myProject.json\".")
+    print(f"\n-----------------------------------------------------------------------------")
 
 
 def check_idName(data):
@@ -329,37 +334,58 @@ def parse_file(infile):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) == 1:
+    if len(sys.argv) == 1 or sys.argv[1]=='--help' or sys.argv[1]=='-h':
         print_help()
-    elif sys.argv[1]=='format':
+    elif  sys.argv[1]=='--format' or sys.argv[1]=='-f':
         print_format()
-    elif sys.argv[1]=='generate':
+    elif sys.argv[1]=='--generate' or sys.argv[1]=='-g':
         generate_empty_project()
-    elif sys.argv[1]=='print':
-        in_filepath = sys.argv[2]
-        dj=parse_file(in_filepath)
+    elif sys.argv[1]=='--print' or sys.argv[1]=='-p' :
+        try :
+            in_filepath = sys.argv[2]
+            dj=parse_file(in_filepath)
 
-        if dj!=None:
-            mstr=json.dumps(dj, indent=2)
-            print(f"{mstr}")
-            if os.path.exists(errFile.name):
-              errFile.close()  
-              os.remove(errFile.name)  
+            if dj!=None:
+                mstr=json.dumps(dj, indent=2)
+                print(f"{mstr}")
+
+                if os.path.exists(errFile.name):
+                    errFile.close()
+                    os.remove(errFile.name)
+
+        except IndexError as e:
+            print(f"\nERROR: Sorry but, there is nothing to print! \nsee help please.\n") 
+            exit(1)
+
+    elif sys.argv[1].startswith('-') :
+        print(f"\nERROR: This option ({sys.argv[1]}) is unknown  \nsee help please.\n")
+        exit(1)   
 
     else:
         in_filepath = sys.argv[1]
-        dj=parse_file(in_filepath)
+        if os.path.exists(in_filepath):
+            dj=parse_file(in_filepath)
+            if dj != None:
+                try :
+                    out_filepath = sys.argv[2]
+                    with open(out_filepath, 'w') as outfile:
+                        json.dump(dj, outfile, indent=2)
 
-        if dj != None:
-            out_filepath = sys.argv[2]
-            with open(out_filepath, 'w') as outfile:
-                json.dump(dj, outfile, indent=2)
+                except IndexError as e:
+                    out_filepath=in_filepath.split('.')
+                    out_filepath=out_filepath[0]+".json"
+                    with open(out_filepath, 'w') as outfile:
+                        json.dump(dj, outfile, indent=2)
 
-            if os.path.exists(errFile.name):
-              errFile.close()  
-              os.remove(errFile.name)  
+                print(f"WRITING OUTPUT FILE \"{out_filepath}\"")
 
-     
+                if os.path.exists(errFile.name):
+                    errFile.close()  
+                    os.remove(errFile.name)
+        else :
+            print(f"\nERROR: The project file ({sys.argv[1]}) does not exist.\n")
+            exit(1) 
+        
     if return_code !=0:
         errFile.close() 
         print(f"ENDED WITH ERROR(s) see output file errors !!!!")
