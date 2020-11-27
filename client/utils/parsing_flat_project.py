@@ -74,7 +74,7 @@ def print_help():
     print(f"                                      (--print|-p)")
     print(f"                                      my_project.flat (my_project.json)?")
     print(f"-----------------------------------------------------------------------------\n")
-    print(f"\tTranslates a project flat file into project JSON file usable by GPAO V2.0.")
+    print(f"Translates a project flat file into project JSON file usable by GPAO V2.0.")
     print(f"python parsing_flat_project.py --format                         : Print help about flat format syntax.")
     print(f"python parsing_flat_project.py --generate                       : Generate and print on screen a simple project in flat format.")
     print(f"python parsing_flat_project.py --print my_project.flat          : Print on screen result of translate of my project file.")
