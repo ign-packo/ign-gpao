@@ -40,7 +40,7 @@ def generate_random_id(length):
     result_id = ''.join(random.choice(letters) for i in range(length))
     return result_id 
 
-def generate_empty_project():
+def generate_simple_project():
     print(f"[P]Chantier_1, Comment about this current \"Chantier_1\".")
     print(f"\t[J]jobs_1, echo \"this is job_1\"")
     print(f"\t[J]jobs_2, echo \"this is job_2\"")
@@ -50,6 +50,20 @@ def generate_empty_project():
     print(f"[P]Chantier_2, Comment about this current \"Chantier_2\".")
     print(f"\t[J]jobs_1, echo \"this is job_1\"")
     print(f"\t[DP]Chantier_1")
+
+def create_params_project(data_dict, file_name):
+    mstr=json.dumps(dj, indent=2)
+    print(f"{mstr}")
+    print(f"")
+    print(f"")
+    print(f"")
+    print(f"")
+    print(f"")
+    print(f"")
+    print(f"")
+    print(f"")
+    print(f"")
+
 
 
 def print_JSON(data_dict):
@@ -294,10 +308,10 @@ def write_JSON4GPAO(data, data_json):
     
         
 		
-def parse_flat_file(infile):
+def parse_flat_file(filepath):
     data={"projects":{}} 
     numline=1
-    with open(infile, 'r') as file_object:
+    with open(filepath, 'r') as file_object:
         projects_dict=data['projects']    
         read_next(numline, file_object, projects_dict)
     
@@ -311,26 +325,25 @@ def parse_flat_file(infile):
         return None
     
        
-def parse_json_file(infile):
+def parse_json_file(filepath):
     print(f'function not implented yet.......')
     return None
 
-def parse_file(infile):
+def parse_file(filepath):
     global errFile
 
-    a_infile=infile.split('.')
-    errFileName=a_infile[0]+".err"
+    split_filepath=os.path.split(filepath)
+    errFileName=(split_filepath[1].split('.'))[0]+".err"
     if os.path.exists(errFileName):
         os.remove(errFileName)
     errFile = open(errFileName, "x")
-
-    if a_infile[1]=="flat" :
-        dj=parse_flat_file(in_filepath)
-    elif a_infile[1]=="json":
-        dj=parse_json_file(in_filepath)
+    if (split_filepath[1].split('.'))[1]=="flat" :
+        dj=parse_flat_file(filepath)
+    elif (split_filepath[1].split('.'))[1]=="json":
+        dj=parse_json_file(filepath)
     else:
         dj=None 
-        print(f"WARNING: [{a_infile[1]}] unprocessed file type")
+        print(f"WARNING: [{split_filepath[1]}] unprocessed file type")
         exit(1)
 
     return dj
@@ -342,7 +355,20 @@ if __name__ == '__main__':
     elif  sys.argv[1]=='--format' or sys.argv[1]=='-f':
         print_format()
     elif sys.argv[1]=='--generate' or sys.argv[1]=='-g':
-        generate_empty_project()
+        generate_simple_project()
+    elif sys.argv[1]=='--create_param_file' or sys.argv[1]=='-cpf':
+        try : 
+            in_filepath = sys.argv[2]
+            if os.path.exists(in_filepath) :
+                dj=parse_file(in_filepath)
+                create_params_project(dj)
+            else :
+                print(f"\nERROR: The project file ({in_filepath}) does not exist.\n")
+                exit(1)
+        except IndexError as e:
+            print(f"\nERROR: missing argument project file.\n")
+            exit(1)
+        
     elif sys.argv[1]=='--print' or sys.argv[1]=='-p' :
         try :
             in_filepath = sys.argv[2]
@@ -350,6 +376,7 @@ if __name__ == '__main__':
 
             if dj!=None:
                 mstr=json.dumps(dj, indent=2)
+
                 print(f"{mstr}")
 
                 if os.path.exists(errFile.name):
@@ -375,8 +402,7 @@ if __name__ == '__main__':
                         json.dump(dj, outfile, indent=2)
 
                 except IndexError as e:
-                    out_filepath=in_filepath.split('.')
-                    out_filepath=out_filepath[0]+".json"
+                    out_filepath=in_filepath.replace(".flat", ".json")
                     with open(out_filepath, 'w') as outfile:
                         json.dump(dj, outfile, indent=2)
 
