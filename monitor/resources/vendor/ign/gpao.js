@@ -141,3 +141,18 @@ function deleteAllProjects () {
     });
   }
 }
+
+// Fonction permettant de vider la base GPAO
+function cleanDatabase () {
+  if (window.confirm(`Souhaitez vous vider la base ?`)) {
+    // on fait une requete sur l'API
+    fetch(`${apiUrl}/api/maintenance/cleanDatabase`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(() => {
+      location.reload();
+    });
+  }
+}
