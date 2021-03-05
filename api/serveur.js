@@ -13,6 +13,7 @@ const sessions = require('./routes/sessions');
 const nodes = require('./routes/nodes');
 const dependencies = require('./routes/dependencies');
 const client = require('./routes/client');
+const maintenance = require('./routes/maintenance');
 
 const PORT = 8080;
 
@@ -57,6 +58,7 @@ app.use('/api', sessions);
 app.use('/api', nodes);
 app.use('/api', dependencies);
 app.use('/api', client);
+app.use('/api/', maintenance);
 
 module.exports = app.listen(PORT, () => {
   debug.log(`URL de l'api : http://localhost:${PORT}/api \nURL de la documentation swagger : http://localhost:${PORT}/api/doc`);

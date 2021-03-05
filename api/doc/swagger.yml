@@ -17,6 +17,10 @@ tags:
     description: Manipulation des dépendances
   - name: client
     description: Gestion du client python
+  - name: nodes
+    description: Gestion des noeuds
+  - name: maintenance
+    description: Effectue des opérations de maintenance sur la GPAO
 paths:
   '/jobs':
     get:
@@ -380,6 +384,15 @@ paths:
               schema:
                 type: string
                 format: binary
+  '/maintenance/cleanDatabase':
+    get:
+      tags:
+        - maintenance
+      summary: "Nettoie la base"
+      description: "Nettoie le contenu de toutes les tables de la base GPAO pour ne garder que la structure"
+      responses:
+        '200':
+          description: OK
 components:
   schemas:
     projects:
