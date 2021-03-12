@@ -77,4 +77,32 @@ describe('Maintenance', () => {
         });
     });
   });
+
+  describe('Get projects', () => {
+    it('should return an empty array', (done) => {
+      chai.request(server)
+        .get('/api/projects')
+        .end((err, res) => {
+          should.equal(err, null);
+          res.should.have.status(200);
+          /* eslint-disable no-unused-expressions */
+          res.body.should.be.an('array').that.is.empty;
+          done();
+        });
+    });
+  });
+
+  describe('Get sessions', () => {
+    it('should return an empty array', (done) => {
+      chai.request(server)
+        .get('/api/sessions')
+        .end((err, res) => {
+          should.equal(err, null);
+          res.should.have.status(200);
+          /* eslint-disable no-unused-expressions */
+          res.body.should.be.an('array').that.is.empty;
+          done();
+        });
+    });
+  });
 });
