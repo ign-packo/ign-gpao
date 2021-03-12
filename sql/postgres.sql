@@ -46,6 +46,21 @@ CREATE TYPE public.status AS ENUM (
 ALTER TYPE public.status OWNER TO postgres;
 
 --
+-- Name: clean_database(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.clean_database() RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  TRUNCATE table projects, sessions CASCADE;
+END;
+$$;
+
+
+ALTER FUNCTION public.clean_database() OWNER TO postgres;
+
+--
 -- Name: clean_unused_session(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -654,32 +669,32 @@ CREATE VIEW public.view_project_status AS
         CASE
             WHEN (projects.status = 'ready'::public.status) THEN 1
             ELSE 0
-        END), 0) AS ready,
+        END), (0)::bigint) AS ready,
     COALESCE(sum(
         CASE
             WHEN (projects.status = 'done'::public.status) THEN 1
             ELSE 0
-        END), 0) AS done,
+        END), (0)::bigint) AS done,
     COALESCE(sum(
         CASE
             WHEN (projects.status = 'waiting'::public.status) THEN 1
             ELSE 0
-        END), 0) AS waiting,
+        END), (0)::bigint) AS waiting,
     COALESCE(sum(
         CASE
             WHEN (projects.status = 'running'::public.status) THEN 1
             ELSE 0
-        END), 0) AS running,
+        END), (0)::bigint) AS running,
     COALESCE(sum(
         CASE
             WHEN (projects.status = 'failed'::public.status) THEN 1
             ELSE 0
-        END), 0) AS failed,
+        END), (0)::bigint) AS failed,
     COALESCE(sum(
         CASE
             WHEN ((projects.status = 'failed'::public.status) OR (projects.status = 'running'::public.status) OR (projects.status = 'waiting'::public.status) OR (projects.status = 'done'::public.status) OR (projects.status = 'ready'::public.status)) THEN 1
             ELSE 0
-        END), 0) AS total
+        END), (0)::bigint) AS total
    FROM public.projects;
 
 

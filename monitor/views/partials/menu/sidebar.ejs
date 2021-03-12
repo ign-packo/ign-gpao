@@ -36,9 +36,9 @@
       </a>
       <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-          <a class="collapse-item" onclick="document.getElementById('file-json').click();">A partir d'un Json</a>
+          <a class="collapse-item" href="javascript:document.getElementById('file-json').click();">A partir d'un Json</a>
           <input id="file-json" type="file" name="name" onchange="jsonChanged(this.files[0])" style="display: none;" />
-          <a class="collapse-item" onclick="document.getElementById('file-txt').click();">A partir d'un fichier texte</a>
+          <a class="collapse-item" href="javascript:document.getElementById('file-txt').click();">A partir d'un fichier texte</a>
           <input id="file-txt" type="file" name="name" onchange="txtChanged(this.files[0])" style="display: none;" />
         </div>
       </div>
@@ -67,6 +67,21 @@
           </a>
         </li>
     
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+          Maintenance
+        </div>
+
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:cleanDatabase();">
+            <i class="fas fa-trash-restore"></i>
+            <span>Vider la base</span>
+          </a>
+        </li>
+
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
 
