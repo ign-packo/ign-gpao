@@ -614,10 +614,10 @@ CREATE VIEW public.view_job AS
     sessions.end_date AS session_end_date,
     sessions.status AS session_status,
     to_char(jobs.start_date, 'DD-MM-YYYY'::text) AS date_debut,
-    to_char(jobs.start_date, 'HH:MI:SS'::text) AS hms_debut,
+    to_char(jobs.start_date, 'HH24:MI:SS'::text) AS hms_debut,
     ((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision) AS duree,
     to_char(jobs.end_date, 'DD-MM-YYYY'::text) AS date_fin,
-    to_char(jobs.end_date, 'HH:MI:SS'::text) AS hms_fin
+    to_char(jobs.end_date, 'HH24:MI:SS'::text) AS hms_fin
    FROM ((public.jobs
      JOIN public.projects ON ((projects.id = jobs.id_project)))
      LEFT JOIN public.sessions ON ((sessions.id = jobs.id_session)));
@@ -682,7 +682,7 @@ CREATE VIEW public.view_jobs AS
     jobs.id_session AS job_session,
     projects.name AS project_name,
     to_char(jobs.start_date, 'DD-MM-YYYY'::text) AS date,
-    to_char(jobs.start_date, 'HH:MI:SS'::text) AS hms,
+    to_char(jobs.start_date, 'HH24:MI:SS'::text) AS hms,
     ((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision) AS duree
    FROM (public.jobs
      JOIN public.projects ON ((projects.id = jobs.id_project)));
