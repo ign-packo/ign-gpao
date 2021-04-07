@@ -48,7 +48,7 @@ describe('Dependencies', () => {
             should.equal(err2, null);
             res2.should.have.status(200);
             res2.body.should.be.an('array');
-            idJob = res2.body[0].id;
+            idJob = res2.body[0].job_id;
             done();
           });
       });
