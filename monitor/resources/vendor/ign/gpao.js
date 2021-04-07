@@ -17,7 +17,7 @@ function deleteProject(id, name) {
 
 // Fonction modifiant le nombre de thrad actif sur une machine
 function setNbThread(host, active) {
-  value = window.prompt(`Modifier le nombre de Threads actifs pour ${host}, ${active}`, 10);
+  value = window.prompt(`Modifier le nombre de Threads actifs pour ${host}, ${active}`, 0);
 
   if (!isNaN(value)) {
     fetch(`${apiUrl}/api/node/setNbActive?host=${host}&limit=${value}`, {
