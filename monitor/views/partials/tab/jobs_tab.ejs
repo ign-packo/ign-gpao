@@ -3,9 +3,16 @@
     <h6 class="m-0 font-weight-bold text-primary">Jobs</h6>
   </div>
   <div class="card-body">
+    <label>Filtrer par projets :</label>
+    <select name="projects" id="project-select">
+        <option value="-1">-- Tous les projets --</option>
+        <% projects.forEach(function( project ){ %>
+          <option value="<%= project.id %>"><%= project.id %> - <%= project.name %></option>
+        <% }) %>
+    </select>
     <div class="table-responsive">
       <table class="table table-bordered table-striped" id="dataTable" cellspacing="0">
-        <thead>
+    <thead>
 			<tr>
         <th>Id</th>
         <th>Nom</th>
@@ -14,6 +21,7 @@
 				<th>Date début</th>
         <th>Heure début</th>
         <th>Durée en secondes</th>
+        <th>Id projet</th>
         <th>Nom du projet</th>
         <th>Action</th>
 			</tr>
@@ -27,6 +35,7 @@
 				<th>Date début</th>
         <th>Heure début</th>
         <th>Durée en secondes</th>
+        <th>Id projet</th>
         <th>Nom du projet</th>
         <th>Action</th>
 			</tr>
@@ -41,6 +50,7 @@
                 <td> <%= job.date %></td>
                 <td> <%= job.hms %></td>
                 <td> <%= job.duree %></td>
+                <td> <%= job.job_id_project %></td>
                 <td> <%= job.project_name %></td>
                 <td>
                     <button type="button" onclick="location.href='/job/<%= job.job_id %>'" data-toggle="tooltip" title="Affiche une vue détaillée sur le job <%= job.job_id %>" class="btn btn-circle btn-success">
@@ -73,5 +83,27 @@
           .append(i)
           .append(' Réinitialiser les jobs en échecs');
     $("div.toolbar_tab").append(button);
+
+
+    var table = $('#dataTable').DataTable();
+     
+    $('#project-select').change( function() {
+        table.draw();
+        //alert("coucou");
+    } );
+
   } );
+
+  $.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+        var project_id = $('#project-select').val()
+        if(project_id == -1){
+          return true;
+        }else if(data[7]==project_id){
+          return true
+        }else{
+          return false
+        }
+    }
+);
 </script>

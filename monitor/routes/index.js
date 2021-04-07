@@ -33,9 +33,10 @@ router.get('/job/:id', topBar.getInfo, jobs.getJob, dependencies.getDependencies
 });
 
 // jobs page
-router.get('/jobs', topBar.getInfo, jobs.getJobs, (req, res) => {
+router.get('/jobs', topBar.getInfo, jobs.getJobs, projects.getProjects, (req, res) => {
   res.render('pages/jobs', {
     topBar: req.topBar,
+    projects: req.projects,
     jobs: req.jobs,
     api: req.app.get('apiUrl'),
     server: req.app.get('server'),
