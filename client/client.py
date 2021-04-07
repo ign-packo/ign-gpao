@@ -144,6 +144,12 @@ def process(thread_id):
 
                 error_message += 'FIN'
 
+                # on vérifie si le return_code est bien un int postgres
+                if return_code < -2147483648:
+                    return_code = -2147483648
+                if return_code> 2147483647:
+                    return_code = 2147483647
+
                 print('Mise a jour : ', return_code, status, error_message)
                 req = requests.post(URL_API +
                                     'job?id=' +
