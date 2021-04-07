@@ -432,7 +432,7 @@ CREATE TABLE public.jobs (
     end_date timestamp with time zone,
     command character varying NOT NULL,
     status public.status DEFAULT 'ready'::public.status NOT NULL,
-    return_code integer,
+    return_code bigint,
     log character varying,
     id_project integer NOT NULL,
     id_session integer
