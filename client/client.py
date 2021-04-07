@@ -60,10 +60,55 @@ def read_stdout_process(proc, id_job):
                           json={"log": realtime_output})
 
 
+def launch_command(job, str_id, shell, working_dir):
+    """ Lancement d'une ligne de commande """
+    id_job = job['id']
+    command = job['command']
+    print(str_id, "L'identifiant du job " +
+          str(id_job) +
+          " est disponible" +
+          " Execution de la commande [" +
+          str(command) +
+          "]")
+    return_code = None
+    error_message = ''
+    try:
+        if not shell:
+            command = shlex.split(command, posix=False)
+        proc = subprocess.Popen(command,
+                                shell=shell,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT,
+                                encoding='utf8',
+                                errors='replace',
+                                universal_newlines=True,
+                                cwd=working_dir.name)
+        read_stdout_process(proc, id_job)
+        return_code = proc.poll()
+        status = 'done'
+    except subprocess.CalledProcessError as ex:
+        status = 'failed'
+        error_message += str(ex)
+    except OSError as ex:
+        status = 'failed'
+        error_message += str(ex)
+    if return_code != 0:
+        status = 'failed'
+        if return_code is None:
+            return_code = -1
+    if error_message:
+        print('Erreur : '+error_message)
+    error_message += 'FIN'
+    return id_job, return_code, status, error_message
+
+
 def process(thread_id):
     """ Traitement pour un thread """
     str_id = "["+str(thread_id)+"] : "
     id_session = -1
+    # AB : Il faut passer shell=True sous windows
+    # pour que les commandes systemes soient reconnues
+    shell = platform.system() == 'Windows'
 
     try:
         # On cree un dossier temporaire dans le dossier
@@ -94,56 +139,8 @@ def process(thread_id):
                                    'job/ready?id_session=' +
                                    str(id_session))
             if req and req.json():
-                id_job = req.json()[0]['id']
-                command = req.json()[0]['command']
-                print(str_id, "L'identifiant du job " +
-                      str(id_job) +
-                      " est disponible" +
-                      " Execution de la commande [" +
-                      str(command) +
-                      "]")
-                return_code = None
-                error_message = ''
-
-                try:
-                    shlex_cmd = shlex.split(command, posix=False)
-
-# AB : Il faut passer shell=True sous windows
-# pour que les commandes systemes soient reconnues
-                    shell = platform.system() == 'Windows'
-
-                    proc = subprocess.Popen(shlex_cmd,
-                                            shell=shell,
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.STDOUT,
-                                            encoding='utf8',
-                                            errors='replace',
-                                            universal_newlines=True,
-                                            cwd=working_dir.name)
-
-                    read_stdout_process(proc, id_job)
-
-                    return_code = proc.poll()
-
-                    status = 'done'
-                except subprocess.CalledProcessError as ex:
-                    status = 'failed'
-                    error_message += str(ex)
-
-                except OSError as ex:
-                    status = 'failed'
-                    error_message += str(ex)
-
-                if return_code != 0:
-                    status = 'failed'
-                    if return_code is None:
-                        return_code = -1
-
-                if error_message:
-                    print('Erreur : '+error_message)
-
-                error_message += 'FIN'
-
+                id_job, return_code, status, error_message =\
+                    launch_command(req.json()[0], str_id, shell, working_dir)
                 print('Mise a jour : ', return_code, status, error_message)
                 req = requests.post(URL_API +
                                     'job?id=' +
@@ -157,6 +154,7 @@ def process(thread_id):
                     print('Error : ',
                           req.status_code,
                           req.content)
+
             time.sleep(random.randrange(10))
     except KeyboardInterrupt:
         print("on demande au process de s'arreter")
