@@ -775,6 +775,26 @@ CREATE VIEW public.view_project_status_by_jobs AS
 ALTER TABLE public.view_project_status_by_jobs OWNER TO postgres;
 
 --
+-- Name: view_sessions; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.view_sessions AS
+ SELECT sessions.id AS sessions_id,
+    sessions.host AS sessions_host,
+    sessions.start_date AS sessions_start_date,
+    sessions.end_date AS sessions_end_date,
+    sessions.status AS sessions_status,
+    to_char(sessions.start_date, 'DD-MM-YYYY'::text) AS date_debut,
+    to_char(sessions.start_date, 'HH24:MI:SS'::text) AS hms_debut,
+    ((((((date_part('day'::text, (sessions.end_date - sessions.start_date)) * (24)::double precision) + date_part('hour'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + date_part('minute'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + (round((date_part('second'::text, (sessions.end_date - sessions.start_date)))::numeric, 2))::double precision) AS duree,
+    to_char(sessions.end_date, 'DD-MM-YYYY'::text) AS date_fin,
+    to_char(sessions.end_date, 'HH24:MI:SS'::text) AS hms_fin
+   FROM public.sessions;
+
+
+ALTER TABLE public.view_sessions OWNER TO postgres;
+
+--
 -- Name: view_sessions_status; Type: VIEW; Schema: public; Owner: postgres
 --
 

@@ -2,7 +2,7 @@ const { matchedData } = require('express-validator/filter');
 const debug = require('debug')('session');
 
 async function getAllSessions(req, res, next) {
-  await req.client.query('SELECT * FROM sessions')
+  await req.client.query('SELECT * FROM view_sessions')
     .then((results) => { req.result = results.rows; })
     .catch((error) => {
       req.error = {
