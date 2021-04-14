@@ -140,7 +140,9 @@ def process(thread_id):
                                    str(id_session))
             if req and req.json():
                 id_job, return_code, status, error_message =\
-                    launch_command(req.json()[0], str_thread_id, shell, working_dir)
+                    launch_command(req.json()[0],
+                                   str_thread_id,
+                                   shell, working_dir)
                 print('Mise a jour : ', return_code, status, error_message)
                 req = requests.post(URL_API +
                                     'job?id=' +
