@@ -2,7 +2,7 @@ const { matchedData } = require('express-validator/filter');
 const debug = require('debug')('job');
 
 async function getAllJobs(req, res, next) {
-  await req.client.query('SELECT * FROM jobs')
+  await req.client.query('SELECT * FROM view_jobs')
     .then((results) => { req.result = results.rows; })
     .catch((error) => {
       req.error = {

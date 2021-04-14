@@ -11,7 +11,9 @@
                 <th>Host</th>
                 <th>Status</th>
                 <th>Date début</th>
+                <th>Heure début (UTC)</th>
                 <th>Date fin</th>
+                <th>Heure fin (UTC)</th>
               </tr>
           </thead>
           <tfoot>
@@ -20,17 +22,21 @@
                 <th>Host</th>
                 <th>Status</th>
                 <th>Date début</th>
+                <th>Heure début (UTC)</th>
                 <th>Date fin</th>
+                <th>Heure fin (UTC)</th>
               </tr>
           </tfoot>
           <tbody>
             <% sessions.forEach(function( session ){ %>
                 <tr>
-                    <td> <%= session.id %></td>
-                    <td> <%= session.host %></td>
-                    <td> <%= session.status %></td>
-                    <td> <%= session.start_date %></td>
-                    <td> <%= session.end_date %></td>
+                    <td> <%= session.sessions_id %></td>
+                    <td> <%= session.sessions_host %></td>
+                    <td> <%= session.sessions_status %></td>
+                    <td> <%= session.date_debut %></td>
+                    <td> <%= session.hms_debut %></td>
+                    <td> <%= session.date_fin %></td>
+                    <td> <%= session.hms_fin %></td>
                 </tr>
             <% }) %>
           </tbody>

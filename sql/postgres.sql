@@ -117,7 +117,7 @@ BEGIN
     WHEN status = 'idle_requested' AND id in (SELECT id FROM sessions WHERE host=hostname AND status <> 'closed' ORDER BY id LIMIT nb_limit) THEN 'running'::session_status
     WHEN status = 'active' AND id not in (SELECT id FROM sessions WHERE host=hostname AND status <> 'closed' ORDER BY id LIMIT nb_limit) THEN 'idle'::session_status
     WHEN status = 'running' AND id not in (SELECT id FROM sessions WHERE host=hostname AND status <> 'closed' ORDER BY id LIMIT nb_limit) THEN 'idle_requested'::session_status
-    ELSE status END) WHERE status <> 'closed';
+    ELSE status END) WHERE status <> 'closed' AND host=hostname;
 END;
 $$;
 
@@ -612,7 +612,12 @@ CREATE VIEW public.view_job AS
     sessions.host AS session_host,
     sessions.start_date AS session_start_date,
     sessions.end_date AS session_end_date,
-    sessions.status AS session_status
+    sessions.status AS session_status,
+    to_char(jobs.start_date, 'DD-MM-YYYY'::text) AS date_debut,
+    to_char(jobs.start_date::timestamptz at time zone 'UTC', 'HH24:MI:SS'::text) AS hms_debut,
+    ((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision) AS duree,
+    to_char(jobs.end_date, 'DD-MM-YYYY'::text) AS date_fin,
+    to_char(jobs.end_date::timestamptz at time zone 'UTC', 'HH24:MI:SS'::text) AS hms_fin
    FROM ((public.jobs
      JOIN public.projects ON ((projects.id = jobs.id_project)))
      LEFT JOIN public.sessions ON ((sessions.id = jobs.id_session)));
@@ -659,6 +664,31 @@ CREATE VIEW public.view_job_status AS
 
 
 ALTER TABLE public.view_job_status OWNER TO postgres;
+
+--
+-- Name: view_jobs; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.view_jobs AS
+ SELECT jobs.id AS job_id,
+    jobs.name AS job_name,
+    jobs.start_date AS job_start_date,
+    jobs.end_date AS job_end_date,
+    jobs.command AS job_command,
+    jobs.status AS job_status,
+    jobs.return_code AS job_return_code,
+    jobs.log AS job_log,
+    jobs.id_project AS job_id_project,
+    jobs.id_session AS job_session,
+    projects.name AS project_name,
+    to_char(jobs.start_date, 'DD-MM-YYYY'::text) AS date,
+    to_char(jobs.start_date::timestamptz at time zone 'UTC', 'HH24:MI:SS'::text) AS hms,
+    ((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision) AS duree
+   FROM (public.jobs
+     JOIN public.projects ON ((projects.id = jobs.id_project)));
+
+
+ALTER TABLE public.view_jobs OWNER TO postgres;
 
 --
 -- Name: view_project_status; Type: VIEW; Schema: public; Owner: postgres
@@ -743,6 +773,26 @@ CREATE VIEW public.view_project_status_by_jobs AS
 
 
 ALTER TABLE public.view_project_status_by_jobs OWNER TO postgres;
+
+--
+-- Name: view_sessions; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.view_sessions AS
+ SELECT sessions.id AS sessions_id,
+    sessions.host AS sessions_host,
+    sessions.start_date AS sessions_start_date,
+    sessions.end_date AS sessions_end_date,
+    sessions.status AS sessions_status,
+    to_char(sessions.start_date, 'DD-MM-YYYY'::text) AS date_debut,
+    to_char(sessions.start_date::timestamptz at time zone 'UTC', 'HH24:MI:SS'::text) AS hms_debut,
+    ((((((date_part('day'::text, (sessions.end_date - sessions.start_date)) * (24)::double precision) + date_part('hour'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + date_part('minute'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + (round((date_part('second'::text, (sessions.end_date - sessions.start_date)))::numeric, 2))::double precision) AS duree,
+    to_char(sessions.end_date, 'DD-MM-YYYY'::text) AS date_fin,
+    to_char(sessions.end_date::timestamptz at time zone 'UTC', 'HH24:MI:SS'::text) AS hms_fin
+   FROM public.sessions;
+
+
+ALTER TABLE public.view_sessions OWNER TO postgres;
 
 --
 -- Name: view_sessions_status; Type: VIEW; Schema: public; Owner: postgres
