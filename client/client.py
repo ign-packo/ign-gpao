@@ -60,11 +60,11 @@ def read_stdout_process(proc, id_job):
                           json={"log": realtime_output})
 
 
-def launch_command(job, str_id, shell, working_dir):
+def launch_command(job, str_thread_id, shell, working_dir):
     """ Lancement d'une ligne de commande """
     id_job = job['id']
     command = job['command']
-    print(str_id, "L'identifiant du job " +
+    print(str_thread_id, "L'identifiant du job " +
           str(id_job) +
           " est disponible" +
           " Execution de la commande [" +
@@ -104,7 +104,7 @@ def launch_command(job, str_id, shell, working_dir):
 
 def process(thread_id):
     """ Traitement pour un thread """
-    str_id = "["+str(thread_id)+"] : "
+    str_thread_id = "["+str(thread_id)+"] : "
     id_session = -1
     # AB : Il faut passer shell=True sous windows
     # pour que les commandes systemes soient reconnues
@@ -119,7 +119,7 @@ def process(thread_id):
                            'session?host=' +
                            HOSTNAME)
         id_session = req.json()[0]['id']
-        print(str_id +
+        print(str_thread_id +
               ' : working dir (' +
               working_dir.name +
               ') id_session (' +
@@ -140,7 +140,7 @@ def process(thread_id):
                                    str(id_session))
             if req and req.json():
                 id_job, return_code, status, error_message =\
-                    launch_command(req.json()[0], str_id, shell, working_dir)
+                    launch_command(req.json()[0], str_thread_id, shell, working_dir)
                 print('Mise a jour : ', return_code, status, error_message)
                 req = requests.post(URL_API +
                                     'job?id=' +
@@ -161,7 +161,7 @@ def process(thread_id):
         req = requests.post(URL_API +
                             'session/close?id=' +
                             str(id_session))
-    print(str_id, "end thread ")
+    print(str_thread_id, "end thread ")
 
 
 if __name__ == "__main__":
