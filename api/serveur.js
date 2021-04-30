@@ -15,7 +15,7 @@ const dependencies = require('./routes/dependencies');
 const client = require('./routes/client');
 const maintenance = require('./routes/maintenance');
 
-const PORT = 8080;
+const PORT = process.env.API_PORT || 8080;
 
 function getLastCommit() {
   return new Promise((resolve) => {
