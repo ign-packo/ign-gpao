@@ -75,17 +75,17 @@ def launch_command(job, str_thread_id, shell, working_dir):
     try:
         if not shell:
             command = shlex.split(command, posix=False)
-        proc = subprocess.Popen(command,
-                                shell=shell,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.STDOUT,
-                                encoding='utf8',
-                                errors='replace',
-                                universal_newlines=True,
-                                cwd=working_dir.name)
-        read_stdout_process(proc, id_job)
-        return_code = proc.poll()
-        status = 'done'
+        with subprocess.Popen(command,
+                              shell=shell,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.STDOUT,
+                              encoding='utf8',
+                              errors='replace',
+                              universal_newlines=True,
+                              cwd=working_dir) as proc:
+            read_stdout_process(proc, id_job)
+            return_code = proc.poll()
+            status = 'done'
     except subprocess.CalledProcessError as ex:
         status = 'failed'
         error_message += str(ex)
@@ -113,51 +113,51 @@ def process(thread_id):
     try:
         # On cree un dossier temporaire dans le dossier
         # courant qui devient le dossier d'execution
-        working_dir = tempfile.TemporaryDirectory(dir='.')
+        with tempfile.TemporaryDirectory(dir='.') as working_dir:
 
-        req = requests.put(URL_API +
-                           'session?host=' +
-                           HOSTNAME)
-        id_session = req.json()[0]['id']
-        print(str_thread_id +
-              ' : working dir (' +
-              working_dir.name +
-              ') id_session (' +
-              str(id_session) +
-              ')')
-        while True:
-            # on verifie l'espace disponible dans le dossier de travail
-            free_gb = get_free_space_gb(working_dir.name)
-            req = None
-            if free_gb < MIN_AVAILABLE_SPACE:
-                print('espace disque insuffisant : ',
-                      free_gb,
-                      '/',
-                      MIN_AVAILABLE_SPACE)
-            else:
-                req = requests.get(URL_API +
-                                   'job/ready?id_session=' +
-                                   str(id_session))
-            if req and req.json():
-                id_job, return_code, status, error_message =\
-                    launch_command(req.json()[0],
-                                   str_thread_id,
-                                   shell, working_dir)
-                print('Mise a jour : ', return_code, status, error_message)
-                req = requests.post(URL_API +
-                                    'job?id=' +
-                                    str(id_job) +
-                                    '&status=' +
-                                    str(status) +
-                                    '&returnCode=' +
-                                    str(return_code),
-                                    json={"log": error_message})
-                if req.status_code != 200:
-                    print('Error : ',
-                          req.status_code,
-                          req.content)
+            req = requests.put(URL_API +
+                               'session?host=' +
+                               HOSTNAME)
+            id_session = req.json()[0]['id']
+            print(str_thread_id +
+                  ' : working dir (' +
+                  working_dir +
+                  ') id_session (' +
+                  str(id_session) +
+                  ')')
+            while True:
+                # on verifie l'espace disponible dans le dossier de travail
+                free_gb = get_free_space_gb(working_dir)
+                req = None
+                if free_gb < MIN_AVAILABLE_SPACE:
+                    print('espace disque insuffisant : ',
+                          free_gb,
+                          '/',
+                          MIN_AVAILABLE_SPACE)
+                else:
+                    req = requests.get(URL_API +
+                                       'job/ready?id_session=' +
+                                       str(id_session))
+                if req and req.json():
+                    id_job, return_code, status, error_message =\
+                        launch_command(req.json()[0],
+                                       str_thread_id,
+                                       shell, working_dir)
+                    print('Mise a jour : ', return_code, status, error_message)
+                    req = requests.post(URL_API +
+                                        'job?id=' +
+                                        str(id_job) +
+                                        '&status=' +
+                                        str(status) +
+                                        '&returnCode=' +
+                                        str(return_code),
+                                        json={"log": error_message})
+                    if req.status_code != 200:
+                        print('Error : ',
+                              req.status_code,
+                              req.content)
 
-            time.sleep(random.randrange(10))
+                time.sleep(random.randrange(10))
     except KeyboardInterrupt:
         print("on demande au process de s'arreter")
         req = requests.post(URL_API +
@@ -172,18 +172,18 @@ if __name__ == "__main__":
     print("HOSTNAME : ", HOSTNAME)
     print("URL_API : "+URL_API)
 
-    POOL = multiprocessing.Pool(NB_PROCESS)
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
+    with multiprocessing.Pool(NB_PROCESS) as POOL:
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
 
-    try:
-        POOL.map(process, range(NB_PROCESS))
+        try:
+            POOL.map(process, range(NB_PROCESS))
 
-    except KeyboardInterrupt:
-        print("on demande au pool de s'arreter")
-        POOL.terminate()
-    else:
-        print("Normal termination")
-        POOL.close()
-    POOL.join()
+        except KeyboardInterrupt:
+            print("on demande au pool de s'arreter")
+            POOL.terminate()
+        else:
+            print("Normal termination")
+            POOL.close()
+        POOL.join()
 
     print("Fin du client GPAO")
