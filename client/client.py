@@ -22,7 +22,10 @@ URL_API = "http://" \
     + os.getenv('URL_API', 'localhost') \
     + ":"+os.getenv('API_PORT', '8080') \
     + "/api/"
+# espace libre minimal en Go sur un dossier de travail pour accepter un job
 MIN_AVAILABLE_SPACE = 5
+# duree minimale en s entre deux requetes de mise a jour du log
+MIN_FLUSH_RATE = 5
 
 
 def get_free_space_gb(dirname):
@@ -46,18 +49,29 @@ def get_free_space_gb(dirname):
 
 def read_stdout_process(proc, id_job):
     """ Lecture de la sortie console """
+    last_flush = time.time()
+    realtime_output = ''
     while True:
-        realtime_output = proc.stdout.readline()
+        realtime_output += proc.stdout.readline()
 
-        if realtime_output == '' and proc.poll() is not None:
+        if proc.poll() is not None:
+            if len(realtime_output) > 0:
+                requests.post(URL_API +
+                              'job/' +
+                              str(id_job) +
+                              '/appendLog',
+                              json={"log": realtime_output})
             break
 
-        if realtime_output:
+        if len(realtime_output) > 0 and \
+           (time.time() - last_flush) > MIN_FLUSH_RATE:
             requests.post(URL_API +
                           'job/' +
                           str(id_job) +
                           '/appendLog',
                           json={"log": realtime_output})
+            realtime_output = ''
+            last_flush = time.time()
 
 
 def launch_command(job, str_thread_id, shell, working_dir):
