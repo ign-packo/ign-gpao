@@ -55,6 +55,9 @@ def read_stdout_process(proc, id_job):
         realtime_output += proc.stdout.readline()
 
         if proc.poll() is not None:
+            # entre temps, des nouveaux messages sont peut-etre arrives
+            for line in proc.stdout.readlines():
+                realtime_output += line
             if len(realtime_output) > 0:
                 requests.post(URL_API +
                               'job/' +
