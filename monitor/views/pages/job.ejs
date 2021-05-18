@@ -32,6 +32,7 @@
 
           <%- include ("../partials/menu/topbar") %>
 
+          <% if (locals.job) { %>
           <!-- Content Row -->
           <div class="row">
             <div class="col-lg-6 mb-4">
@@ -48,7 +49,7 @@
 
         </div>
         <!-- /.container-fluid -->
-
+        <% } %>
       </div>
       <!-- End of Main Content -->
 
