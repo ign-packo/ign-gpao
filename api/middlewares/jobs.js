@@ -50,9 +50,15 @@ async function getJobReady(req, res, next) {
   try {
     await req.client.query('LOCK TABLE jobs IN EXCLUSIVE MODE');
     await req.client.query(
-      "UPDATE jobs SET status = 'running', start_date=NOW(), id_session = $1 WHERE (select status from sessions where id =$1) = 'active' AND id = (SELECT id FROM jobs WHERE status = 'ready' LIMIT 1) RETURNING id, command", [id],
+      'SELECT to_json(assign_first_job_ready_for_session($1))', [id],
     )
-      .then((results) => { req.result = results.rows; });
+      .then((results) => {
+        debug(results.rows);
+        req.result = [];
+        if (results.rowCount > 0) {
+          req.result.push(results.rows[0].to_json);
+        }
+      });
   } catch (error) {
     req.error = {
       msg: error.toString(),
