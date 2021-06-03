@@ -5,49 +5,6 @@
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
-        <thead>
-            <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Status</th>
-              <th>Priority</th>
-              <th>Action</th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Status</th>
-              <th>Priority</th>
-              <th>Action</th>
-            </tr>
-        </tfoot>
-            <tbody>
-                <% projects.forEach(function( project ){ %>
-                <tr>
-                    <td> <%= project.id %></td>
-                    <td> <%= project.name %></td>
-                    <td> <%= project.status %></td>
-                    <td> <div class="dropdown">
-                      <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <%= project.priority %>
-                      </button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="javascript:setPriority(<%= project.id %>, 'low')">Low</a>
-                        <a class="dropdown-item" href="javascript:setPriority(<%= project.id %>, 'normal')">Normal</a>
-                        <a class="dropdown-item" href="javascript:setPriority(<%= project.id %>, 'high')">High</a>
-                      </div>
-                    </div>
-                  </td>
-                    <td>
-                        <button type="button" onclick='deleteProject("<%= project.id %>", "<%= project.name %>")' 
-                          data-toggle="tooltip" title="Supprime le projet de la base" 
-                          class="btn btn-circle btn-danger"><i class="fas fa-trash fa-1x" aria-hidden="true"></i></button>
-                    </td>
-                </tr>
-                <% }) %>
-            </tbody>
         </table>
       </div>
     </div>
@@ -55,6 +12,81 @@
 
   <script>
     $(document).ready(function() {
+      const data = JSON.parse('<%- data %>');
+        const columns = JSON.parse('<%- columns %>');
+    
+        var table = $('#dataTable').DataTable( {
+            "language": {
+                "lengthMenu": "Afficher _MENU_ par page",
+                "zeroRecords": "Aucun éléments",
+                "info": "Page _PAGE_ sur _PAGES_",
+                "infoEmpty": "Aucun enregistrement disponible",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "search": "Rechercher",
+                "paginate": {
+                    "first":	"Premier",
+                    "previous":	"Pr&eacute;c&eacute;dent",
+                    "next":	"Suivant",
+                    "last":	"Dernier"
+                }
+            },
+            "order": [[ 0, "asc" ]],
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Tous"]],
+            "pageLength": 100,
+            "dom": '<"d-flex"<"mr-auto p-2"l<"toolbar_tab">><"p-2"f>>t<"d-flex"<"mr-auto p-2"i><"p-2"p>>',
+            "data": data,
+            "columns": columns,
+            "createdRow": function( row, data, dataIndex, cells ) {
+                $('button', cells[3])[0].innerText = data.priority;
+            },
+            "rowCallback": function( row, data, index ) {
+            var status = data.status;
+            switch(status){
+                case "failed":
+                    $('td', row).addClass('text-danger');
+                    break;
+                case "running":
+                    $('td', row).addClass('text-warning');
+                    break;
+                case "waiting":
+                    $('td', row).addClass('text-secondary');
+                    break;
+                case "done":
+                    $('td', row).addClass('text-success');
+                    break;
+                case "ready":
+                    $('td', row).addClass('text-primary');
+                    break;
+            }
+        }
+          } 
+        );
+        // Add event listener for actions
+        $('#dataTable tbody').on('click', 'button.view_project', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row( tr );
+            deleteProject(row.data().id, row.data().name);
+        } );
+        $('#dataTable tbody').on('click', 'a.dropdown-item', function (event) {
+            var tr = $(this).closest('tr');
+            var row = table.row( tr );
+            switch (event.target.innerText) {
+                case 'Low':
+                    setPriority(row.data().id, 'low');
+                    break;
+
+                case 'Normal':
+                    setPriority(row.data().id, 'normal');
+                    break;
+                
+                case 'High':
+                    setPriority(row.data().id, 'high');
+                    break;
+            
+                default:
+                    break;
+            }
+        } );
       var i = jQuery('<i></i>');
       i.addClass('fas fa-trash fa-1x')
   
