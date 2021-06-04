@@ -193,6 +193,27 @@ async function deleteProjects(req, res, next) {
   next();
 }
 
+async function setPriority(req, res, next) {
+  const params = matchedData(req);
+  const { id } = params;
+  const { priority } = params;
+  debug('id : ', id);
+  debug('priority : ', priority);
+  await req.client.query('UPDATE projects SET priority=$1 WHERE id=$2',
+    [priority, id])
+    .then((results) => {
+      req.result = results.rows;
+    })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 404,
+        function: 'setPriority',
+      };
+    });
+  next();
+}
+
 module.exports = {
   insertProjectFromJson,
   getAllProjects,
@@ -200,4 +221,5 @@ module.exports = {
   getProjectStatus,
   deleteProject,
   deleteProjects,
+  setPriority,
 };

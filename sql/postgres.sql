@@ -27,6 +27,16 @@ CREATE TYPE public.session_status AS ENUM (
     'closed'
 );
 
+--
+-- Name: priority; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.priority AS ENUM (
+    'low',
+    'normal',
+    'high'
+);
+
 
 ALTER TYPE public.session_status OWNER TO postgres;
 
@@ -44,6 +54,35 @@ CREATE TYPE public.status AS ENUM (
 
 
 ALTER TYPE public.status OWNER TO postgres;
+
+--
+-- Name: assign_first_job_ready_for_session(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE OR REPLACE FUNCTION public.assign_first_job_ready_for_session(a_session_id integer) 
+RETURNS table (id integer, command char varying)
+    AS $$
+    UPDATE jobs SET status = 'running', start_date=NOW(), id_session = a_session_id 
+    WHERE 
+        (
+            SELECT S.status FROM sessions S WHERE S.id = a_session_id
+        ) = 'active' 
+        AND 
+        jobs.id = (
+            SELECT J.id FROM jobs J, projects P 
+            WHERE 
+            J.id_project = P.id
+            AND
+            J.status = 'ready' 
+            ORDER BY 
+            P.priority DESC, 
+            J.id LIMIT 1
+            ) 
+    RETURNING id, command;
+$$ LANGUAGE SQL;
+
+
+ALTER FUNCTION public.assign_first_job_ready_for_session(a_session_id integer) OWNER TO postgres;
 
 --
 -- Name: clean_database(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -470,7 +509,8 @@ ALTER SEQUENCE public.jobs_id_seq OWNED BY public.jobs.id;
 CREATE TABLE public.projects (
     id integer NOT NULL,
     name character varying NOT NULL,
-    status public.status DEFAULT 'running'::public.status NOT NULL
+    status public.status DEFAULT 'running'::public.status NOT NULL,
+    priority public.priority DEFAULT 'normal'::public.priority NOT NULL
 );
 
 

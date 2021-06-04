@@ -223,6 +223,33 @@ paths:
          description: OK
        '404':
          description: Not Found
+  '/project/{id}/setPriority':
+    post:
+     tags:
+       - projects
+     summary: "Changement de la priorité des jobs du projet"
+     parameters:
+        - in: path
+          name: id
+          description: l'identifiant du projet à modififier
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: priority
+          description: priority
+          required: true
+          schema:
+            type: string
+            enum:
+              - low
+              - normal
+              - high
+     responses:
+       '200':
+         description: OK
+       '404':
+         description: Not Found
   '/projects':
     get:
      tags:
