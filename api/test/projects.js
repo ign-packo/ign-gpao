@@ -105,6 +105,18 @@ describe('Projects', () => {
         });
     });
   });
+  describe('set project priority', () => {
+    it('should return an array', (done) => {
+      chai.request(server)
+        .post(`/api/project/${idProject}/setPriority`)
+        .query({ priority: 'high' })
+        .end((err, res) => {
+          should.equal(err, null);
+          res.should.have.status(200);
+          done();
+        });
+    });
+  });
   describe('Delete one project', () => {
     it('should return an array', (done) => {
       chai.request(server)

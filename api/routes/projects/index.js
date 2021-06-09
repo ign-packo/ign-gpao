@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { body, param } = require('express-validator/check');
+const { body, param, query } = require('express-validator/check');
 
 const validateParams = require('../../middlewares/validateParams');
 const createErrorMsg = require('../../middlewares/createErrorMsg');
@@ -67,6 +67,21 @@ router.delete('/projects/delete',
   validateParams,
   pgClient.open,
   project.getProject,
+  pgClient.close,
+  returnMsg);
+
+router.post('/project/:id/setPriority',
+  param('id')
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))
+    .isInt({ min: 1 })
+    .withMessage(createErrorMsg.getInvalidParameterMsg('id')),
+  query('priority')
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('priority'))
+    .isIn(['low', 'normal', 'high'])
+    .withMessage(createErrorMsg.getInvalidParameterMsg('priority')),
+  validateParams,
+  pgClient.open,
+  project.setPriority,
   pgClient.close,
   returnMsg);
 
