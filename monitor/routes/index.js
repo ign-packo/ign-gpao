@@ -19,13 +19,25 @@ router.get('/', topBar.getInfo, projects.getProjectStatus, (req, res) => {
   });
 });
 
-// jobs page with id
+// job page with id
 router.get('/job/:id', topBar.getInfo, jobs.getJob, dependencies.getDependencies, (req, res) => {
   res.render('pages/job', {
     topBar: req.topBar,
     id: req.params.id,
     job: req.job,
     deps: req.deps,
+    api: req.app.get('apiUrl'),
+    server: req.app.get('server'),
+    version: req.app.get('version'),
+  });
+});
+
+// project page with id
+router.get('/project/:id', topBar.getInfo, projects.getProject, (req, res) => {
+  res.render('pages/project', {
+    topBar: req.topBar,
+    id: req.params.id,
+    project: req.project,
     api: req.app.get('apiUrl'),
     server: req.app.get('server'),
     version: req.app.get('version'),

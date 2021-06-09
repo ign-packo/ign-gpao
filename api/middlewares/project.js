@@ -193,9 +193,26 @@ async function deleteProjects(req, res, next) {
   next();
 }
 
+async function getProject(req, res, next) {
+  const params = matchedData(req);
+
+  const { id } = params;
+  await req.client.query('SELECT * FROM view_project WHERE project_id=$1', [id])
+    .then((results) => { req.result = results.rows; })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'getProject',
+      };
+    });
+  next();
+}
+
 module.exports = {
   insertProjectFromJson,
   getAllProjects,
+  getProject,
   getStatusByJobs,
   getProjectStatus,
   deleteProject,

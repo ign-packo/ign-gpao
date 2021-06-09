@@ -223,6 +223,21 @@ paths:
          description: OK
        '404':
          description: Not Found
+    get:
+      tags:
+        - projects
+      summary: "Récupération d'un projet en particulier"
+      description: "Récupération de toutes les informations relatives à un projet en fonction de son id"
+      parameters:
+        - in: path
+          name: id
+          description: l'identifiant du projet
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
   '/projects':
     get:
      tags:
