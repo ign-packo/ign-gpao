@@ -13,8 +13,6 @@ tags:
     description: Manipulation des projets
   - name: sessions
     description: Manipulation des sessions
-  - name: dependencies
-    description: Manipulation des dépendances
   - name: client
     description: Gestion du client python
   - name: nodes
@@ -92,6 +90,22 @@ paths:
         - in: query
           name: id_session
           description: l'identifiant de session
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  '/job/{id}/dependencies':
+    get:
+      tags:
+        - jobs
+      summary: "Récupération des dépendances"
+      description: "Récupération de toutes les dépendances liées à un job"
+      parameters:
+        - in: path
+          name: id
+          description: l'identifiant du job pour lequel on souhaite récupérer les dépendances
           required: true
           schema:
             type: integer
@@ -232,6 +246,22 @@ paths:
         - in: path
           name: id
           description: l'identifiant du projet
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  '/project/{id}/dependencies':
+    get:
+      tags:
+        - projects
+      summary: "Récupération des dépendances"
+      description: "Récupération de toutes les dépendances liées à un projet"
+      parameters:
+        - in: path
+          name: id
+          description: l'identifiant du projet pour lequel on souhaite récupérer les dépendances
           required: true
           schema:
             type: integer
@@ -388,22 +418,6 @@ paths:
         - sessions
       summary: "Supprime les sessions inutiles"
       description: "Supprime les sessions dont le statut est 'closed' est qui ne sont pas intervenues dans les calculs"
-      responses:
-        '200':
-          description: OK
-  '/dependencies':
-    get:
-      tags:
-        - dependencies
-      summary: "Récupération des dépendances"
-      description: "Récupération de toutes les dépendances liées à un job"
-      parameters:
-        - in: query
-          name: id_job
-          description: l'identifiant du job pour lequel on souhaite récupérer les dépendances
-          required: true
-          schema:
-            type: integer
       responses:
         '200':
           description: OK

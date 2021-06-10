@@ -28,7 +28,7 @@ async function getProjects(req, res, next) {
       title: 'Action',
       orderable: false,
       data: null,
-      defaultContent: '<button type=\\"button\\" data-toggle=\\"tooltip\\" title=\\"Supprime le projet de la base\\" class=\\"view_project btn btn-circle btn-danger\\"><i class=\\"fas fa-trash fa-1x\\" aria-hidden=\\"true\\"></i></button>',
+      defaultContent: '<button type=\\"button\\" data-toggle=\\"tooltip\\" title=\\"Affiche une vue détaillée sur le projet\\" class=\\"view_project btn btn-circle btn-success\\"><i class=\\"fas fa-search fa-1x\\" aria-hidden=\\"true\\"></i></button><button type=\\"button\\" data-toggle=\\"tooltip\\" title=\\"Supprime le projet de la base\\" class=\\"del_project btn btn-circle btn-danger\\"><i class=\\"fas fa-trash fa-1x\\" aria-hidden=\\"true\\"></i></button>',
     },
   ]);
 

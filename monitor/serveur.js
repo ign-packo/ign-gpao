@@ -53,6 +53,7 @@ app.use('/js', express.static(`${__dirname}/resources/js`));
 app.use('/vendor', express.static(`${__dirname}/resources/vendor`));
 app.use('/css', express.static(`${__dirname}/resources/css`));
 app.use('/js', express.static(`${__dirname}/resources/js`));
+app.use('/chart.js', express.static(`${__dirname}/node_modules/chart.js`));
 
 // use res.render to load up an ejs view file
 app.use('/', routes);

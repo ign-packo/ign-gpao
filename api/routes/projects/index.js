@@ -58,17 +58,17 @@ router.delete('/projects/delete',
   pgClient.close,
   returnMsg);
 
-  router.get('/project/:id', [
-    param('id')
-      .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))
-      .isInt({ min: 1 })
-      .withMessage(createErrorMsg.getInvalidParameterMsg('id')),
-  ],
-  validateParams,
-  pgClient.open,
-  project.getProject,
-  pgClient.close,
-  returnMsg);
+router.get('/project/:id', [
+  param('id')
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))
+    .isInt({ min: 1 })
+    .withMessage(createErrorMsg.getInvalidParameterMsg('id')),
+],
+validateParams,
+pgClient.open,
+project.getProject,
+pgClient.close,
+returnMsg);
 
 router.post('/project/:id/setPriority',
   param('id')

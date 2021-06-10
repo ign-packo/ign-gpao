@@ -16,6 +16,19 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: priority; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.priority AS ENUM (
+    'low',
+    'normal',
+    'high'
+);
+
+
+ALTER TYPE public.priority OWNER TO postgres;
+
+--
 -- Name: session_status; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -25,16 +38,6 @@ CREATE TYPE public.session_status AS ENUM (
     'idle_requested',
     'running',
     'closed'
-);
-
---
--- Name: priority; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public.priority AS ENUM (
-    'low',
-    'normal',
-    'high'
 );
 
 
@@ -56,11 +59,11 @@ CREATE TYPE public.status AS ENUM (
 ALTER TYPE public.status OWNER TO postgres;
 
 --
--- Name: assign_first_job_ready_for_session(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: assign_first_job_ready_for_session(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE OR REPLACE FUNCTION public.assign_first_job_ready_for_session(a_session_id integer) 
-RETURNS table (id integer, command char varying)
+CREATE FUNCTION public.assign_first_job_ready_for_session(a_session_id integer) RETURNS TABLE(id integer, command character varying)
+    LANGUAGE sql
     AS $$
     UPDATE jobs SET status = 'running', start_date=NOW(), id_session = a_session_id 
     WHERE 
@@ -79,7 +82,7 @@ RETURNS table (id integer, command char varying)
             J.id LIMIT 1
             ) 
     RETURNING id, command;
-$$ LANGUAGE SQL;
+$$;
 
 
 ALTER FUNCTION public.assign_first_job_ready_for_session(a_session_id integer) OWNER TO postgres;
@@ -612,27 +615,6 @@ ALTER SEQUENCE public.sessions_id_seq OWNED BY public.sessions.id;
 
 
 --
--- Name: view_dependencies; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.view_dependencies AS
- SELECT jobdependencies.id AS dep_id,
-    jobdependencies.upstream AS dep_up,
-    jobdependencies.downstream AS dep_down,
-    jobdependencies.active AS dep_active,
-    jobs.id AS job_id,
-    jobs.name AS job_name,
-    jobs.start_date AS job_start_date,
-    jobs.end_date AS job_end_date,
-    jobs.status AS job_status,
-    jobs.return_code AS jobs_return_code
-   FROM (public.jobdependencies
-     JOIN public.jobs ON ((jobs.id = jobdependencies.upstream)));
-
-
-ALTER TABLE public.view_dependencies OWNER TO postgres;
-
---
 -- Name: view_job; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -654,16 +636,37 @@ CREATE VIEW public.view_job AS
     sessions.end_date AS session_end_date,
     sessions.status AS session_status,
     to_char(jobs.start_date, 'DD-MM-YYYY'::text) AS date_debut,
-    to_char(jobs.start_date::timestamptz at time zone 'UTC', 'HH24:MI:SS'::text) AS hms_debut,
+    to_char(timezone('UTC'::text, jobs.start_date), 'HH24:MI:SS'::text) AS hms_debut,
     ((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision) AS duree,
     to_char(jobs.end_date, 'DD-MM-YYYY'::text) AS date_fin,
-    to_char(jobs.end_date::timestamptz at time zone 'UTC', 'HH24:MI:SS'::text) AS hms_fin
+    to_char(timezone('UTC'::text, jobs.end_date), 'HH24:MI:SS'::text) AS hms_fin
    FROM ((public.jobs
      JOIN public.projects ON ((projects.id = jobs.id_project)))
      LEFT JOIN public.sessions ON ((sessions.id = jobs.id_session)));
 
 
 ALTER TABLE public.view_job OWNER TO postgres;
+
+--
+-- Name: view_job_dependencies; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.view_job_dependencies AS
+ SELECT jobdependencies.id AS dep_id,
+    jobdependencies.upstream AS dep_up,
+    jobdependencies.downstream AS dep_down,
+    jobdependencies.active AS dep_active,
+    jobs.id AS job_id,
+    jobs.name AS job_name,
+    jobs.start_date AS job_start_date,
+    jobs.end_date AS job_end_date,
+    jobs.status AS job_status,
+    jobs.return_code AS jobs_return_code
+   FROM (public.jobdependencies
+     JOIN public.jobs ON ((jobs.id = jobdependencies.upstream)));
+
+
+ALTER TABLE public.view_job_dependencies OWNER TO postgres;
 
 --
 -- Name: view_job_status; Type: VIEW; Schema: public; Owner: postgres
@@ -722,13 +725,55 @@ CREATE VIEW public.view_jobs AS
     jobs.id_session AS job_session,
     projects.name AS project_name,
     to_char(jobs.start_date, 'DD-MM-YYYY'::text) AS date,
-    to_char(jobs.start_date::timestamptz at time zone 'UTC', 'HH24:MI:SS'::text) AS hms,
+    to_char(timezone('UTC'::text, jobs.start_date), 'HH24:MI:SS'::text) AS hms,
     ((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision) AS duree
    FROM (public.jobs
      JOIN public.projects ON ((projects.id = jobs.id_project)));
 
 
 ALTER TABLE public.view_jobs OWNER TO postgres;
+
+--
+-- Name: view_project; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.view_project AS
+SELECT
+    NULL::integer AS project_id,
+    NULL::character varying AS project_name,
+    NULL::public.status AS project_status,
+    NULL::bigint AS count,
+    NULL::numeric AS avg_job_duree,
+    NULL::double precision AS min_job_duree,
+    NULL::double precision AS max_job_duree,
+    NULL::bigint AS ready,
+    NULL::bigint AS done,
+    NULL::bigint AS waiting,
+    NULL::bigint AS running,
+    NULL::bigint AS failed,
+    NULL::bigint AS total;
+
+
+ALTER TABLE public.view_project OWNER TO postgres;
+
+--
+-- Name: view_project_dependencies; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.view_project_dependencies AS
+ SELECT projectdependencies.id AS dep_id,
+    projectdependencies.upstream AS dep_up,
+    projectdependencies.downstream AS dep_down,
+    projectdependencies.active AS dep_active,
+    projects.id AS project_id,
+    projects.name AS project_name,
+    projects.status AS project_status,
+    projects.priority AS project_priority
+   FROM (public.projectdependencies
+     JOIN public.projects ON ((projects.id = projectdependencies.upstream)));
+
+
+ALTER TABLE public.view_project_dependencies OWNER TO postgres;
 
 --
 -- Name: view_project_status; Type: VIEW; Schema: public; Owner: postgres
@@ -815,6 +860,31 @@ CREATE VIEW public.view_project_status_by_jobs AS
 ALTER TABLE public.view_project_status_by_jobs OWNER TO postgres;
 
 --
+-- Name: view_projects; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.view_projects AS
+SELECT
+    NULL::integer AS project_id,
+    NULL::character varying AS project_name,
+    NULL::public.status AS project_status,
+    NULL::public.priority AS project_priority,
+    NULL::bigint AS count,
+    NULL::numeric AS avg_job_duree,
+    NULL::double precision AS min_job_duree,
+    NULL::double precision AS max_job_duree,
+    NULL::double precision AS total_job_duree,
+    NULL::bigint AS ready,
+    NULL::bigint AS done,
+    NULL::bigint AS waiting,
+    NULL::bigint AS running,
+    NULL::bigint AS failed,
+    NULL::bigint AS total;
+
+
+ALTER TABLE public.view_projects OWNER TO postgres;
+
+--
 -- Name: view_sessions; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -825,10 +895,10 @@ CREATE VIEW public.view_sessions AS
     sessions.end_date AS sessions_end_date,
     sessions.status AS sessions_status,
     to_char(sessions.start_date, 'DD-MM-YYYY'::text) AS date_debut,
-    to_char(sessions.start_date::timestamptz at time zone 'UTC', 'HH24:MI:SS'::text) AS hms_debut,
+    to_char(timezone('UTC'::text, sessions.start_date), 'HH24:MI:SS'::text) AS hms_debut,
     ((((((date_part('day'::text, (sessions.end_date - sessions.start_date)) * (24)::double precision) + date_part('hour'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + date_part('minute'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + (round((date_part('second'::text, (sessions.end_date - sessions.start_date)))::numeric, 2))::double precision) AS duree,
     to_char(sessions.end_date, 'DD-MM-YYYY'::text) AS date_fin,
-    to_char(sessions.end_date::timestamptz at time zone 'UTC', 'HH24:MI:SS'::text) AS hms_fin
+    to_char(timezone('UTC'::text, sessions.end_date), 'HH24:MI:SS'::text) AS hms_fin
    FROM public.sessions;
 
 
@@ -947,6 +1017,102 @@ ALTER TABLE ONLY public.projectdependencies
 
 ALTER TABLE ONLY public.sessions
     ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: view_project _RETURN; Type: RULE; Schema: public; Owner: postgres
+--
+
+CREATE OR REPLACE VIEW public.view_project AS
+ SELECT projects.id AS project_id,
+    projects.name AS project_name,
+    projects.status AS project_status,
+    count(view_jobs.job_id) AS count,
+    round((avg(view_jobs.duree))::numeric, 2) AS avg_job_duree,
+    min(view_jobs.duree) AS min_job_duree,
+    max(view_jobs.duree) AS max_job_duree,
+    COALESCE(sum(
+        CASE
+            WHEN (view_jobs.job_status = 'ready'::public.status) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS ready,
+    COALESCE(sum(
+        CASE
+            WHEN (view_jobs.job_status = 'done'::public.status) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS done,
+    COALESCE(sum(
+        CASE
+            WHEN (view_jobs.job_status = 'waiting'::public.status) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS waiting,
+    COALESCE(sum(
+        CASE
+            WHEN (view_jobs.job_status = 'running'::public.status) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS running,
+    COALESCE(sum(
+        CASE
+            WHEN (view_jobs.job_status = 'failed'::public.status) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS failed,
+    COALESCE(sum(
+        CASE
+            WHEN ((view_jobs.job_status = 'failed'::public.status) OR (view_jobs.job_status = 'running'::public.status) OR (view_jobs.job_status = 'waiting'::public.status) OR (view_jobs.job_status = 'done'::public.status) OR (view_jobs.job_status = 'ready'::public.status)) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS total
+   FROM (public.projects
+     JOIN public.view_jobs ON ((projects.id = view_jobs.job_id_project)))
+  GROUP BY projects.id;
+
+
+--
+-- Name: view_projects _RETURN; Type: RULE; Schema: public; Owner: postgres
+--
+
+CREATE OR REPLACE VIEW public.view_projects AS
+ SELECT projects.id AS project_id,
+    projects.name AS project_name,
+    projects.status AS project_status,
+    projects.priority AS project_priority,
+    count(view_jobs.job_id) AS count,
+    COALESCE(round((avg(view_jobs.duree))::numeric, 2), (0)::numeric) AS avg_job_duree,
+    COALESCE(min(view_jobs.duree), (0)::double precision) AS min_job_duree,
+    COALESCE(max(view_jobs.duree), (0)::double precision) AS max_job_duree,
+    COALESCE(sum(view_jobs.duree), (0)::double precision) AS total_job_duree,
+    COALESCE(sum(
+        CASE
+            WHEN (view_jobs.job_status = 'ready'::public.status) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS ready,
+    COALESCE(sum(
+        CASE
+            WHEN (view_jobs.job_status = 'done'::public.status) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS done,
+    COALESCE(sum(
+        CASE
+            WHEN (view_jobs.job_status = 'waiting'::public.status) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS waiting,
+    COALESCE(sum(
+        CASE
+            WHEN (view_jobs.job_status = 'running'::public.status) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS running,
+    COALESCE(sum(
+        CASE
+            WHEN (view_jobs.job_status = 'failed'::public.status) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS failed,
+    COALESCE(sum(
+        CASE
+            WHEN ((view_jobs.job_status = 'failed'::public.status) OR (view_jobs.job_status = 'running'::public.status) OR (view_jobs.job_status = 'waiting'::public.status) OR (view_jobs.job_status = 'done'::public.status) OR (view_jobs.job_status = 'ready'::public.status)) THEN 1
+            ELSE 0
+        END), (0)::bigint) AS total
+   FROM (public.projects
+     JOIN public.view_jobs ON ((projects.id = view_jobs.job_id_project)))
+  GROUP BY projects.id;
 
 
 --

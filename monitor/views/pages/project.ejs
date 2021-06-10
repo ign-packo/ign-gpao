@@ -32,23 +32,22 @@
 
           <%- include ("../partials/menu/topbar") %>
 
-          <!--% if (locals.project) { %-->
+          <% if (locals.project) { %>
           <!-- Content Row -->
           <div class="row">
-            <div class="col-lg-6 mb-4">
+            <div class="col-lg-3 mb-4">
               <%- include ("../partials/components/project_info") %>
             </div>
-            <!--div class="col-lg-6 mb-4">
-              
+            <div class="col-lg-6 mb-4">
+              <%- include ("../partials/tab/project_dependencies_tab") %>
+            </div>
+            <div class="col-lg-3 mb-4">
+              <%- include ("../partials/components/project_pie") %>
             </div>
           </div>
-          <div class="column">
-            
-          </div-->
-
         </div>
         <!-- /.container-fluid -->
-        <!--% } %-->
+        <% } %>
       </div>
       <!-- End of Main Content -->
 
