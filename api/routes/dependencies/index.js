@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { query } = require('express-validator/check');
+const { param } = require('express-validator/check');
 
 const validateParams = require('../../middlewares/validateParams');
 const createErrorMsg = require('../../middlewares/createErrorMsg');
@@ -7,15 +7,27 @@ const dependencies = require('../../middlewares/dependencies');
 const pgClient = require('../../middlewares/db/pgClient');
 const returnMsg = require('../../middlewares/returnMsg');
 
-router.get('/dependencies', [
-  query('id_job')
-    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id_job'))
+router.get('/job/:id/dependencies', [
+  param('id')
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))
     .isInt({ min: 1 })
-    .withMessage(createErrorMsg.getInvalidParameterMsg('id_job')),
+    .withMessage(createErrorMsg.getInvalidParameterMsg('id')),
 ],
 validateParams,
 pgClient.open,
-dependencies.getDependencies,
+dependencies.getJobDependencies,
+pgClient.close,
+returnMsg);
+
+router.get('/project/:id/dependencies', [
+  param('id')
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('id'))
+    .isInt({ min: 1 })
+    .withMessage(createErrorMsg.getInvalidParameterMsg('id')),
+],
+validateParams,
+pgClient.open,
+dependencies.getProjectDependencies,
 pgClient.close,
 returnMsg);
 

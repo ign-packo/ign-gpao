@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>GPAO - Job</title>
+    <title>GPAO - Project</title>
 
     <%- include ("../partials/head") %>
 
@@ -27,26 +27,24 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Information sur le job : <%= id %></h1>
+            <h1 class="h3 mb-0 text-gray-800">Information sur le projet : <%= id %></h1>
           </div>
 
           <%- include ("../partials/menu/topbar") %>
 
-          <% if (locals.job) { %>
+          <% if (locals.project) { %>
           <!-- Content Row -->
           <div class="row">
-            <div class="col-lg-6 mb-4">
-              <%- include ("../partials/components/job_info") %>
+            <div class="col-lg-3 mb-4">
+              <%- include ("../partials/components/project_info") %>
             </div>
             <div class="col-lg-6 mb-4">
-              <%- include ("../partials/tab/job_dependencies_tab") %>
+              <%- include ("../partials/tab/project_dependencies_tab") %>
+            </div>
+            <div class="col-lg-3 mb-4">
+              <%- include ("../partials/components/project_pie") %>
             </div>
           </div>
-          <div class="column">
-            <%- include ("../partials/components/job_command") %>
-            <%- include ("../partials/components/job_log") %>
-          </div>
-
         </div>
         <!-- /.container-fluid -->
         <% } %>

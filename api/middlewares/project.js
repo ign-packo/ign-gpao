@@ -193,6 +193,22 @@ async function deleteProjects(req, res, next) {
   next();
 }
 
+async function getProject(req, res, next) {
+  const params = matchedData(req);
+
+  const { id } = params;
+  await req.client.query('SELECT * FROM view_projects WHERE project_id=$1', [id])
+    .then((results) => { req.result = results.rows; })
+    .catch((error) => {
+      req.error = {
+        msg: error.toString(),
+        code: 500,
+        function: 'getProject',
+      };
+    });
+  next();
+}
+
 async function setPriority(req, res, next) {
   const params = matchedData(req);
   const { id } = params;
@@ -217,6 +233,7 @@ async function setPriority(req, res, next) {
 module.exports = {
   insertProjectFromJson,
   getAllProjects,
+  getProject,
   getStatusByJobs,
   getProjectStatus,
   deleteProject,

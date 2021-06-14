@@ -62,10 +62,15 @@
           } 
         );
         // Add event listener for actions
-        $('#dataTable tbody').on('click', 'button.view_project', function () {
+        $('#dataTable tbody').on('click', 'button.del_project', function () {
             var tr = $(this).closest('tr');
             var row = table.row( tr );
             deleteProject(row.data().id, row.data().name);
+        } );
+        $('#dataTable tbody').on('click', 'button.view_project', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row( tr );
+            window.location.href = `/project/${row.data().id}`;
         } );
         $('#dataTable tbody').on('click', 'a.dropdown-item', function (event) {
             var tr = $(this).closest('tr');

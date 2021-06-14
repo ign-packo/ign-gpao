@@ -21,12 +21,27 @@ router.get('/', topBar.getInfo, projects.getProjectStatus, (req, res) => {
   });
 });
 
-// jobs page with id
-router.get('/job/:id', topBar.getInfo, jobs.getJob, dependencies.getDependencies, (req, res) => {
+// job page with id
+router.get('/job/:id', topBar.getInfo, jobs.getJob, dependencies.getJobDependencies, (req, res) => {
   res.render('pages/job', {
     topBar: req.topBar,
     id: req.params.id,
     job: req.job,
+    deps: req.deps,
+    data: req.dependencies_data,
+    columns: req.dependencies_columns,
+    api: req.app.get('apiUrl'),
+    server: req.app.get('server'),
+    version: req.app.get('version'),
+  });
+});
+
+// project page with id
+router.get('/project/:id', topBar.getInfo, projects.getProject, dependencies.getProjectDependencies, (req, res) => {
+  res.render('pages/project', {
+    topBar: req.topBar,
+    id: req.params.id,
+    project: req.project,
     deps: req.deps,
     data: req.dependencies_data,
     columns: req.dependencies_columns,
