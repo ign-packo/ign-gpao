@@ -8,6 +8,7 @@ async function getJobs(req, res, next) {
   /* eslint-disable no-param-reassign */
   jobs.forEach((element) => {
     element.job_log = '';
+    element.job_command = '';
   });
   /* eslint-enable no-param-reassign */
 
