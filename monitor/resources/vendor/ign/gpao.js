@@ -120,8 +120,8 @@ function reinitAllJobs(){
   table.rows().eq( 0 ).each( function (idx) {
     var row = table.row( idx );
  
-    if ( row.data()[2] === 'failed' ) {
-        ids.push(row.data()[0])
+    if ( row.data().job_status === 'failed' ) {
+        ids.push(row.data().job_id)
     }
   });
 

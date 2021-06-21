@@ -78,7 +78,7 @@ $(document).ready(function() {
     $('#dataTable tbody').on('click', 'button.reinit_job', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
-        if (row.data().status == 'failed')
+        if (row.data().job_status == 'failed')
             reinitJobs([row.data().job_id]);
     } );
 
