@@ -76,6 +76,8 @@ CREATE FUNCTION public.assign_first_job_ready_for_session(a_session_id integer) 
             WHERE 
             J.id_project = P.id
             AND
+            J.tags <@ (SELECT S.tags FROM sessions S WHERE S.id = a_session_id)
+            AND
             J.status = 'ready' 
             ORDER BY 
             P.priority DESC, 
@@ -477,7 +479,8 @@ CREATE TABLE public.jobs (
     return_code bigint,
     log character varying,
     id_project integer NOT NULL,
-    id_session integer
+    id_session integer,
+    tags character varying[] DEFAULT '{}' NOT NULL
 );
 
 
@@ -586,7 +589,8 @@ CREATE TABLE public.sessions (
     host character varying NOT NULL,
     start_date timestamp with time zone NOT NULL,
     end_date timestamp with time zone,
-    status public.session_status DEFAULT 'idle'::public.session_status NOT NULL
+    status public.session_status DEFAULT 'idle'::public.session_status NOT NULL,
+    tags character varying[] DEFAULT '{}' NOT NULL
 );
 
 
@@ -625,6 +629,7 @@ CREATE VIEW public.view_job AS
     jobs.end_date AS job_end_date,
     jobs.command AS job_command,
     jobs.status AS job_status,
+    jobs.tags AS job_tags,
     jobs.return_code AS job_return_code,
     jobs.log AS job_log,
     projects.id AS project_id,
@@ -892,6 +897,7 @@ CREATE VIEW public.view_sessions AS
     sessions.start_date AS sessions_start_date,
     sessions.end_date AS sessions_end_date,
     sessions.status AS sessions_status,
+    sessions.tags AS sessions_tags,
     to_char(sessions.start_date, 'DD-MM-YYYY'::text) AS date_debut,
     to_char(timezone('UTC'::text, sessions.start_date), 'HH24:MI:SS'::text) AS hms_debut,
     ((((((date_part('day'::text, (sessions.end_date - sessions.start_date)) * (24)::double precision) + date_part('hour'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + date_part('minute'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + (round((date_part('second'::text, (sessions.end_date - sessions.start_date)))::numeric, 2))::double precision) AS duree,

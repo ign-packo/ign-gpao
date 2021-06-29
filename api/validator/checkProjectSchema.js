@@ -38,6 +38,12 @@ module.exports = function checlProjectSchema(project) {
                       },
                     },
                   },
+                  tags: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                  },
                 },
               },
             },

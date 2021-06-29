@@ -31,10 +31,11 @@ async function insertSession(req, res, next) {
   const params = matchedData(req);
 
   const { host } = params;
+  const { tags } = params;
 
   await req.client.query(
-    'INSERT INTO sessions (host, start_date) VALUES ( $1 , NOW()) RETURNING id',
-    [host],
+    'INSERT INTO sessions (host, tags, start_date) VALUES ( $1 , $2, NOW()) RETURNING id',
+    [host, tags ? tags.split(',') : []],
   )
     .then((results) => { req.result = results.rows; })
     .catch((error) => {
