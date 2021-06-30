@@ -4,14 +4,6 @@ async function getJobs(req, res, next) {
   const json = await axios.get(`${req.app.get('apiUrl')}/api/jobs`);
   const jobs = json.data;
 
-  // on supprime les logs qui peuvent créer des erreur pour le stringify/parse
-  /* eslint-disable no-param-reassign */
-  jobs.forEach((element) => {
-    element.job_log = '';
-    element.job_command = '';
-  });
-  /* eslint-enable no-param-reassign */
-
   req.jobs_data = JSON.stringify(jobs);
   req.jobs_columns = JSON.stringify([
     {
