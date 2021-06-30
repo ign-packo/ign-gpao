@@ -3,6 +3,7 @@ Client pour la GPAO
 Permet de lancer un thread par coeur
 """
 # !/usr/bin/python
+import sys
 import multiprocessing
 import random
 import subprocess
@@ -14,10 +15,9 @@ import tempfile
 import shlex
 import platform
 import ctypes
+import argparse
 import requests
 
-HOSTNAME = socket.gethostname()
-NB_PROCESS = multiprocessing.cpu_count()
 URL_API = "http://" \
     + os.getenv('URL_API', 'localhost') \
     + ":"+os.getenv('API_PORT', '8080') \
@@ -119,8 +119,10 @@ def launch_command(job, str_thread_id, shell, working_dir):
     return id_job, return_code, status, error_message
 
 
-def process(thread_id):
+def process(param):
     """ Traitement pour un thread """
+    thread_id = param[0]
+    hostname = param[1]
     str_thread_id = "["+str(thread_id)+"] : "
     id_session = -1
     # AB : Il faut passer shell=True sous windows
@@ -134,7 +136,7 @@ def process(thread_id):
 
             req = requests.put(URL_API +
                                'session?host=' +
-                               HOSTNAME)
+                               hostname)
             id_session = req.json()[0]['id']
             print(str_thread_id +
                   ' : working dir (' +
@@ -184,16 +186,62 @@ def process(thread_id):
 
 
 if __name__ == "__main__":
+    HOSTNAME = socket.gethostname()
+    NB_PROCESS = multiprocessing.cpu_count()
 
     print("Demarrage du client GPAO")
-    print("HOSTNAME : ", HOSTNAME)
     print("URL_API : "+URL_API)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-n", "--threads",
+                        required=False,
+                        type=int,
+                        help="fix the number of threads \
+                        (default: estimated number of cpu on the system)")
+    parser.add_argument("-s", "--suffix",
+                        help="add a suffix on the hostname \
+                        (necessary if using several \
+                        client instances on a machine)",
+                        required=False,
+                        type=str)
+    args = parser.parse_args()
+    print(args)
+    if args.threads:
+        if args.threads <= 0:
+            print('Le nombre de thread doit être >0 : ', args.threads)
+            sys.exit(1)
+        NB_PROCESS = args.threads
+    if args.suffix:
+        HOSTNAME += args.suffix
+
+    print("HOSTNAME : ", HOSTNAME)
+    print("NB_PROCESS : ", NB_PROCESS)
+
+    req_nb_sessions = requests.get(URL_API + 'nodes')
+    nodes = req_nb_sessions.json()
+    NB_SESSION = 0
+    for node in nodes:
+        if node['host'] == HOSTNAME:
+            # attention, les donnees sont en string
+            # a corriger dans l'API
+            NB_SESSION = int(node['active']) +\
+                int(node['idle']) +\
+                int(node['running'])
+    if NB_SESSION > 0:
+        print('Erreur: il y a déjà des sessions '
+              'ouvertes avec ce nom de machine.')
+        print('Pour lancer plusieurs client sur une même machine, '
+              'utiliser un suffixe (ex: python client.py -s _MonSuffixe).')
+        sys.exit(1)
 
     with multiprocessing.Pool(NB_PROCESS) as POOL:
         signal.signal(signal.SIGINT, signal.SIG_IGN)
+        parameters = []
+        for thread_number in range(NB_PROCESS):
+            parameters.append((thread_number, HOSTNAME))
 
         try:
-            POOL.map(process, range(NB_PROCESS))
+            POOL.map(process, parameters)
 
         except KeyboardInterrupt:
             print("on demande au pool de s'arreter")
