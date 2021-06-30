@@ -717,10 +717,8 @@ CREATE VIEW public.view_jobs AS
     jobs.name AS job_name,
     jobs.start_date AS job_start_date,
     jobs.end_date AS job_end_date,
-    jobs.command AS job_command,
     jobs.status AS job_status,
     jobs.return_code AS job_return_code,
-    jobs.log AS job_log,
     jobs.id_project AS job_id_project,
     jobs.id_session AS job_session,
     projects.name AS project_name,
@@ -1017,6 +1015,13 @@ ALTER TABLE ONLY public.projectdependencies
 
 ALTER TABLE ONLY public.sessions
     ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: id_project_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX id_project_idx ON public.jobs USING btree (id_project);
 
 
 --
