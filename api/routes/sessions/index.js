@@ -23,7 +23,9 @@ router.get('/sessions/status',
 
 router.put('/session', [
   query('host')
-    .exists().withMessage(createErrorMsg.getMissingParameterMsg('host'))],
+    .exists().withMessage(createErrorMsg.getMissingParameterMsg('host')),
+  query('tags'),
+],
 validateParams,
 pgClient.open,
 sessions.insertSession,

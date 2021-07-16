@@ -13,6 +13,10 @@ async function getSessions(req, res, next) {
       data: 'sessions_host',
     },
     {
+      title: 'Tags',
+      data: 'sessions_tags',
+    },
+    {
       title: 'Statut',
       data: 'sessions_status',
     },

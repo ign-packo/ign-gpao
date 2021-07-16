@@ -393,6 +393,12 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: tags
+          description: une liste de tags
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -473,6 +479,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/dependency'
+        tags:
+          type: array
+          items:
+            type: string
     dependency:
       properties:
         id:
