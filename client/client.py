@@ -14,6 +14,7 @@ import tempfile
 import shlex
 import platform
 import ctypes
+import logging
 import requests
 
 HOSTNAME = socket.gethostname()
@@ -127,21 +128,23 @@ def process(thread_id):
     # pour que les commandes systemes soient reconnues
     shell = platform.system() == 'Windows'
 
+    logging.basicConfig(filename='log_'+str(thread_id)+'.log',
+                        level=logging.DEBUG,
+                        format='%(asctime)s  : %(levelname)s -- %(message)s')
+
     try:
         # On cree un dossier temporaire dans le dossier
         # courant qui devient le dossier d'execution
         with tempfile.TemporaryDirectory(dir='.') as working_dir:
 
-            req = requests.put(URL_API +
-                               'session?host=' +
-                               HOSTNAME)
+            url = URL_API + 'session?host=' + HOSTNAME
+            logging.debug("PUT %s", url)
+            req = requests.put(url)
             id_session = req.json()[0]['id']
-            print(str_thread_id +
-                  ' : working dir (' +
-                  working_dir +
-                  ') id_session (' +
-                  str(id_session) +
-                  ')')
+            logging.info('%s : working dir (%s) id_session (%s)',
+                         str_thread_id,
+                         working_dir,
+                         str(id_session))
             while True:
                 # on verifie l'espace disponible dans le dossier de travail
                 free_gb = get_free_space_gb(working_dir)
@@ -152,22 +155,26 @@ def process(thread_id):
                           '/',
                           MIN_AVAILABLE_SPACE)
                 else:
-                    req = requests.get(URL_API +
-                                       'job/ready?id_session=' +
-                                       str(id_session))
+                    url = URL_API\
+                        + 'job/ready?id_session='\
+                        + str(id_session)
+                    logging.debug("GET %s", url)
+                    req = requests.get(url)
                 if req and req.json():
                     id_job, return_code, status, error_message =\
                         launch_command(req.json()[0],
                                        str_thread_id,
                                        shell, working_dir)
                     print('Mise a jour : ', return_code, status, error_message)
-                    req = requests.post(URL_API +
-                                        'job?id=' +
-                                        str(id_job) +
-                                        '&status=' +
-                                        str(status) +
-                                        '&returnCode=' +
-                                        str(return_code),
+                    url = URL_API\
+                        + 'job?id='\
+                        + str(id_job)\
+                        + '&status='\
+                        + str(status)\
+                        + '&returnCode='\
+                        + str(return_code)
+                    logging.debug("POST %s", url)
+                    req = requests.post(url,
                                         json={"log": error_message})
                     if req.status_code != 200:
                         print('Error : ',
@@ -175,12 +182,28 @@ def process(thread_id):
                               req.content)
 
                 time.sleep(random.randrange(10))
+    except requests.exceptions.RequestException as error:
+        logging.error(str(error))
+        logging.info("on ferme la session %s", str(id_session))
+        url = URL_API + "session/close?id=%s", str(id_session)
+        done = False
+        while not done:
+            try:
+                print("tentative de fermeture de la session "
+                      + str(id_session))
+                logging.debug("POST %s", url)
+                req = requests.post(url)
+                done = True
+            except requests.exceptions.RequestException as error:
+                logging.error(str(error))
+                time.sleep(10)
     except KeyboardInterrupt:
         print("on demande au process de s'arreter")
-        req = requests.post(URL_API +
-                            'session/close?id=' +
-                            str(id_session))
+        url = URL_API + 'session/close?id=' + str(id_session)
+        logging.debug("POST %s", url)
+        req = requests.post(url)
     print(str_thread_id, "end thread ")
+    logging.info("end thread ")
 
 
 if __name__ == "__main__":
