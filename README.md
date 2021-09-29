@@ -1,6 +1,8 @@
 # Introduction
 
-Ce projet a pour but de pouvoir lancer et de répartir des traitements sur plusieurs machine ou VM et de les traiter en sur plusieurs coeurs de calcul.
+Ce projet a pour but de pouvoir lancer et de répartir des traitements sur plusieurs machines ou VM et de les traiter sur plusieurs cœurs de calcul.
+
+Ce projet est sous licence CECILL-B (voir [LICENSE.md](LICENSE.md)).
 
 # Modele de données
 
@@ -50,3 +52,5 @@ Ensuite le script `start.sh` lance les différents service en s'appuyant sur le 
 
 [Installation du client](./client/INSTALL.md)
 
+
+[![IGN](images/logo_ign.png)](https://www.ign.fr)
