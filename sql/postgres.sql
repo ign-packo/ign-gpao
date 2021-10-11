@@ -64,25 +64,21 @@ ALTER TYPE public.status OWNER TO postgres;
 
 CREATE FUNCTION public.assign_first_job_ready_for_session(a_session_id integer) RETURNS TABLE(id integer, command character varying)
     LANGUAGE sql
-    AS $$
-    UPDATE jobs SET status = 'running', start_date=NOW(), id_session = a_session_id 
-    WHERE 
-        (
-            SELECT S.status FROM sessions S WHERE S.id = a_session_id
-        ) = 'active' 
-        AND 
-        jobs.id = (
-            SELECT J.id FROM jobs J, projects P 
-            WHERE 
-            J.id_project = P.id
-            AND
-            J.tags <@ (SELECT S.tags FROM sessions S WHERE S.id = a_session_id)
-            AND
-            J.status = 'ready' 
-            ORDER BY 
-            P.priority DESC, 
-            J.id LIMIT 1
-            ) 
+    AS $$    WITH selectedJob AS (
+	SELECT J.id FROM jobs J, projects P
+	WHERE
+		J.id_project = P.id AND
+		J.tags <@ (SELECT S.tags FROM sessions S WHERE S.id = a_session_id) AND
+		J.status = 'ready'
+	ORDER BY P.priority DESC, J.id
+	LIMIT 1
+	FOR UPDATE SKIP LOCKED)
+	UPDATE jobs
+	SET status = 'running', start_date=NOW(), id_session = a_session_id
+	WHERE
+		(SELECT S.status FROM sessions S WHERE S.id = a_session_id) = 'active'
+    	AND
+		id in (SELECT id FROM selectedJob)
     RETURNING id, command;
 $$;
 

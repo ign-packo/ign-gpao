@@ -48,7 +48,7 @@ async function getJobReady(req, res, next) {
 
   const id = params.id_session;
   try {
-    await req.client.query('LOCK TABLE jobs IN EXCLUSIVE MODE');
+    // await req.client.query('LOCK TABLE jobs IN EXCLUSIVE MODE');
     await req.client.query(
       'SELECT to_json(assign_first_job_ready_for_session($1))', [id],
     )
