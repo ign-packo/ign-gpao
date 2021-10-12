@@ -68,7 +68,6 @@ CREATE FUNCTION public.assign_first_job_ready_for_session(a_session_id integer) 
 	SELECT J.id FROM jobs J, projects P
 	WHERE
 		J.id_project = P.id AND
-		J.tags <@ (SELECT S.tags FROM sessions S WHERE S.id = a_session_id) AND
 		J.status = 'ready'
 	ORDER BY P.priority DESC, J.id
 	LIMIT 1
