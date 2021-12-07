@@ -184,7 +184,7 @@ def process(parameters):
 
             url = "session?host=" + HOSTNAME
             if tags:
-                url += id_session + "&tags=" + tags
+                url += str(id_session) + "&tags=" + tags
 
             req = send_request(url, "PUT", str_thread_id=str_thread_id)
 
