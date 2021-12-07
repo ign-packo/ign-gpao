@@ -91,10 +91,10 @@ def get_free_space_gb(dirname):
     return space_available
 
 
-def read_stdout_process(proc, id_job, str_thread_id):
+def read_stdout_process(proc, id_job, str_thread_id, command):
     """ Lecture de la sortie console """
     last_flush = time.time()
-    realtime_output = ""
+    realtime_output = "Commande : "+str(command)+"\n\n"
     while True:
         realtime_output += proc.stdout.readline()
 
@@ -128,6 +128,9 @@ def launch_command(job, str_thread_id, shell, working_dir):
     """ Lancement d'une ligne de commande """
     id_job = job["id"]
     command = job["command"]
+
+    command = os.path.expandvars(command)
+
     logging.info("%s L'id du job %s est disponible. "
                  "Execution de la commande [%s]",
                  str_thread_id, id_job, command)
@@ -146,7 +149,7 @@ def launch_command(job, str_thread_id, shell, working_dir):
             universal_newlines=True,
             cwd=working_dir,
         ) as proc:
-            read_stdout_process(proc, id_job, str_thread_id)
+            read_stdout_process(proc, id_job, str_thread_id, command)
             return_code = proc.poll()
             status = "done"
     except subprocess.CalledProcessError as ex:
