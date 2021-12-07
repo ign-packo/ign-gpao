@@ -4,7 +4,7 @@
   "description": "moniteur pour IGN/GPAO",
   "repository": {
     "type": "git",
-    "url": "https://github.com/arnaudbirk/ign-gpao.git"
+    "url": "https://github.com/ign-gpao/ign-gpao.git"
   },
   "main": "serveur.js",
   "scripts": {
