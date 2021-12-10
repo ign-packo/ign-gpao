@@ -22,15 +22,6 @@ import requests
 HOSTNAME = socket.gethostname()
 NB_PROCESS = multiprocessing.cpu_count()
 
-logging.basicConfig(
-    handlers=[
-        logging.FileHandler("client.log"),
-        logging.StreamHandler()
-    ],
-    format='%(asctime)s %(levelname)-5s %(message)s',
-    level=logging.INFO,
-    datefmt='%Y-%m-%d %H:%M:%S')
-
 URL_API = (
     "http://"
     + os.getenv("URL_API", "localhost")
@@ -42,6 +33,56 @@ URL_API = (
 MIN_AVAILABLE_SPACE = 5
 # duree minimale en s entre deux requetes de mise a jour du log
 MIN_FLUSH_RATE = 5
+
+
+def arg_parser():
+    """ Extraction des arguments de la ligne de commande """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-n",
+        "--threads",
+        required=False,
+        type=int,
+        help="fix the number of threads \
+                        (default: estimated number of cpu on the system)",
+    )
+    parser.add_argument(
+        "-s",
+        "--suffix",
+        help="add a suffix on the hostname \
+                        (necessary if using several \
+                        client instances on a machine)",
+        required=False,
+        type=str,
+    )
+    parser.add_argument(
+        "-t",
+        "--tags",
+        required=False,
+        type=str,
+        default="",
+        help="comma separated list of tags",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        required=False,
+        help="increase output verbosity",
+        action="store_true",
+    )
+    return parser.parse_args()
+
+
+ARGS = arg_parser()
+
+logging.basicConfig(
+    handlers=[
+        logging.FileHandler("client.log"),
+        logging.StreamHandler()
+    ],
+    format='%(asctime)s %(levelname)-5s %(message)s',
+    level=logging.DEBUG if ARGS.verbose else logging.INFO,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 
 def send_request(url, mode, json=None, str_thread_id=None):
@@ -94,7 +135,17 @@ def get_free_space_gb(dirname):
 def read_stdout_process(proc, id_job, str_thread_id, command):
     """ Lecture de la sortie console """
     last_flush = time.time()
-    realtime_output = "Commande : "+str(command)+"\n\n"
+    command_str = "Commande : "+str(command)+"\n\n"
+
+    url_tmp = "job/" + str(id_job) + "/appendLog"
+
+    send_request(url_tmp,
+                 "POST",
+                 json={"log": command_str},
+                 str_thread_id=str_thread_id)
+
+    realtime_output = ""
+
     while True:
         realtime_output += proc.stdout.readline()
 
@@ -112,7 +163,10 @@ def read_stdout_process(proc, id_job, str_thread_id, command):
                              str_thread_id=str_thread_id)
             break
 
-        if (realtime_output and (time.time() - last_flush) > MIN_FLUSH_RATE):
+        if realtime_output:
+            if (time.time() - last_flush) < MIN_FLUSH_RATE:
+                time.sleep(MIN_FLUSH_RATE-(time.time() - last_flush))
+
             url_tmp = "job/" + str(id_job) + "/appendLog"
 
             send_request(url_tmp,
@@ -253,35 +307,7 @@ if __name__ == "__main__":
     logging.info("Demarrage du client GPAO")
     logging.info("URL_API : %s", URL_API)
 
-    PARSER = argparse.ArgumentParser()
-    PARSER.add_argument(
-        "-n",
-        "--threads",
-        required=False,
-        type=int,
-        help="fix the number of threads \
-                        (default: estimated number of cpu on the system)",
-    )
-    PARSER.add_argument(
-        "-s",
-        "--suffix",
-        help="add a suffix on the hostname \
-                        (necessary if using several \
-                        client instances on a machine)",
-        required=False,
-        type=str,
-    )
-    PARSER.add_argument(
-        "-t",
-        "--tags",
-        required=False,
-        type=str,
-        default="",
-        help="comma separated list of tags",
-    )
-    ARGS = PARSER.parse_args()
-
-    logging.debug(ARGS)
+    logging.debug("Argument : %s", ARGS)
     if ARGS.threads:
         if ARGS.threads <= 0:
             logging.error("Le nombre de thread doit etre >0 : %s",
