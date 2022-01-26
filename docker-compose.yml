@@ -13,6 +13,11 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - gpao-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
   api-gpao:
     build:
       context: ./
@@ -31,6 +36,11 @@ services:
       - 8080:8080
     networks:
       - gpao-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
   monitor-gpao:
     build:
       context: ./
@@ -49,6 +59,11 @@ services:
       - 8000:8000
     networks:
       - gpao-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
   client-gpao:
     build:
       context: ./
@@ -64,6 +79,11 @@ services:
       - api-gpao
     networks:
       - gpao-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 volumes:
   postgres-data:
 networks:
