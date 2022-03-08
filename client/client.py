@@ -147,12 +147,12 @@ def read_stdout_process(proc, id_job, str_thread_id, command):
     realtime_output = ""
 
     while True:
-        realtime_output += proc.stdout.readline()
+        realtime_output += proc.stdout.readline().replace("\x00", "")
 
         if proc.poll() is not None:
             # entre temps, des nouveaux messages sont peut-etre arrives
             for line in proc.stdout.readlines():
-                realtime_output += line
+                realtime_output += line.replace("\x00", "")
 
             if realtime_output:
                 url_tmp = "job/" + str(id_job) + "/appendLog"
